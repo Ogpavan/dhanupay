@@ -36,7 +36,7 @@ import SignInScreen from "./Pages/SignInScreen";
 import ResetMpinScreen from "./Pages/ResetMpinScreen";
 import Signup from "../src/RegisterPages/BasicDetails";
 import Home from "../src/Pages/Homescreen";
-import Sucessfull from "./Pages/SucessScreen";
+import SucessScreen from "./Pages/SucessScreen";
 import BasicDetails from "./RegisterPages/BasicDetails";
 import BusinessDetails from "./RegisterPages/BusinessDetails";
 import ResidentialDetails from "./RegisterPages/ResidentialDetails";
@@ -66,7 +66,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/forget-m-pin" element={<ResetMpinScreen />} />
-        <Route path="/Sucessfull" element={<Sucessfull />} />
+        <Route path="/Sucessfull" element={<SucessScreen />} />
         <Route path="/MPinScreen" element={<MPinScreen />} />
         <Route path="/Logout" element={<MPinScreen />} />
       </Routes>
