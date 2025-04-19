@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 
-const SuccessScreen = ({ title,message }) => {
+const SucessScreen = ({ title,message }) => {
     const navigate = useNavigate();
 
     const btnclick = () => {
@@ -42,4 +42,4 @@ const SuccessScreen = ({ title,message }) => {
     )
 }
 
-export default SuccessScreen;
+export default SucessScreen;
