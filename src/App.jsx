@@ -36,7 +36,7 @@ import SignInScreen from "./Pages/SignInScreen";
 import ResetMpinScreen from "./Pages/ResetMpinScreen";
 import Signup from "../src/RegisterPages/BasicDetails";
 import Home from "../src/Pages/Homescreen";
-import Sucessfull from "./pages/SucessScreen";
+import Sucessfull from "./Pages/SucessScreen";
 import BasicDetails from "./RegisterPages/BasicDetails";
 import BusinessDetails from "./RegisterPages/BusinessDetails";
 import ResidentialDetails from "./RegisterPages/ResidentialDetails";
