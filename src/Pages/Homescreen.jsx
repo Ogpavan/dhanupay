@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../assets/logo.png"; // Make sure this path is correct
 import { useNavigate } from "react-router-dom";
 
-const DhanuPayScreen = () => {
+const Homescreen = () => {
   const navigate = useNavigate();
   return (
     <div className="h-[100vh] flex flex-col items-center justify-between bg-white sm:hidden">
@@ -33,4 +33,4 @@ const DhanuPayScreen = () => {
   );
 };
 
-export default DhanuPayScreen;
+export default Homescreen;
