@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
-  const [Otp, setOtp] = useState("");
+  const [Otp, setOtp] = useState(""); // State for OTP
   const [DistrbutorID, setDistrbutorID] = useState("");
   const [Newpassword, setNewPassword] = useState("");
   const [ConfirmNewpassword, setConfirmNewpassword] = useState("");
@@ -12,19 +12,17 @@ const ForgetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
+  // Generate OTP when the "Send OTP" button is clicked
   const handleSendOtp = () => {
+    // Generate OTP only when the button is clicked
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setOtp(generatedOtp);
-    setShowAlert(true);
-
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
+    setOtp(generatedOtp); // Set the generated OTP to state
+    setShowAlert(true); // Show the alert when OTP is generated
   };
 
   const btnclick = () => {
     alert(`OTP: ${Otp}\nDistributor ID: ${DistrbutorID}\nNew Password: ${Newpassword}`);
-    navigate("/");
+    navigate("/"); // Navigate to home page or another route after clicking change password
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -42,6 +40,7 @@ const ForgetPassword = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            onClick={() => navigate(-1)}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
@@ -69,7 +68,7 @@ const ForgetPassword = () => {
               className="w-full px-4 py-3 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
             <button
-              onClick={handleSendOtp}
+              onClick={handleSendOtp} // Only triggers OTP generation when clicked
               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-indigo-600 text-sm font-medium hover:text-indigo-800"
             >
               Send OTP
