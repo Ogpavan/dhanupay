@@ -13,7 +13,7 @@ import BannerCarousel from "@/components/BannerCrausal";
 import financeaeps1 from "../assets/icons/fingerprint 1-1.svg";
 import financeaeps2 from "../assets/icons/fingerprint 1.svg";
 import financeaeps4 from "../assets/icons/Group 612.svg";
-import financeaeps5 from "../assets/icons/Image 19.svg";
+import financeaeps5 from "../assets/icons/Image19.svg";
 import dBt1 from "../assets/icons/dBt1.svg";
 import Youtube from "../assets/icons/youtube.svg";
 import Logout from "../assets/icons/Logout.svg";
