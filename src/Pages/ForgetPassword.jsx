@@ -15,9 +15,9 @@ const ForgetPassword = () => {
   // Generate OTP when the "Send OTP" button is clicked
   const handleSendOtp = () => {
     // Generate OTP only when the button is clicked
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setOtp(generatedOtp); // Set the generated OTP to state
-    setShowAlert(true); // Show the alert when OTP is generated
+    // const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    // setOtp(generatedOtp); // Set the generated OTP to state
+    // setShowAlert(true); // Show the alert when OTP is generated
   };
 
   const btnclick = () => {
@@ -79,8 +79,8 @@ const ForgetPassword = () => {
           <input
             type="text"
             placeholder="OTP"
-            value={Otp}
-            onChange={(e) => setOtp(e.target.value)}
+            // value={Otp}
+            // onChange={(e) => setOtp(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
 
