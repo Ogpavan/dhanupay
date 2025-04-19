@@ -86,7 +86,7 @@ const VideoKYC = () => {
             ← Back
           </button>
           <button
-            onClick={() => navigate("/Sucessfull")}
+            onClick={() => navigate("/")}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
             Submit →
