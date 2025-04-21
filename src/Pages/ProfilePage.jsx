@@ -4,7 +4,7 @@ import { FaCog, FaArrowLeft } from 'react-icons/fa';
 import { GoArrowDownLeft, GoArrowUpRight } from 'react-icons/go';
 
 import profileImg from "../assets/icons/profile.svg";
-import todayIcon from "../assets/todayicon.svg";
+import todayIcon from "../assets/todayIcon.svg";
 import commissionIcon from "../assets/commissionIcon.svg";
 import otherIcon from "../assets/otherIcon.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
