@@ -19,7 +19,7 @@ import HomePage from "./Pages/HomePage";
 import SearchPage from "./Pages/SearchPage";
 import ReportPage from "./Pages/ReportPage";
 import ProfilePage from "./Pages/ProfilePage";
-import Aeps1 from "./Finance/aeps1";
+import Aeps1 from "./Finance/Aeps1";
 import Aeps2 from "./Finance/Aeps2";
 import CashDeposit from "./Finance/CashDeposit";
 import Dmt1 from "./Finance/Dmt1";
