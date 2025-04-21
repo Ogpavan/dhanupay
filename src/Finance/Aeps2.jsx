@@ -4,7 +4,7 @@ import cashIcon from '../assets/cash-withdrawal.svg';
 import balanceIcon from '../assets/balance-enquiry.svg';
 import miniStatementIcon from '../assets/mini-statement.svg';
 import faceIcon from '../assets/face.svg';
-import fingerprintIcon from '../assets/fingerprint.svg';
+import fingerprintIcon from '../assets/Fingerprint.svg';
 import retinaIcon from '../assets/retina.svg';
 
 function Aeps2() {
