@@ -32,10 +32,10 @@ const HomePage = () => {
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <div className="text-sm font-semibold">Push Puttichai</div>
+              <div className="text-md font-semibold">Push Puttichai</div>
               <div className="text-xs">2525368</div>
-              <div className="text-xs flex items-center">
-                <img src={locationIcon} alt="Location" className="w-3.5 h-3.5" />
+              <div className="text-sm flex items-center">
+                {/* <img src={locationIcon} alt="Location" className="w-3.5 h-3.5" /> */}
                 Bareilly
               </div>
             </div>
@@ -47,21 +47,21 @@ const HomePage = () => {
               src={Youtube}
               onClick={() => navigate("/Logout")}
               alt="YouTube"
-              className="w-12 h-12"
+              className="w-10 h-10"
             />
             <img
               src={Logout}
               onClick={() => navigate("/")}
               alt="Logout"
-              className="w-10 h-10"
+              className="w-9 h-9"
             />
           </div>
         </div>
 
         {/* Wallet Balances */}
-        <div className="flex justify-between bg-white rounded-xl px-3 py-2 mt-4 text-indigo-700 text-sm font-semibold">
-          <div className="flex-1 text-center border-r border-indigo-300">
-            <div className="flex items-center justify-start gap-3">
+        <div className="flex justify-between bg-white rounded-xl px-2 py-2 mt-4 text-indigo-700 text-sm font-semibold">
+          <div className="flex-1 text-center border-r mr-2 border-indigo-300">
+            <div className="flex items-center justify-start gap-2">
               <img src={aepsWalletIcon} alt="Wallet" className="w-12 h-12" />
               <div className="flex flex-col">
                 <div className="text-sm font-semibold text-left text-indigo-700">
@@ -74,9 +74,9 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex-1 text-center">
-            <div className="flex items-center justify-start gap-3">
+            <div className="flex items-center justify-start gap-2">
               <img src={walletIcon} alt="Wallet" className="w-12 h-12" />
-              <div className="flex flex-col">
+              <div className="flex flex-col ml-">
                 <div className="text-sm font-semibold text-left text-indigo-700">
                   Wallet Balance
                 </div>
