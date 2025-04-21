@@ -224,7 +224,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col h-[100vh] mb-[25vh] font-poppins">
+    <div className="flex flex-col h-[100vh]  mb-[40vh]  font-poppins">
       {/* This will render your HomePage or any page inside Dashboard */}
       
        {/* Render children from nested routes */}
