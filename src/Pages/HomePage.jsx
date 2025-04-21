@@ -20,7 +20,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-indigo-700 font-poppins">
+    <div className="flex flex-col  bg-indigo-700 font-poppins">
       {/* Top Bar */}
       <div className="px-4 pb-4 text-white">
         <div className="flex items-center justify-between">
@@ -59,7 +59,7 @@ const HomePage = () => {
         </div>
 
         {/* Wallet Balances */}
-        <div className="flex justify-between bg-white rounded-xl px-2 py-2 mt-4 text-indigo-700 text-sm font-semibold">
+        <div className="flex justify-between bg-white rounded-xl px-2 py-2  mt-4 text-indigo-700 text-sm font-semibold">
           <div className="flex-1 text-center border-r mr-2 border-indigo-300">
             <div className="flex items-center justify-start gap-2">
               <img src={aepsWalletIcon} alt="Wallet" className="w-12 h-12" />
@@ -90,7 +90,7 @@ const HomePage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 bg-white rounded-t-3xl py-3">
+      <div className="flex-1 bg-white rounded-t-3xl pb-24 py-3">
         {/* Banner / Slider */}
         <div className="overflow-hidden rounded-3xl h-36 p-2 pt-0">
           <BannerCarousel />

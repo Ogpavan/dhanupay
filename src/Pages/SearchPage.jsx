@@ -28,7 +28,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="min-h-screen pb-24 bg-white px-4 py-4 font-poppins">
+    <div className=" pb-24 bg-white px-4 py-4 font-poppins">
       {/* Top Bar */}
       <div className="flex items-center gap-2 mb-4">
         <button onClick={() => navigate('/dashboard/home')} className="text-xl">

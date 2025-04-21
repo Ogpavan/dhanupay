@@ -224,7 +224,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col h-[100vh]  mb-[40vh]  font-poppins">
+    <div className="flex flex-col     font-poppins">
       {/* This will render your HomePage or any page inside Dashboard */}
       
        {/* Render children from nested routes */}
@@ -234,7 +234,7 @@ const Dashboard = () => {
       
 
       {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 w-full bg-white shadow-md border-t px-6 py-2 flex justify-between items-center text-sm text-gray-600">
+      <div className="fixed bottom-0 w-full bg-white shadow-md border-t px-6 py-2   flex justify-between items-center text-sm text-gray-600">
         <NavIcon label="Home" icon={Home} route="/dashboard/home" />
         <NavIcon label="Search" icon={search} route="/dashboard/search" />
         <NavIcon label="Report" icon={report} route="/dashboard/report" />
