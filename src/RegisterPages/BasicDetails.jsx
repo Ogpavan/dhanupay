@@ -22,7 +22,7 @@ const BasicDetails = () => {
 
   return (
     <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
-      <div className="h-[20vh] px-4 flex items-center">
+      <div className="h-[20vh] px-4 flex items-center" onClick={() => navigate(-1)}>
         <span className="text-white text-xl poppins-medium">&lt; Register</span>
       </div>
 

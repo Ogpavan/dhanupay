@@ -52,7 +52,7 @@ const ResetMpinScreen = () => {
   };
 
   return (
-    <div className="h-screen  bg-red-700 font-[Poppins]  flex flex-col">
+    <div className="h-screen  bg-white font-[Poppins]  flex flex-col">
       {/* Blue Header (flat) */}
       <div className="bg-indigo-700 h-[15vh] px-4 pt-6  pb-4 text-white relative z-0">
         <div className="flex items-center space-x-2 text-sm font-medium poppins-medium">
@@ -62,7 +62,7 @@ const ResetMpinScreen = () => {
       </div>
 
       {/* White Rounded Container Overlapping */}
-      <div className="-mt-6 bg-white rounded-t-3xl px-4 pt-6 pb-10 w-full shadow-md z-10 relative">
+      <div className="-mt-6 bg-white rounded-t-3xl px-4 pt-6 pb-10 w-full  z-10 relative">
       {/* Lock Icon */}
         <div className="flex justify-center mb-6">
           <div className="bg-purple-100 p-6 rounded-full shadow-md relative">

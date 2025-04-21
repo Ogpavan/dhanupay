@@ -7,7 +7,7 @@ const MPinScreen = () => {
   const userName = "John Doe"; // Replace this with dynamic username if needed
 
   const btnclick = () => {
-    onClick=navigate("/dashboard");
+    onClick=navigate("/dashboard/home");
     // alert(pin.join(""));
   };
 
