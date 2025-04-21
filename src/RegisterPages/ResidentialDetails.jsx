@@ -29,12 +29,12 @@ const ResidentialDetails = () => {
   };
 
   return (
-    <div className="font-poppins h-screen bg-[#2C2DCB] sm:hidden">
+    <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
       <div className="h-[20vh] px-4 flex items-center">
         <span className="text-white text-xl poppins-medium">&lt; Register</span>
       </div>
 
-      <div className="h-full bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
+      <div className="h-[83dvh] bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
         <Stepper currentStep={1} />
 
         <h1 className="poppins-semibold text-[#121649] text-center py-4">

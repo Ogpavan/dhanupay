@@ -9,7 +9,7 @@ const SignInScreen = () => {
 
   const btnclick = () => {
     alert(`Email/Phone: ${emailOrPhone}\nPassword: ${password}`);
-    navigate("/dashboard");
+    navigate("/dashboard/home");
   };
 
   const handleChange = (value, index) => {
