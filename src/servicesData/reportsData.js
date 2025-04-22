@@ -14,8 +14,9 @@ import InsurancePremiumReport from '../Pages/reports/InsurancePremiumReport';
 import EducationFeeReport from '../Pages/reports/EducationFeeReport';
 import CreditCardReport from '../Pages/reports/CreditCardReport';
 import FastTagReport from '../Pages/reports/FastTagReport';
-import Dailyreport from '../Pages/reports/Dailyreport';
+import DailyReport from '../Pages/reports/DailyReport';
 import LoanRepaymentReport from '../Pages/reports/LoanRepaymentReport';
+import DailyReport from '../Pages/reports/DailyReport';
 
 export const reports = [
   // General Reports
@@ -23,7 +24,7 @@ export const reports = [
     title: "Daily Sale Report",
     description: "View all daily shop transactions",
     route: "/reports/daily-sale",
-    component: Dailyreport,
+    component: DailyReport,
   },
   {
     title: "Train Booking Report",

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function Dailyreport() {
+function DailyReport() {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -35,4 +35,4 @@ function Dailyreport() {
   );
 }
 
-export default Dailyreport;
+export default DailyReport;

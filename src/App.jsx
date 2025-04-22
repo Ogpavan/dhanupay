@@ -40,7 +40,7 @@ import MobileRecharge from "./QuickServices/MobileRecharge/MobileRecharge";
 
 
 // Report sub-pages
-import Dailyreport from "./pages/reports/Dailyreport";
+// import Dailyreport from "../src/Pages/reports/Dailyreport";
 import MoneyTransferreport from "./Pages/reports/MoneyTransferextra";
 import Rechargereport from "./pages/reports/Recharge";
 import AadhaarATMreport from "./pages/reports/AadhaarATM";
