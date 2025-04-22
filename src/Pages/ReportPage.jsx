@@ -97,7 +97,7 @@ export const extrareports = [
 
 
 function ReportPage() {
-  useEffectt(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const navigate = useNavigate();
