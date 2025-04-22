@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react"; // optional icon package
+import Swal from "sweetalert2";
 
 const MobileRecharge = () => {
   const navigate = useNavigate();
@@ -14,13 +15,18 @@ const MobileRecharge = () => {
 
   const handleRecharge = () => {
     if (!form.mobile || !form.operator || !form.amount) {
-      alert("Please fill all required fields.");
+      // alert("Please fill all required fields.");
+      Swal.fire({
+        title: "Alert",
+        text: "Please fill all fields",
+        icon: "warning"
+      });
       return;
     }
 
     // API call logic here
     console.log("Recharge initiated:", form);
-    alert("under working");
+    // alert("under working");
     // navigate("/recharge-success");
     return
   };

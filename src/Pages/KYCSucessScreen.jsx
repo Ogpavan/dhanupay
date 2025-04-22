@@ -8,7 +8,9 @@ const KYCSucessScreen = () => {
     const navigate = useNavigate();
 
     const btnclick = () => {
-        alert(`Home button clicked Scessfully`);
+
+        // alert(`Home button clicked Scessfully`);
+        
         onClick = navigate("/");
     };
     return (

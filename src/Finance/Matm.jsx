@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mSwipeIcon from '../assets/m-swipe.svg'; // replace with your correct path
 import mPosIcon from '../assets/m-pos.svg';     // replace with your correct path
+import Swal from 'sweetalert2';
 
 function Matm() {
     useEffect(() => {
@@ -12,7 +13,12 @@ function Matm() {
 
     const handleNext = () => {
         if (!selectedMachine) {
-            alert("Please select a machine.");
+            // alert("Please select a machine.");
+            Swal.fire({
+                title: "Alert",
+                text: "Please select a machine.",
+                icon: "warning"
+              });
             return;
         }
 

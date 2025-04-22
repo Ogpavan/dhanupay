@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const PostpaidMobile = () => {
   useEffect(() => {
@@ -17,7 +18,12 @@ const PostpaidMobile = () => {
     const { mobileNumber, operator, userName } = form;
 
     if (!mobileNumber || !operator || !userName) {
-      alert("Please fill all fields");
+      // alert("Please fill all fields");
+      Swal.fire({
+        title: "Alert",
+        text: "Please fill all fields",
+        icon: "warning"
+      });
       return;
     }
 

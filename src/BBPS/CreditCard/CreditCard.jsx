@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function CreditCardBillPayment() {
   useEffect(() => {
@@ -24,12 +25,22 @@ export default function CreditCardBillPayment() {
     const { bank, cardNumber1, cardNumber2, cardHolder, amount } = form;
 
     if (!bank || !cardNumber1 || !cardNumber2 || !cardHolder ) {
-      alert("Please fill all fields");
+      // alert("Please fill all fields");
+      Swal.fire({
+        title: "Alert",
+        text: "Please fill all fields",
+        icon: "warning"
+      });
       return;
     }
 
     if (cardNumber1 !== cardNumber2) {
-      alert("Card numbers do not match");
+      // alert("Card numbers do not match");
+      Swal.fire({
+        title: "Alert",
+        text: "Card numbers do not match",
+        icon: "warning"
+      });
       return;
     }
 

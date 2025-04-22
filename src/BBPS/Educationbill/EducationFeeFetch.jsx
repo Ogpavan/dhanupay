@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const EducationFeeFetch = () => {
   useEffect(() => {
@@ -90,7 +91,11 @@ const EducationFeeFetch = () => {
           //   })
           // }
 
-          onClick={() => alert("Same success screen come after this")}
+          onClick={() => {Swal.fire({
+                                  title: "Success",
+                                  text: "Payment was Sucessfull ",
+                                  icon: "success"
+                                });}}
           className="mt-6 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-xl w-full max-w-sm"
         >
           Pay Now

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function Broadband() {
   useEffect(() => {
@@ -24,7 +25,12 @@ export default function Broadband() {
     const { broadbandOperators, Number1   } = form;
 
     if (!broadbandOperators || !Number1 ) {
-      alert("Please fill all fields");
+      // alert("Please fill all fields");
+      Swal.fire({
+        title: "Alert",
+        text: "Please fill all fields",
+        icon: "warning"
+      });
       return;
     }
 

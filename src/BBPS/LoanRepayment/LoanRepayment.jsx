@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function LoanRepayment() {
     useEffect(() => {
@@ -24,7 +25,12 @@ const loanProviders = ["Bajaj Finserv", "Tata Capital", "HDB Financial Services"
     const { loanProviders, AgreementNumber1   } = form;
 
     if (!loanProviders || !AgreementNumber1 ) {
-      alert("Please fill all fields");
+      // alert("Please fill all fields");
+      Swal.fire({
+        title: "Alert",
+        text: "Please fill all fields",
+        icon: "warning"
+      });
       return;
     }
 

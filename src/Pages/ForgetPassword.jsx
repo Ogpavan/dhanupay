@@ -24,7 +24,13 @@ const ForgetPassword = () => {
   };
 
   const btnclick = () => {
-    alert(`OTP: ${Otp}\nDistributor ID: ${DistrbutorID}\nNew Password: ${Newpassword}`);
+    // alert(`OTP: ${Otp}\nDistributor ID: ${DistrbutorID}\nNew Password: ${Newpassword}`);
+    Swal.fire({
+      title: "Success",
+      text: "Sucessfully Reset ",
+      icon: "success"
+    });
+
     navigate("/"); // Navigate to home page or another route after clicking change password
   };
 

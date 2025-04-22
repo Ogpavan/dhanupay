@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function CashDeposit() {
   useEffect(() => {
@@ -16,7 +17,12 @@ function CashDeposit() {
 
   const handleConfirm = () => {
     if (aadharNumber !== confirmAadharNumber) {
-      alert("❗ Aadhar numbers do not match!");
+      // alert("❗ Aadhar numbers do not match!");
+      Swal.fire({
+        title: "Alert",
+        text: "❗ Aadhar numbers do not match!",
+        icon: "warning"
+      });
       return;
     }
 
@@ -27,7 +33,12 @@ function CashDeposit() {
     };
 
     console.log("✅ Cash Deposit Form Submitted:", formData);
-    alert("Cash Deposit submitted successfully!");
+    // alert("Cash Deposit submitted successfully!");
+    Swal.fire({
+      title: "Success",
+      text: "Cash Deposit submitted successfully!",
+      icon: "success"
+    });
   };
 
   const handleAmountClick = (val) => {

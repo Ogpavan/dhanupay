@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Stepper from "../components/Stepper";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const BusinessDetails = () => {
   useEffect(() => {
@@ -30,7 +31,12 @@ const BusinessDetails = () => {
         state: data.state || "",
       });
     } else {
-      alert("No residential address found.");
+      // alert("No residential address found.");
+      Swal.fire({
+        title: "Alert",
+        text: "No residential address found.",
+        icon: "warning"
+      });
     }
   };
 

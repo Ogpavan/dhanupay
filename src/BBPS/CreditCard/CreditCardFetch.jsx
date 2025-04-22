@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import chip from "../../assets/chip.svg";
+import Swal from 'sweetalert2'
 
 const CreditCardFetch = () => {
   useEffect(() => {
@@ -32,36 +33,42 @@ const CreditCardFetch = () => {
         <p className="text-sm text-gray-600">Please confirm you want to proceed with the credit card payment</p>
       </div>
 
-  
-    {/* Card Display */}
-<div className="relative bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-6 rounded-3xl shadow-2xl max-w-sm mx-auto mb-8 h-52 overflow-hidden">
-  {/* Chip Image or Icon */}
-  <div className="absolute top-8 right-10 w-11 h-10  opacity-70">
-    <img src={chip} alt="Chip" className="w-full h-full" />
-  </div>
 
-  {/* Card Number */}
-  <div className="mt-10 text-xl font-mono tracking-widest">
-  {cardNumber ? cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') : ""}
-</div>
+      {/* Card Display */}
+      <div className="relative bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-6 rounded-3xl shadow-2xl max-w-sm mx-auto mb-8 h-52 overflow-hidden">
+        {/* Chip Image or Icon */}
+        <div className="absolute top-8 right-10 w-11 h-10  opacity-70">
+          <img src={chip} alt="Chip" className="w-full h-full" />
+        </div>
+
+        {/* Card Number */}
+        <div className="mt-10 text-xl font-mono tracking-widest">
+          {cardNumber ? cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') : ""}
+        </div>
 
 
-  {/* Card Holder & Label */}
-  <div className="mt-6 flex justify-between items-end text-xs uppercase tracking-wide">
-    <div>
-      <div className="text-gray-300">Card Holder</div>
-      <div className="text-sm font-semibold tracking-wide">{cardHolder}</div>
-    </div>
-    <div>
-      <div className="text-gray-300">Amount</div>
-      <div className="text-sm font-semibold tracking-wide">₹{amount}</div>
-    </div>
-  </div>
-</div>
+        {/* Card Holder & Label */}
+        <div className="mt-6 flex justify-between items-end text-xs uppercase tracking-wide">
+          <div>
+            <div className="text-gray-300">Card Holder</div>
+            <div className="text-sm font-semibold tracking-wide">{cardHolder}</div>
+          </div>
+          <div>
+            <div className="text-gray-300">Amount</div>
+            <div className="text-sm font-semibold tracking-wide">₹{amount}</div>
+          </div>
+        </div>
+      </div>
 
       {/* Pay Now */}
       <button
-        onClick={() => alert(`Proceeding to payment of ₹${amount}`)}
+        onClick={() => {
+          Swal.fire({
+            title: "Success",
+            text: "Payment was Sucessfull ",
+            icon: "success"
+          });
+        }}
         className="w-full max-w-sm mx-auto bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-xl font-semibold"
       >
         Pay Now ₹{amount}

@@ -11,7 +11,7 @@ const SignInScreen = () => {
   const [password, setPassword] = useState("");
 
   const btnclick = () => {
-    alert(`Email/Phone: ${emailOrPhone}\nPassword: ${password}`);
+    // alert(`Email/Phone: ${emailOrPhone}\nPassword: ${password}`);
     navigate("/dashboard/home");
   };
 

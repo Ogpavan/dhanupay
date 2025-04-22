@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import cashIcon from '../assets/cash-withdrawal.svg';
 import balanceIcon from '../assets/balance-enquiry.svg';
 import miniStatementIcon from '../assets/mini-statement.svg';
+import Swal from 'sweetalert2';
 
 function MiniAtmTransactionPage() {
   useEffect(() => {
@@ -36,7 +37,12 @@ function MiniAtmTransactionPage() {
       amount,
     };
     console.log("Transaction Data:", formData);
-    alert(`Transaction Confirmed for ₹${amount} using ${cardType}`);
+    // alert(`Transaction Confirmed for ₹${amount} using ${cardType}`);
+    Swal.fire({
+      title: "Success",
+      text: `Transaction Confirmed for ₹${amount} using ${cardType}`,
+      icon: "success"
+    });
   };
 
   const resetForm = () => {

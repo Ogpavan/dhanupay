@@ -50,7 +50,7 @@ const ResetMpinScreen = () => {
     confirmMpin.every((val) => val !== "");
 
   const handleSubmit = () => {
-    alert("OTP: " + otp.join("") + "\nM-PIN: " + mpin.join(""));
+    // alert("OTP: " + otp.join("") + "\nM-PIN: " + mpin.join(""));
     onClick=navigate("/login") ;
   };
 

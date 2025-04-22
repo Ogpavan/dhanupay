@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import success from "/sucess.gif";
+import Swal from "sweetalert2";
 
 const ElectricityInvoice = () => {
   const { state } = useLocation();
@@ -26,7 +27,12 @@ const ElectricityInvoice = () => {
     const printWindow = window.open("", "_blank", "width=400,height=600");
   
     if (!printWindow) {
-      alert("Popup blocked! Please allow popups and try again.");
+      // alert("Popup blocked! Please allow popups and try again.");
+      Swal.fire({
+        title: "Alert",
+        text: "Popup blocked! Please allow popups and try again.",
+        icon: "warning"
+      });
       return;
     }
   

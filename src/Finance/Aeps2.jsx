@@ -6,6 +6,7 @@ import miniStatementIcon from '../assets/mini-statement.svg';
 import faceIcon from '../assets/face.svg';
 import fingerprintIcon from '../assets/Fingerprint.svg';
 import retinaIcon from '../assets/retina.svg';
+import Swal from 'sweetalert2';
 
 function Aeps2() {
     useEffect(() => {
@@ -44,7 +45,12 @@ function Aeps2() {
 
     const handleConfirm = () => {
         if (bankName === '') {
-            alert('Please select a bank before proceeding.');
+            // alert('Please select a bank before proceeding.');
+            Swal.fire({
+                title: "Alert",
+                text: "Please select a bank before proceeding.",
+                icon: "warning"
+              });
             return; // Prevent form submission if no bank is selected
         }
         const formData = {
@@ -59,7 +65,12 @@ function Aeps2() {
         };
 
         console.log("Form Submitted:", formData);
-        alert("Transaction Confirmed");
+        // alert("Transaction Confirmed");
+        Swal.fire({
+            title: "Success",
+            text: "Transaction Confirmed ",
+            icon: "success"
+          });
     };
 
     // Reset the form when the selected transaction type changes

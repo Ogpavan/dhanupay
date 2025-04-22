@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function Dmt1() {
   useEffect(() => {
@@ -16,7 +17,12 @@ function Dmt1() {
 
   const handleConfirm = () => {
     if (accountNumber !== confirmAccountNumber) {
-      alert("❗ Account numbers do not match!");
+      // alert("❗ Account numbers do not match!");
+      Swal.fire({
+        title: "Alert",
+        text: "❗ Account numbers do not match!",
+        icon: "warning"
+      });
       return;
     }
 
@@ -29,7 +35,12 @@ function Dmt1() {
     };
 
     console.log("✅ Form Submitted:", formData);
-    alert("Form submitted successfully!");
+    // alert("Form submitted successfully!");
+    Swal.fire({
+      title: "Success",
+      text: "Form submitted successfully! ",
+      icon: "success"
+    });
   };
 
   return (
