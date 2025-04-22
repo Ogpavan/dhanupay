@@ -39,10 +39,26 @@ import MobileRecharge from "./QuickServices/MobileRecharge/MobileRecharge";
 
 
 
+// Report sub-pages
+import Dailyreport from "./pages/reports/Dailyreport";
+import MoneyTransferreport from "./Pages/reports/MoneyTransferextra";
+import Rechargereport from "./pages/reports/Recharge";
+import AadhaarATMreport from "./pages/reports/AadhaarATM";
+import BillPaymentsreport from "./pages/reports/BillPayments";
+import TrainBookingreport from "./Pages/reports/TrainBookingextra";
+
+import { reports } from '../src/servicesData/reportsData';
+
+
+
 function App() {
   return (
     <Router>
       <Routes>
+
+      {reports.map((report, index) => (
+        <Route key={index} path={report.route} element={<report.component />} />
+      ))}
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/basic-details" element={<BasicDetails />} />
@@ -91,7 +107,19 @@ function App() {
           <Route path="report" element={<ReportPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
+
+{/* 
+        <Route path="reports/daily-sale" element={<Dailyreport />} />
+          <Route path="reports/money-transfer" element={<MoneyTransferreport />} />
+          <Route path="reports/recharge" element={<Rechargereport />} />
+          <Route path="reports/aadhaar-atm" element={<AadhaarATMreport />} />
+          <Route path="reports/bill-payments" element={<BillPaymentsreport />} />
+          <Route path="reports/train-booking" element={<TrainBookingreport />} /> */}
       </Routes>
+
+     
+      
+   
     </Router>
   );
 }

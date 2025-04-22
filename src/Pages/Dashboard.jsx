@@ -212,46 +212,44 @@
 
 
 
-
 import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Home from "../assets/icons/Home.svg";
 import search from "../assets/icons/search.svg";
 import report from "../assets/icons/report.svg";
 import profile from "../assets/icons/profile.svg";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <div className="flex flex-col     font-poppins">
-      {/* This will render your HomePage or any page inside Dashboard */}
-      
-       {/* Render children from nested routes */}
+    <div className="flex flex-col font-poppins">
+      {/* Main Content */}
       <div className="flex-1">
         <Outlet />
-        </div>
-      
+      </div>
 
-      {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 w-full bg-white shadow-md border-t px-6 py-2   flex justify-between items-center text-sm text-gray-600">
-        <NavIcon label="Home" icon={Home} route="/dashboard/home" />
-        <NavIcon label="Search" icon={search} route="/dashboard/search" />
-        <NavIcon label="Report" icon={report} route="/dashboard/report" />
-        <NavIcon label="Profile" icon={profile} route="/dashboard/profile" />
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 w-full bg-white shadow-md border-t px-6 py-2 flex justify-between items-center text-sm text-gray-600">
+        <NavIcon label="Home" icon={Home} route="/dashboard/home" active={location.pathname === "/dashboard/home"} />
+        <NavIcon label="Search" icon={search} route="/dashboard/search" active={location.pathname === "/dashboard/search"} />
+        <NavIcon label="Report" icon={report} route="/dashboard/report" active={location.pathname === "/dashboard/report"} />
+        <NavIcon label="Profile" icon={profile} route="/dashboard/profile" active={location.pathname === "/dashboard/profile"} />
       </div>
     </div>
   );
 };
 
-const NavIcon = ({ label, icon, route }) => {
+const NavIcon = ({ label, icon, route, active }) => {
   const navigate = useNavigate();
+  const activeColor = active ? "text-indigo-700" : "text-gray-600";
+
   return (
     <div
-      className="flex flex-col items-center"
+      className={`flex flex-col items-center cursor-pointer ${activeColor}`}
       onClick={() => navigate(route)}
     >
-      <img src={icon} alt={label} className="w-6 h-6 mb-1" />
+      <img src={icon} alt={label} className={`w-6 h-6 mb-1 ${active ? "filter brightness-0 saturate-100 invert-14 sepia-79 hue-rotate-199 contrast-94" : ""}`} />
       <span className="text-xs">{label}</span>
     </div>
   );
