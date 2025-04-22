@@ -34,4 +34,4 @@ function Rechargereport() {
   )
 }
 
-export default Rechargereport
+export default Rechargereport;
