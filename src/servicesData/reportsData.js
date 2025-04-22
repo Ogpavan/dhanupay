@@ -14,7 +14,7 @@ import InsurancePremiumReport from '../Pages/reports/InsurancePremiumReport';
 import EducationFeeReport from '../Pages/reports/EducationFeeReport';
 import CreditCardReport from '../Pages/reports/CreditCardReport';
 import FastTagReport from '../Pages/reports/FastTagReport';
-import DailyReport from '../Pages/reports/DailyReport';
+// import DailyReport from '../Pages/reports/DailyReport';
 import LoanRepaymentReport from '../Pages/reports/LoanRepaymentReport';
 import DailyReport from '../Pages/reports/DailyReport';
 
