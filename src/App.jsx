@@ -48,6 +48,22 @@ import MobileRecharge from "./QuickServices/MobileRecharge/MobileRecharge";
 // import TrainBookingreport from "./Pages/reports/TrainBookingextra";
 
 import { reports } from '../src/servicesData/reportsData';
+import CreditCardBillPayment from "./BBPS/CreditCard/CreditCard";
+import CreditCardFetch from "./BBPS/CreditCard/CreditCardFetch";
+import EducationFee from "./BBPS/Educationbill/EducationFee";
+import EducationFeeFetch from "./BBPS/Educationbill/EducationFeeFetch";
+import InsurancePremium from "./BBPS/Insurance/InsurancePremium";
+import InsurancePremiumFetch from "./BBPS/Insurance/InsurancePremiumFetch";
+import Broadband from "./BBPS/Broadbandbill/Broadband";
+import BroadbandFetch from "./BBPS/Broadbandbill/BroadbandFetch";
+import LoanRepayment from "./BBPS/LoanRepayment/LoanRepayment";
+import LoanRepaymentFetch from "./BBPS/LoanRepayment/LoanRepaymentFetch";
+import DTHPayment from "./BBPS/DTH/DTHPayment";
+import DTHPaymentFetch from "./BBPS/DTH/DTHPaymentFetch";
+import PostpaidMobile from "./BBPS/Postpaid/Postpaid";
+import PostpaidFetch from "./BBPS/Postpaid/PostpaidFetch";
+import FastagRechargeFetch from "./BBPS/Fastag/FastagRechargeFetch";
+import FastagRecharge from "./BBPS/Fastag/FastagRecharge";
 
 
 
@@ -115,6 +131,33 @@ function App() {
           <Route path="reports/aadhaar-atm" element={<AadhaarATMreport />} />
           <Route path="reports/bill-payments" element={<BillPaymentsreport />} />
           <Route path="reports/train-booking" element={<TrainBookingreport />} /> */}
+
+
+          //BBPS services route 
+          <Route path="/creditcard" element={<CreditCardBillPayment />} />
+         <Route path="/creditcardfetch" element={<CreditCardFetch />} />
+
+         <Route path="/educationfee" element={<EducationFee />} />
+         <Route path="/educationfeefetch" element={<EducationFeeFetch />} />
+
+         <Route path="/insurancepremium" element={<InsurancePremium />} />
+         <Route path="/insurancepremiumfetch" element={<InsurancePremiumFetch />} />
+
+
+         <Route path="/Broadband" element={<Broadband />} />
+         <Route path="/Broadbandfetch" element={<BroadbandFetch />} />
+
+         <Route path="/loanrepayment" element={<LoanRepayment />} />
+         <Route path="/loanrepaymentfetch" element={<LoanRepaymentFetch />} />
+
+         <Route path="/fastagrecharge" element={<FastagRecharge />} />
+         <Route path="/fastagrechargefetch" element={<FastagRechargeFetch />} />
+
+         <Route path="/dthpayment" element={<DTHPayment />} />
+         <Route path="/dthpaymentfetch" element={<DTHPaymentFetch />} />
+
+         <Route path="/postpaid" element={<PostpaidMobile />} />
+         <Route path="/postpaidfetch" element={<PostpaidFetch />} />
       </Routes>
 
      

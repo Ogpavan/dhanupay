@@ -39,12 +39,12 @@ export const quickServices = [
 
 // BBPS Services
 export const bbpsServices = [
-  { label: "Credit card", icon: creditcard, route: "/credit-card" },
-  { label: "Education Fee", icon: educationfee, route: "/education-fee" },
-  { label: "Insurance Premium", icon: Insurance_premium, route: "/insurance-premium" },
-  { label: "Fast Tag", icon: fastag, route: "/fast-tag" },
+  { label: "Credit card", icon: creditcard, route: "/creditcard" },
+  { label: "Education Fee", icon: educationfee, route: "/educationfee" },
+  { label: "Insurance Premium", icon: Insurance_premium, route: "/insurancepremium" },
+  { label: "FasTag", icon: fastag, route: "/fastagrecharge" },
   { label: "Broadband", icon: broadband, route: "/broadband" },
   { label: "Postpaid", icon: postpaidmobile, route: "/postpaid" },
-  { label: "DTH", icon: dthrecharge, route: "/dth" },
-  { label: "Loan Repayment", icon: loanreyapment, route: "/loan-repayment" },
+  { label: "DTH", icon: dthrecharge, route: "/dthpayment" },
+  { label: "Loan Repayment", icon: loanreyapment, route: "/loanrepayment" },
 ];

@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 
-const ElectricityBill = () => {
+const EducationFee = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    consumerNumber: "",
+    studentId: "",
     state: "",
-    board: "",
-    name: "",
+    institute: "",
+    studentName: "",
   });
-
- 
 
   return (
     <div className="font-poppins min-h-screen bg-white px-4 py-6 sm:hidden">
@@ -21,25 +18,23 @@ const ElectricityBill = () => {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        <span className="text-sm font-medium text-gray-700">   Back</span>
+        <span className="text-sm font-medium text-gray-700">Back</span>
       </div>
 
-
       <div className="">
-        <h1 className="text-xl font-bold text-blue-700 text-center ">Electricity Bill</h1>
-        <h2 className="text-md text-gray-600 text-center mb-8">Pay your Electricity Bill with ease</h2>
+        <h1 className="text-xl font-bold text-blue-700 text-center ">Education Fee</h1>
+        <h2 className="text-md text-gray-600 text-center mb-8">Pay your Education Fee with ease</h2>
       </div>
 
       <form className="space-y-5 mt-16">
-      
-        {/* Consumer Number */}
+        {/* Student ID / Enrollment Number */}
         <div>
-          <label className="text-sm text-gray-600 font-medium">Consumer number</label>
+          <label className="text-sm text-gray-600 font-medium">Student ID / Enrollment No.</label>
           <input
             type="text"
-            placeholder="0123456789"
-            value={form.consumerNumber}
-            onChange={(e) => setForm({ ...form, consumerNumber: e.target.value })}
+            placeholder="STU123456"
+            value={form.studentId}
+            onChange={(e) => setForm({ ...form, studentId: e.target.value })}
             className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
           />
         </div>
@@ -53,51 +48,50 @@ const ElectricityBill = () => {
             className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none text-gray-800"
           >
             <option value="" disabled>Select State</option>
-            <option>Uttar Pradesh West</option>
-            <option>Delhi</option>
+            <option>Uttar Pradesh</option>
             <option>Maharashtra</option>
+            <option>Delhi</option>
           </select>
         </div>
 
-        {/* Electricity Board */}
+        {/* Select Institute */}
         <div>
-          <label className="text-sm text-gray-600 font-medium">Electricity Board</label>
+          <label className="text-sm text-gray-600 font-medium">Select Institute</label>
           <select
-            value={form.board}
-            onChange={(e) => setForm({ ...form, board: e.target.value })}
+            value={form.institute}
+            onChange={(e) => setForm({ ...form, institute: e.target.value })}
             className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none text-gray-800"
           >
-            <option value="" disabled>Select Board</option>
-            <option>Madhyanchal Vidyut (PVVNL) - bill</option>
-            <option>NPCL</option>
-            <option>BSES Rajdhani</option>
+            <option value="" disabled>Select Institute</option>
+            <option>Delhi Public School</option>
+            <option>National Institute of Technology</option>
+            <option>Lovely Professional University</option>
           </select>
         </div>
 
-        {/* Name (Optional) */}
+        {/* Student Name */}
         <div>
-          <label className="text-sm text-gray-600 font-medium">Name (Optional)</label>
+          <label className="text-sm text-gray-600 font-medium">Student Name</label>
           <input
             type="text"
             placeholder="Rakesh Sharma"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            value={form.studentName}
+            onChange={(e) => setForm({ ...form, studentName: e.target.value })}
             className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
           />
         </div>
 
-        {/* Fetch Bill Button */}
+        {/* Submit Button */}
         <button
           type="button"
-          onClick={() => navigate("/electricitybillfetch", { state: form })}
-
+          onClick={() => navigate("/educationfeefetch", { state: form })}
           className="w-full mt-4 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
         >
-          Fetch bill
+          Fetch Fee Details
         </button>
       </form>
     </div>
   );
 };
 
-export default ElectricityBill;
+export default EducationFee;

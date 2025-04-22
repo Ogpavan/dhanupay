@@ -20,6 +20,11 @@ const WaterBill = () => {
         <span className="text-sm font-medium text-gray-700">Back</span>
       </div>
 
+      <div className="">
+        <h1 className="text-xl font-bold text-blue-700 text-center ">Water Bill</h1>
+        <h2 className="text-md text-gray-600 text-center mb-8">Pay your Water Bill with ease</h2>
+      </div>
+
       <form className="space-y-5 mt-16">
         {/* Water Provider */}
         <div>
