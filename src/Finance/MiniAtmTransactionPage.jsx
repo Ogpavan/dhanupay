@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import cashIcon from '../assets/cash-withdrawal.svg';
 import balanceIcon from '../assets/balance-enquiry.svg';
 import miniStatementIcon from '../assets/mini-statement.svg';
 
 function MiniAtmTransactionPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const location = useLocation();
   const selectedMachine = location.state?.selectedMachine || "Unknown";

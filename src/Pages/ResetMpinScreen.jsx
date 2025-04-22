@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ResetMpinScreen = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [mpin, setMpin] = useState(["", "", "", ""]);

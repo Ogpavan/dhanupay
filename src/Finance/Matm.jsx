@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mSwipeIcon from '../assets/m-swipe.svg'; // replace with your correct path
 import mPosIcon from '../assets/m-pos.svg';     // replace with your correct path
 
 function Matm() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     const navigate = useNavigate();
     const [selectedMachine, setSelectedMachine] = useState(null);
 

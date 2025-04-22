@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Stepper from "../components/Stepper";
 import { useNavigate } from "react-router-dom";
 
 const BusinessDetails = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({

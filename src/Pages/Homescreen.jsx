@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/logo.png"; // Make sure this path is correct
 import { useNavigate } from "react-router-dom";
 
 const Homescreen = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   return (
     <div className="h-[100vh] flex flex-col items-center justify-between bg-white sm:hidden">

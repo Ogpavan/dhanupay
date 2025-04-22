@@ -8,6 +8,9 @@ import fingerprintIcon from '../assets/Fingerprint.svg';
 import retinaIcon from '../assets/retina.svg';
 
 function Aeps1() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     const navigate = useNavigate();
 
     const [selectedMethod, setSelectedMethod] = useState("Fingerprint");

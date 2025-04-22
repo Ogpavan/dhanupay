@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Stepper from "../components/Stepper";
 import { useNavigate } from "react-router-dom";
 import pan from "../assets/PAN.png";
@@ -6,6 +6,9 @@ import pan from "../assets/PAN.png";
 
 
 const PanDetails = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
 
   return (

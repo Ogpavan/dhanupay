@@ -212,7 +212,7 @@
 
 
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Home from "../assets/icons/Home.svg";
 import search from "../assets/icons/search.svg";
@@ -220,6 +220,9 @@ import report from "../assets/icons/report.svg";
 import profile from "../assets/icons/profile.svg";
 
 const Dashboard = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const location = useLocation();
 
   return (

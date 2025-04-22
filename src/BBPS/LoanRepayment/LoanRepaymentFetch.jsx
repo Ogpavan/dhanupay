@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 
 const LoanRepaymentFetch = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     const navigate = useNavigate();
     const { state } = useLocation();
     const { AgreementNumber1, loanProviders } = state || {};

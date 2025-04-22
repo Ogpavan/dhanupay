@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LoanRepayment() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
   const [form, setForm] = useState({
     loanProviders: "",
     AgreementNumber1: "",

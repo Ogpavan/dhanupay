@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CreditCardBillPayment() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [form, setForm] = useState({
     bank: "",
     cardNumber1: "",
@@ -20,7 +23,7 @@ export default function CreditCardBillPayment() {
   const handleSubmit = () => {
     const { bank, cardNumber1, cardNumber2, cardHolder, amount } = form;
 
-    if (!bank || !cardNumber1 || !cardNumber2 || !cardHolder || !amount) {
+    if (!bank || !cardNumber1 || !cardNumber2 || !cardHolder ) {
       alert("Please fill all fields");
       return;
     }

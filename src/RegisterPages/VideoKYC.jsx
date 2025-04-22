@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Stepper from "../components/Stepper";
 import { FiUploadCloud } from "react-icons/fi";
@@ -6,6 +6,9 @@ import { FaCamera } from "react-icons/fa";
 import { IoVideocam } from "react-icons/io5";
 
 const VideoKYC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
 
   return (

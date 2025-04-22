@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { reports } from '../servicesData/reportsData';
 
@@ -97,6 +97,9 @@ export const extrareports = [
 
 
 function ReportPage() {
+  useEffectt(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const [selectedReport, setSelectedReport] = useState(null);
   const [fromDate, setFromDate] = useState('');

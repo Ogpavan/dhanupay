@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import chip from "../../assets/chip.svg";
 
 const CreditCardFetch = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const { state } = useLocation();
   const { cardHolder, cardNumber, amount } = state || {};

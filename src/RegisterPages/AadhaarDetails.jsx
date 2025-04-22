@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Stepper from "../components/Stepper";
 import { useNavigate } from "react-router-dom";
 import aadhaar_front from "../assets/aadhaar_front.png";
@@ -7,6 +7,9 @@ import { FiUploadCloud } from "react-icons/fi";
 
 
 const AadhaarDetails = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
 
   return (

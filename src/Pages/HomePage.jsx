@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BannerCarousel from "@/components/BannerCrausal"; // You may rename the component file to "BannerCarousel" if it's a typo
 
@@ -17,6 +17,9 @@ import {
 } from "../servicesData/servicesData"; // Centralized service data
 
 const HomePage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
 
   return (

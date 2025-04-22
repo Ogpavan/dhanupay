@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import success from "../../assets/sucess.gif";
 
 const ElectricityInvoice = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { state } = useLocation();
   const navigate = useNavigate();
 

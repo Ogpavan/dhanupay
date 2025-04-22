@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Stepper from "../components/Stepper";
 import { useNavigate } from "react-router-dom";
 import OtpModal from "../components/OtpModal"; // 👈 import it
 
 const BasicDetails = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [verifyingField, setVerifyingField] = useState(null);

@@ -11,6 +11,9 @@ import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
 
 function ProfilePage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
