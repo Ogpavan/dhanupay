@@ -41,11 +41,11 @@ import MobileRecharge from "./QuickServices/MobileRecharge/MobileRecharge";
 
 // Report sub-pages
 // import Dailyreport from "../src/Pages/reports/Dailyreport";
-import MoneyTransferreport from "./Pages/reports/MoneyTransferextra";
-import Rechargereport from "./pages/reports/Recharge";
-import AadhaarATMreport from "./pages/reports/AadhaarATM";
-import BillPaymentsreport from "./pages/reports/BillPayments";
-import TrainBookingreport from "./Pages/reports/TrainBookingextra";
+// import MoneyTransferreport from "./Pages/reports/MoneyTransferextra";
+// import Rechargereport from "./pages/reports/Recharge";
+// import AadhaarATMreport from "./pages/reports/AadhaarATM";
+// import BillPaymentsreport from "./pages/reports/BillPayments";
+// import TrainBookingreport from "./Pages/reports/TrainBookingextra";
 
 import { reports } from '../src/servicesData/reportsData';
 
