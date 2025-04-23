@@ -8,4 +8,4 @@ function SmartCollectReport() {
   )
 }
 
-export default SmartCollectReport
+export default SmartCollectReport;
