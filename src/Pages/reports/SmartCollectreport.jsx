@@ -1,6 +1,6 @@
 import React from 'react'
 
-function SmartCollectreport() {
+function SmartCollectReport() {
   return (
     <div>
       
@@ -8,4 +8,4 @@ function SmartCollectreport() {
   )
 }
 
-export default SmartCollectreport
+export default SmartCollectReport
