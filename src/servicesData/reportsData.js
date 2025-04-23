@@ -136,7 +136,7 @@ import MoneyTransferreport from '../Pages/reports/MoneyTransferreport';
 import CashDepositReport from '../Pages/reports/CashDepositReport';
 import Rechargereport from '../Pages/reports/Rechargereport';
 import MoveToBankReport from '../Pages/reports/MoveToBankReport'; // Assuming you have this report
-import SmartCollectReport from '../Pages/reports/SmartCollectReport'; // Assuming you have this report
+// import SmartCollectReport from '../Pages/reports/SmartCollectReport'; // Assuming you have this report
 import LedgerReport from '../Pages/reports/LedgerReport'; // Assuming you have this report
 
 export const reports = [
@@ -187,12 +187,12 @@ export const reports = [
     route: "/reports/move-to-bank",
     component: MoveToBankReport, // Assuming you have this report
   },
-  {
-    title: "Smart Collect Report",
-    description: "Overview of Smart Collect transactions",
-    route: "/reports/smart-collect",
-    component: SmartCollectReport, // Assuming you have this report
-  },
+  // {
+  //   title: "Smart Collect Report",
+  //   description: "Overview of Smart Collect transactions",
+  //   route: "/reports/smart-collect",
+  //   component: SmartCollectReport, // Assuming you have this report
+  // },
   {
     title: "Ledger Report",
     description: "Track ledger records and transactions",
