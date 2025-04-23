@@ -57,14 +57,14 @@ function ProfilePage() {
             <div className="flex items-center p-3 bg-white rounded-xl shadow">
               <img src={aepsWalletIcon} alt="AEPS" className="w-10 h-10 mr-4" />
               <div>
-                <p className="text-sm text-gray-600 poppins-regular">AEPS Balance</p>
+                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">AEPS Balance</p>
                 <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-white rounded-xl shadow">
               <img src={walletIcon} alt="Wallet" className="w-10 h-10 mr-4" />
               <div>
-                <p className="text-sm text-gray-600 poppins-regular">Wallet Balance</p>
+                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">Wallet Balance</p>
                 <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
               </div>
             </div>
@@ -78,17 +78,17 @@ function ProfilePage() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-white text-center py-4 rounded-xl shadow border">
             <img src={todayIcon} alt="Today" className="mx-auto w-12 h-12 mb-1 -mt-1" />
-            <p className="text-lg text-gray-500 poppins-regular  ">Today<br/> AEPS</p>
+            <p className="text-sm text-gray-500 poppins-regular  ">Today<br/> AEPS</p>
             <p className="font-bold pt-1 poppins-semibold">₹ 5382.23</p>
           </div>
           <div className="bg-white text-center py-4 rounded-xl shadow border">
             <img src={commissionIcon} alt="Commission" className="mx-auto w-10 h-10 mb-1" />
-            <p className="text-lg text-gray-500 poppins-regular">Total Commission</p>
+            <p className="text-sm text-gray-500 poppins-regular">Total Commission</p>
             <p className="font-bold pt-1 poppins-semibold">₹ 5382.23</p>
           </div>
           <div className="bg-white text-center py-4 rounded-xl shadow border">
             <img src={otherIcon} alt="Other" className="mx-auto w-10 h-10 mb-1" />
-            <p className="text-lg text-gray-500 poppins-regular">Other Transaction</p>
+            <p className="text-sm text-gray-500 poppins-regular">Other Transaction</p>
             <p className="font-bold pt-1 poppins-semibold">₹ 5382.23</p>
           </div>
         </div>
