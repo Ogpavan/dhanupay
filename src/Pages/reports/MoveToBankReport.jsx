@@ -1,6 +1,6 @@
 import React from 'react'
 
-function MoneyTransferreport() {
+function MoveToBankReport() {
   return (
     <div>
       
@@ -8,4 +8,4 @@ function MoneyTransferreport() {
   )
 }
 
-export default MoneyTransferreport
+export default MoveToBankReport

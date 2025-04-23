@@ -9,8 +9,10 @@ import commissionIcon from "../assets/commissionIcon.svg";
 import otherIcon from "../assets/otherIcon.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
+import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
+  const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -25,7 +27,7 @@ function ProfilePage() {
       {/* Top Bar */}
       <div className="p-4 text-white">
         <div className="flex items-center justify-between">
-          <FaArrowLeft className="text-xl" />
+          <FaArrowLeft onClick={() => navigate("/dashboard/home")} className="text-xl" />
           <h1 className="text-lg poppins-semibold">Profile</h1>
           <FaCog className="text-xl" />
         </div>
@@ -40,11 +42,11 @@ function ProfilePage() {
                 alt="Profile"
                 className="w-24 h-24 rounded-full border-4 border-white"
               />
-              <div className="absolute bottom-0 right-0 bg-white rounded-full p-1">
+              {/* <div className="absolute bottom-0 right-0 bg-white rounded-full p-1">
                 <svg className="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
                 </svg>
-              </div>
+              </div> */}
             </div>
             <div className="text-white text-center mt-2">
               <h2 className="text-xl poppins-bold">Mohit Kumar</h2>

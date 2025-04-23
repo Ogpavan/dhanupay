@@ -4,18 +4,25 @@ import BannerCarousel from "@/components/BannerCrausal"; // You may rename the c
 
 // Icons
 import Youtube from "../assets/icons/youtube.svg";
+import { IoIosNotifications } from "react-icons/io";
 import Logout from "../assets/icons/Logout.svg";
 import locationIcon from "../assets/icons/location.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
 
 // Service Data
-import {
-  financeServices,
-  quickServices,
-  bbpsServices,
-} from "../servicesData/servicesData"; // Centralized service data
+// import {
+//   financeServices,
+//   quickServices,
+//   bbpsServices,
+// } from "../servicesData/servicesData"; // Centralized service data
 
+
+import {
+  Services,
+
+  OtherServices,
+} from "../servicesData/servicesData"; // Centralized service data
 const HomePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,12 +37,13 @@ const HomePage = () => {
           {/* Profile Info */}
           <div className="flex items-center pt-3 gap-3">
             <img
+            onClick={() => navigate("/dashboard/profile")}
               src="https://i.pravatar.cc/150?img=32"
               alt="profile"
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <div className="text-md font-semibold">Push Puttichai</div>
+              <div className="text-md font-semibold">Radha rani</div>
               <div className="text-xs">2525368</div>
               <div className="text-sm flex items-center">
                 {/* <img src={locationIcon} alt="Location" className="w-3.5 h-3.5" /> */}
@@ -46,11 +54,15 @@ const HomePage = () => {
 
           {/* Top Right Icons */}
           <div className="flex items-center gap-3 text-xl">
-            <img
+            {/* <img
               src={Youtube}
               onClick={() => navigate("/Logout")}
               alt="YouTube"
               className="w-10 h-10"
+            /> */}
+            <IoIosNotifications
+              // onClick={() => alert("clicked")}
+              className="w-9 h-9 cursor-pointer"
             />
             <img
               src={Logout}
@@ -68,7 +80,7 @@ const HomePage = () => {
               <img src={aepsWalletIcon} alt="Wallet" className="w-12 h-12" />
               <div className="flex flex-col">
                 <div className="text-sm font-semibold text-left text-indigo-700">
-                  AEPS Balance
+                  AEPS Wallet
                 </div>
                 <div className="text-base font-bold text-left text-black">
                   ₹ 5382.23
@@ -81,7 +93,7 @@ const HomePage = () => {
               <img src={walletIcon} alt="Wallet" className="w-12 h-12" />
               <div className="flex flex-col ml-">
                 <div className="text-sm font-semibold text-left text-indigo-700">
-                  Wallet Balance
+                  Incentive Wallet
                 </div>
                 <div className="text-base font-bold text-left text-black">
                   ₹ 5382.23
@@ -100,18 +112,18 @@ const HomePage = () => {
         </div>
 
         {/* Finance Section */}
-        <Section title="Finance">
-          <ServiceGrid services={financeServices} isImage />
+        <Section title="Services">
+          <ServiceGrid services={Services} isImage />
         </Section>
 
         {/* Quick Services */}
-        <Section title="Quick Services">
+        {/* <Section title="Quick Services">
           <ServiceGrid services={quickServices} />
-        </Section>
+        </Section> */}
 
         {/* BBPS Services */}
-        <Section title="BBPS">
-          <ServiceGrid services={bbpsServices} />
+        <Section title="Additional Services">
+          <ServiceGrid services={OtherServices} />
         </Section>
       </div>
     </div>
@@ -122,8 +134,8 @@ const HomePage = () => {
 const Section = ({ title, children }) => (
   <div className="mt-6 px-4">
     <div className="flex justify-between items-center mb-2">
-      <h2 className="text-sm font-semibold text-gray-700">{title}</h2>
-      <span className="text-xs text-gray-500">View more ⌄</span>
+      <h2 className="text-lg font-semibold text-black">{title}</h2>
+      {/* <span className="text-xs text-gray-500">View more ⌄</span> */}
     </div>
     {children}
   </div>

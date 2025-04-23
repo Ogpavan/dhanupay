@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  financeServices,
-  quickServices,
-  bbpsServices,
-} from "../servicesData/servicesData";
+import { Services, OtherServices } from "../servicesData/servicesData";
 
-const SearchPage = () => {
+const SearchPage = () => {  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -20,9 +16,8 @@ const SearchPage = () => {
       service.label.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-  const filteredFinance = filterServices(financeServices);
-  const filteredQuick = filterServices(quickServices);
-  const filteredBBPS = filterServices(bbpsServices);
+  const filteredFinance = filterServices(Services);
+  const filteredBBPS = filterServices(OtherServices);
 
   const isSearching = searchTerm.trim().length > 0;
 
@@ -31,7 +26,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className=" pb-24 bg-white px-4 py-4 font-poppins">
+    <div className="pb-24 bg-white px-4 py-4 font-poppins">
       {/* Top Bar */}
       <div className="flex items-center gap-2 mb-4">
         <button onClick={() => navigate('/dashboard/home')} className="text-xl">
@@ -51,24 +46,17 @@ const SearchPage = () => {
 
       {/* Results */}
       <div className="space-y-4">
+        {/* Always show Finance services */}
+        <CategorySection
+          title="Finance"
+          services={filteredFinance.length > 0 ? filteredFinance : Services}
+          navigate={navigate}
+          isExpanded={true}
+        />
+
+        {/* Show other categories only if searching or expanded */}
         {isSearching ? (
           <>
-            {filteredFinance.length > 0 && (
-              <CategorySection
-                title="Finance"
-                services={filteredFinance}
-                navigate={navigate}
-                isExpanded={true}
-              />
-            )}
-            {filteredQuick.length > 0 && (
-              <CategorySection
-                title="Quick Services"
-                services={filteredQuick}
-                navigate={navigate}
-                isExpanded={true}
-              />
-            )}
             {filteredBBPS.length > 0 && (
               <CategorySection
                 title="BBPS"
@@ -77,39 +65,22 @@ const SearchPage = () => {
                 isExpanded={true}
               />
             )}
-            {filteredFinance.length === 0 &&
-              filteredQuick.length === 0 &&
-              filteredBBPS.length === 0 && (
-                <div className="text-center text-sm text-gray-500">
-                  No services found
-                </div>
-              )}
+            {filteredFinance.length === 0 && filteredBBPS.length === 0 && (
+              <div className="text-center text-sm text-gray-500">
+                No services found
+              </div>
+            )}
           </>
         ) : (
           <>
-            {/* Show Quick Services always */}
-            <CategorySection
-              title="Quick Services"
-              services={quickServices}
-              navigate={navigate}
-              isExpanded={isExpanded}
-            />
-            {/* Show Finance and BBPS only when View More is clicked */}
+            {/* Show BBPS only when View More is clicked */}
             {isExpanded && (
-              <>
-                <CategorySection
-                  title="Finance"
-                  services={financeServices}
-                  navigate={navigate}
-                  isExpanded={true}
-                />
-                <CategorySection
-                  title="BBPS"
-                  services={bbpsServices}
-                  navigate={navigate}
-                  isExpanded={true}
-                />
-              </>
+              <CategorySection
+                title="BBPS"
+                services={OtherServices}
+                navigate={navigate}
+                isExpanded={true}
+              />
             )}
           </>
         )}
@@ -136,6 +107,8 @@ const CategorySection = ({ title, services, navigate, isExpanded }) => {
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-600 mb-2">{title}</h2>
+      {/* <h2 className="text-sm font-semibold text-gray-600 mb-2">Services</h2> */}
+
       <div className="space-y-2">
         {visibleServices.map((service, idx) => (
           <div
