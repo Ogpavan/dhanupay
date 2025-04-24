@@ -4,18 +4,25 @@ import chip from "../../assets/chip.svg";
 import Swal from 'sweetalert2'
 
 const CreditCardFetch = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const amount = 252;
+  
+  // Debugging: Check state
+  console.log(state);
+
+  // Extract values from state
+  const { bankName, cardHolder, cardNumber } = state || {};
+
+  useEffect(() => {
+    if (!state || !cardHolder || !cardNumber  ) {
+      navigate("/creditcard");
+    }
+  }, [state, cardHolder, cardNumber, amount, navigate]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const navigate = useNavigate();
-  const { state } = useLocation();
-  const { cardHolder, cardNumber, amount } = state || {};
-
-  useEffect(() => {
-    if (!cardHolder || !cardNumber || !amount) {
-      navigate("/creditcard");
-    }
-  }, [cardHolder, cardNumber, amount, navigate]);
 
   return (
     <div className="font-poppins min-h-screen bg-white px-4 py-6 sm:hidden">
@@ -33,11 +40,10 @@ const CreditCardFetch = () => {
         <p className="text-sm text-gray-600">Please confirm you want to proceed with the credit card payment</p>
       </div>
 
-
       {/* Card Display */}
       <div className="relative bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-6 rounded-3xl shadow-2xl max-w-sm mx-auto mb-8 h-52 overflow-hidden">
         {/* Chip Image or Icon */}
-        <div className="absolute top-8 right-10 w-11 h-10  opacity-70">
+        <div className="absolute top-8 right-10 w-11 h-10 opacity-70">
           <img src={chip} alt="Chip" className="w-full h-full" />
         </div>
 
@@ -45,7 +51,6 @@ const CreditCardFetch = () => {
         <div className="mt-10 text-xl font-mono tracking-widest">
           {cardNumber ? cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ') : ""}
         </div>
-
 
         {/* Card Holder & Label */}
         <div className="mt-6 flex justify-between items-end text-xs uppercase tracking-wide">
@@ -62,12 +67,13 @@ const CreditCardFetch = () => {
 
       {/* Pay Now */}
       <button
-        onClick={() => {
-          Swal.fire({
+        onClick={async() => {
+          await Swal.fire({
             title: "Success",
-            text: "Payment was Sucessfull ",
+            text: "Payment was Sucessfull",
             icon: "success"
           });
+          navigate("/dashboard/home");
         }}
         className="w-full max-w-sm mx-auto bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-xl font-semibold"
       >

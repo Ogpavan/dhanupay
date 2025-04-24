@@ -79,7 +79,7 @@ const HomePage = () => {
             <div className="flex items-center justify-start gap-2">
               <img src={aepsWalletIcon} alt="Wallet" className="w-12 h-12" />
               <div className="flex flex-col">
-                <div className="text-sm font-semibold text-left text-indigo-700">
+                <div className="text-sm font-semibold whitespace-nowrap text-left text-indigo-700">
                   AEPS Wallet
                 </div>
                 <div className="text-base font-bold text-left text-black">
@@ -92,7 +92,7 @@ const HomePage = () => {
             <div className="flex items-center justify-start gap-2">
               <img src={walletIcon} alt="Wallet" className="w-12 h-12" />
               <div className="flex flex-col ml-">
-                <div className="text-sm font-semibold text-left text-indigo-700">
+                <div className="text-sm font-semibold whitespace-nowrap text-left text-indigo-700">
                   Incentive Wallet
                 </div>
                 <div className="text-base font-bold text-left text-black">

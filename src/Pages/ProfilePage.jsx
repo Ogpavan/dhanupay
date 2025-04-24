@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import transactionsData from '../utils/transactions.json';
 import { FaCog, FaArrowLeft } from 'react-icons/fa';
 import { GoArrowDownLeft, GoArrowUpRight } from 'react-icons/go';
-
 import profileImg from "../assets/icons/profile.svg";
 import todayIcon from "../assets/todayIcon.svg";
 import commissionIcon from "../assets/commissionIcon.svg";
@@ -10,17 +9,23 @@ import otherIcon from "../assets/otherIcon.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
 import { useNavigate } from "react-router-dom";
+import ContactUsModal from '../utils/ContactUsModal'; // Import the modal component
 
 function ProfilePage() {
   const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  
   const [transactions, setTransactions] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
   useEffect(() => {
     setTransactions(transactionsData);
   }, []);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <div className="bg-indigo-700 text-black pb-0 poppins-regular">
@@ -42,11 +47,6 @@ function ProfilePage() {
                 alt="Profile"
                 className="w-24 h-24 rounded-full border-4 border-white"
               />
-              {/* <div className="absolute bottom-0 right-0 bg-white rounded-full p-1">
-                <svg className="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
-                </svg>
-              </div> */}
             </div>
             <div className="text-white text-center mt-2">
               <h2 className="text-xl poppins-bold">Radha Rani</h2>
@@ -80,7 +80,7 @@ function ProfilePage() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-white text-center py-4 rounded-xl shadow border">
             <img src={todayIcon} alt="Today" className="mx-auto w-12 h-12 mb-1 -mt-1" />
-            <p className="text-sm text-gray-500 poppins-regular  ">Today<br/> AEPS</p>
+            <p className="text-sm text-gray-500 poppins-regular">Today<br /> AEPS</p>
             <p className="font-bold pt-1 poppins-semibold">₹ 5382.23</p>
           </div>
           <div className="bg-white text-center py-4 rounded-xl shadow border">
@@ -134,6 +134,10 @@ function ProfilePage() {
             <FaArrowLeft className="rotate-180" />
           </div>
           <div className="flex justify-between items-center">
+            <p className="font-medium">Privacy & Policy</p>
+            <FaArrowLeft className="rotate-180" />
+          </div>
+          <div  onClick={handleOpenModal} className="flex justify-between items-center">
             <p className="font-medium">Contact Us</p>
             <FaArrowLeft className="rotate-180" />
           </div>
@@ -143,6 +147,9 @@ function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Contact Us Modal */}
+      <ContactUsModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 }

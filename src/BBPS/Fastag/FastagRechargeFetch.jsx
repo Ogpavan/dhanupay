@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const FastagRechargeFetch = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const { vehicleNumber, bank, ownerName, state: stateName } = state || {};
+  // Destructure the state to get the values including the amount
+  const { vehicleNumber, bank, ownerName, state: stateName, amount } = state || {};
 
   useEffect(() => {
-    if (!vehicleNumber || !bank || !ownerName || !stateName) {
+    if (!vehicleNumber || !bank || !ownerName || !stateName || !amount) {
       navigate("/fastagrecharge");
     }
-  }, [vehicleNumber, bank, ownerName, stateName, navigate]);
+  }, [vehicleNumber, bank, ownerName, stateName, amount, navigate]);
 
   return (
     <div className="font-poppins min-h-screen bg-white px-4 py-6 sm:hidden">
@@ -51,7 +54,8 @@ const FastagRechargeFetch = () => {
             Recharge Status: Unpaid
           </div>
 
-          <div className="text-3xl font-bold text-gray-800 mb-2">₹ 500.00</div>
+          {/* Display Amount Here */}
+          <div className="text-3xl font-bold text-gray-800 mb-2">₹ {amount}</div>
 
           <div className="flex flex-col gap-4 text-sm text-gray-600 w-full mt-4">
             <div className="text-center flex justify-between">
@@ -70,22 +74,29 @@ const FastagRechargeFetch = () => {
         </div>
 
         <button
-          onClick={() =>
-            navigate("/fastaginvoice", {
-              state: {
-                vehicleNumber,
-                bank,
-                ownerName,
-                stateName,
-                transactionId: "FTG456987321",
-                rechargeDate: "April 25, 2025",
-                amount: 500,
-              },
-            })
-          }
+          // onClick={() =>
+          //   navigate("/fastaginvoice", {
+          //     state: {
+          //       vehicleNumber,
+          //       bank,
+          //       ownerName,
+          //       stateName,
+          //       transactionId: "FTG456987321",
+          //       rechargeDate: "April 25, 2025",
+          //       amount, // Pass the amount to the next page as well
+          //     },
+          //   })
+          // }
+
+             onClick={async() => {await Swal.fire({
+                                            title: "Success",
+                                            text: "Payment was Sucessfull ",
+                                            icon: "success"
+                                          });
+                                          navigate("/dashboard/home");}}
           className="mt-6 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-xl w-full max-w-sm"
         >
-          Pay Now
+          Pay Now {amount}
         </button>
       </div>
     </div>

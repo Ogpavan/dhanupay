@@ -67,6 +67,10 @@ import FastagRecharge from "./BBPS/Fastag/FastagRecharge";
 import Chat from "./Pages/Chat";
 import AEPSselect from "./Finance/AEPSselect";
 import DMTselect from "./Finance/DMTselect";
+//coming soon
+import ComingSoon from './Pages/ComingSoon';
+import BillPayment from "./Pages/BillPayment";
+import AadhaarPay from "./Finance/AadhaarPay";
 
 
 
@@ -80,6 +84,8 @@ function App() {
         ))}
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
+        <Route path="/Billpayment" element={<BillPayment />}/>
         <Route path="/basic-details" element={<BasicDetails />} />
         <Route path="/business-details" element={<BusinessDetails />} />
         <Route path="/residential-details" element={<ResidentialDetails />} />
@@ -100,6 +106,7 @@ function App() {
         <Route path="/CashDeposit" element={<CashDeposit />} />
         <Route path="/Dmt1" element={<Dmt1 />} />
         <Route path="/Dmt2" element={<Dmt2 />} />
+        <Route path="/aadharpay" element={<AadhaarPay />} />
         <Route path="/Matm" element={<Matm />} />
         <Route path="/MiniAtmTransactionPage" element={<MiniAtmTransactionPage />} />
 

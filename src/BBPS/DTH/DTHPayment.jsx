@@ -6,11 +6,27 @@ const DTHPayment = () => {
     window.scrollTo(0, 0);
   }, []);
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     operator: "",
     subscriberId: "",
     name: "",
   });
+
+  const [searchTerm, setSearchTerm] = useState(""); // State to hold search term for operators
+  const [showDropdown, setShowDropdown] = useState(false); // State to control dropdown visibility
+
+  const operators = [
+    "Tata Play",
+    "Airtel Digital TV",
+    "Dish TV",
+    "Sun Direct",
+    "Videocon d2h",
+  ];
+
+  const filteredOperators = operators.filter((operator) =>
+    operator.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="font-poppins min-h-screen bg-white px-4 py-6 sm:hidden">
@@ -23,27 +39,46 @@ const DTHPayment = () => {
       </div>
 
       {/* Title */}
-      <div className="">
+      <div>
         <h1 className="text-xl font-bold text-blue-700 text-center ">DTH Recharge</h1>
         <h2 className="text-md text-gray-600 text-center mb-8">Recharge Your DTH with ease</h2>
       </div>
 
       <form className="space-y-5">
-        {/* Operator */}
+        {/* Searchable Operator */}
         <div>
           <label className="text-sm text-gray-600 font-medium">Select Operator</label>
-          <select
-            value={form.operator}
-            onChange={(e) => setForm({ ...form, operator: e.target.value })}
-            className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none text-gray-800"
-          >
-            <option value="" disabled>Select Operator</option>
-            <option>Tata Play</option>
-            <option>Airtel Digital TV</option>
-            <option>Dish TV</option>
-            <option>Sun Direct</option>
-            <option>Videocon d2h</option>
-          </select>
+          <input
+            type="text"
+            placeholder="Search operator"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowDropdown(true); // Show dropdown when typing
+            }}
+            onFocus={() => setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}  // Hide dropdown after blur
+            className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
+          />
+
+          {/* Dropdown list for filtered operators */}
+          {showDropdown && filteredOperators.length > 0 && (
+            <ul className="absolute w-full bg-white border border-gray-200 rounded-xl shadow-md z-10 mt-1 max-h-48 overflow-y-auto">
+              {filteredOperators.map((operator, idx) => (
+                <li
+                  key={idx}
+                  className="px-4 py-2 hover:bg-indigo-100 cursor-pointer text-sm"
+                  onClick={() => {
+                    setForm({ ...form, operator });
+                    setSearchTerm(operator);  // Set the selected operator
+                    setShowDropdown(false);  // Hide dropdown after selection
+                  }}
+                >
+                  {operator}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Subscriber ID */}

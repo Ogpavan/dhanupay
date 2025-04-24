@@ -14,23 +14,29 @@ const PostpaidMobile = () => {
     userName: "",
   });
 
+  const [searchTerm, setSearchTerm] = useState("");  // State to hold search term for operators
+  const [showDropdown, setShowDropdown] = useState(false);  // State to control dropdown visibility
+
+  const operators = ["Airtel", "Vi", "Jio", "BSNL", "MTNL"];
+
+  const filteredOperators = operators.filter((op) =>
+    op.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleSubmit = () => {
     const { mobileNumber, operator, userName } = form;
 
     if (!mobileNumber || !operator || !userName) {
-      // alert("Please fill all fields");
       Swal.fire({
         title: "Alert",
         text: "Please fill all fields",
-        icon: "warning"
+        icon: "warning",
       });
       return;
     }
 
     navigate("/postpaidfetch", { state: form });
   };
-
-  const operators = ["Airtel", "Vi", "Jio", "BSNL", "MTNL"];
 
   return (
     <div className="font-poppins min-h-screen bg-white px-4 py-6 sm:hidden">
@@ -43,13 +49,49 @@ const PostpaidMobile = () => {
       </div>
 
       {/* Title */}
-      <div className="">
+      <div>
         <h1 className="text-xl font-bold text-blue-700 text-center ">Postpaid Recharge</h1>
         <h2 className="text-md text-gray-600 text-center mb-8">Pay your mobile postpaid bills with ease</h2>
       </div>
 
       {/* Form */}
       <form className="space-y-5">
+
+        {/* Search Operator */}
+        <div>
+          <label className="text-sm text-gray-600 font-medium">Operator</label>
+          <input
+            type="text"
+            placeholder="Search operator"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowDropdown(true); // Show dropdown when typing
+            }}
+            onFocus={() => setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}  // Hide dropdown after blur
+            className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
+          />
+
+          {/* Dropdown list for filtered operators */}
+          {showDropdown && filteredOperators.length > 0 && (
+            <ul className="absolute w-full bg-white border border-gray-200 rounded-xl shadow-md z-10 mt-1 max-h-48 overflow-y-auto">
+              {filteredOperators.map((operator, idx) => (
+                <li
+                  key={idx}
+                  className="px-4 py-2 hover:bg-indigo-100 cursor-pointer text-sm"
+                  onClick={() => {
+                    setForm({ ...form, operator });
+                    setSearchTerm(operator);  // Set the selected operator
+                    setShowDropdown(false);  // Hide dropdown after selection
+                  }}
+                >
+                  {operator}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <div>
           <label className="text-sm text-gray-600 font-medium">Mobile Number</label>
           <input
@@ -74,19 +116,7 @@ const PostpaidMobile = () => {
           />
         </div>
 
-        <div>
-          <label className="text-sm text-gray-600 font-medium">Operator</label>
-          <select
-            value={form.operator}
-            onChange={(e) => setForm({ ...form, operator: e.target.value })}
-            className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
-          >
-            <option value="" disabled>Select Operator</option>
-            {operators.map((op, idx) => (
-              <option key={idx} value={op}>{op}</option>
-            ))}
-          </select>
-        </div>
+        
 
         <button
           type="button"

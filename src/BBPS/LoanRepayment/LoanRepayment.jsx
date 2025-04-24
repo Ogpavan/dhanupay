@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function LoanRepayment() {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   const [form, setForm] = useState({
     loanProviders: "",
     AgreementNumber1: "",
@@ -13,18 +14,28 @@ export default function LoanRepayment() {
 
   const navigate = useNavigate();
 
-//   const banks = ["HDFC Bank", "SBI", "ICICI Bank", "Axis Bank", "Kotak Mahindra"];
-const loanProviders = ["Bajaj Finserv", "Tata Capital", "HDB Financial Services", "Home Credit", "Indiabulls", "Muthoot Finance", "Mahindra Finance"];
+  // List of loan providers
+  const loanProviders = [
+    "Bajaj Finserv", "Tata Capital", "HDB Financial Services",
+    "Home Credit", "Indiabulls", "Muthoot Finance", "Mahindra Finance"
+  ];
 
+  const [searchTerm, setSearchTerm] = useState("");  // State to handle the search term
+  const [showDropdown, setShowDropdown] = useState(false); // State to control dropdown visibility
+
+  // Filter the loan providers based on the search term
+  const filteredProviders = loanProviders.filter((provider) =>
+    provider.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = () => {
-    const { loanProviders, AgreementNumber1   } = form;
+    const { loanProviders, AgreementNumber1 } = form;
 
-    if (!loanProviders || !AgreementNumber1 ) {
+    if (!loanProviders || !AgreementNumber1) {
       // alert("Please fill all fields");
       Swal.fire({
         title: "Alert",
@@ -38,7 +49,6 @@ const loanProviders = ["Bajaj Finserv", "Tata Capital", "HDB Financial Services"
       state: {
         loanProviders,
         AgreementNumber1,
-       
       },
     });
   };
@@ -53,52 +63,60 @@ const loanProviders = ["Bajaj Finserv", "Tata Capital", "HDB Financial Services"
       </div>
 
       <div className="max-w-md mx-auto p-4 space-y-5">
-        
-        <div >
-        <h1 className="text-xl font-bold text-blue-700 text-center "> Loan EMI Payment</h1>
-        <h2 className="text-md text-gray-600 text-center mb-8">Pay your Loan EMI instantly and securely</h2>
-      </div>
-
-        {/* Select operator */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Select Bank</label>
-          <select
-            value={form.bank}
-            onChange={(e) => handleChange("loanProviders", e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none"
-          >
-            <option value="">Select Loan Provider</option>
-            {loanProviders.map((b, i) => (
-              <option key={i} value={b}>{b}</option>
-            ))}
-          </select>
+          <h1 className="text-xl font-bold text-blue-700 text-center "> Loan EMI Payment</h1>
+          <h2 className="text-md text-gray-600 text-center mb-8">Pay your Loan EMI instantly and securely</h2>
         </div>
 
-        {/* fill Number */}
+        {/* Searchable Loan Provider */}
         <div>
-          <label className="block text-sm font-medium text-gray-700"> Agreeement Number</label>
+          <label className="block text-sm font-medium text-gray-700">Select Loan Provider</label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowDropdown(true); // Show dropdown when typing
+            }}
+            onFocus={() => setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // Hide dropdown after blur
+            placeholder="Search Loan Provider"
+            className="w-full p-2 border border-gray-300 rounded-xl mb-2 focus:outline-none"
+          />
+
+          {/* Dropdown list for filtered loan providers */}
+          {showDropdown && filteredProviders.length > 0 && (
+            <ul className="absolute w-full bg-white border border-gray-200 rounded-xl shadow-md z-10 mt-1 max-h-48 overflow-y-auto">
+              {filteredProviders.map((provider, idx) => (
+                <li
+                  key={idx}
+                  className="px-4 py-2 hover:bg-indigo-100 cursor-pointer text-sm"
+                  onClick={() => {
+                    setForm({ ...form, loanProviders: provider });
+                    setSearchTerm(provider); // Set the selected loan provider
+                    setShowDropdown(false); // Hide dropdown after selection
+                  }}
+                >
+                  {provider}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Agreement Number */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Agreement Number</label>
           <input
             type="text"
             value={form.AgreementNumber1}
             onChange={(e) => handleChange("AgreementNumber1", e.target.value)}
-            placeholder="Enter  number with STD code"
+            placeholder="Enter agreement number"
             className="w-full p-2 border border-gray-300 rounded-xl mb-2 focus:outline-none"
           />
-          
         </div>
-        {/* Amount */}
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700">Amount</label>
-          <input
-            type="number"
-            value={form.amount}
-            onChange={(e) => handleChange("amount", e.target.value)}
-            placeholder="Enter amount"
-            className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none"
-          />
-        </div> */}
 
-        {/* Submit */}
+        {/* Submit Button */}
         <button
           onClick={handleSubmit}
           className="w-full bg-[#2C2DCB] hover:bg-[#2C2DCB] text-white py-2 px-4 rounded-xl font-semibold focus:outline-none"

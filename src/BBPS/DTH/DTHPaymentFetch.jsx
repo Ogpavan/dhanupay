@@ -76,11 +76,18 @@ const DTHPaymentFetch = () => {
         </div>
 
         <button
-          onClick={() =>{Swal.fire({
-                                  title: "Success",
-                                  text: "Payment was Sucessfull ",
-                                  icon: "success"
-                                });}}
+          // onClick={() =>{Swal.fire({
+          //                         title: "Success",
+          //                         text: "Payment was Sucessfull ",
+          //                         icon: "success"
+          //                       });}}
+
+          onClick={async() => {await Swal.fire({
+            title: "Success",
+            text: "Payment was Sucessfull ",
+            icon: "success"
+          });
+          navigate("/dashboard/home");}}
           className="mt-6 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-xl w-full max-w-sm"
         >
           Pay Now

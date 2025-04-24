@@ -1,31 +1,45 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 export default function Broadband() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   const [form, setForm] = useState({
     broadbandOperator: "",
     Number1: "",
   });
 
+  const [searchTerm, setSearchTerm] = useState(''); // State to hold the search term
+  const [showDropdown, setShowDropdown] = useState(false); // State to control the dropdown visibility
+
   const navigate = useNavigate();
 
-//   const banks = ["HDFC Bank", "SBI", "ICICI Bank", "Axis Bank", "Kotak Mahindra"];
-  const broadbandOperators = ["Airtel Broadband", "JioFiber", "ACT Fibernet", "BSNL Broadband", "Hathway", "Spectra", "Excitel"];
+  const broadbandOperators = [
+    "Airtel Broadband",
+    "JioFiber",
+    "ACT Fibernet",
+    "BSNL Broadband",
+    "Hathway",
+    "Spectra",
+    "Excitel"
+  ];
 
+  // Filtered list based on search term
+  const filteredOperators = broadbandOperators.filter(operator =>
+    operator.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = () => {
-    const { broadbandOperators, Number1   } = form;
+    const { broadbandOperator, Number1 } = form;
 
-    if (!broadbandOperators || !Number1 ) {
-      // alert("Please fill all fields");
+    if (!broadbandOperator || !Number1) {
       Swal.fire({
         title: "Alert",
         text: "Please fill all fields",
@@ -34,11 +48,11 @@ export default function Broadband() {
       return;
     }
 
+    // Navigating to the next route and passing the form data
     navigate("/Broadbandfetch", {
       state: {
-        broadbandOperators,
-        Number1,
-       
+        broadbandOperator, // Send selected broadband operator
+        Number1,            // Send the number with STD code
       },
     });
   };
@@ -53,53 +67,60 @@ export default function Broadband() {
       </div>
 
       <div className="max-w-md mx-auto p-4 space-y-5">
-        
-
         <div className="">
-        <h1 className="text-xl font-bold text-blue-700 text-center ">Broadband Bill Payment</h1>
-        <h2 className="text-md text-gray-600 text-center mb-8"> Pay your Bill instantly and securely</h2>
-      </div>
-
-        {/* Select operator */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Select Bank</label>
-          <select
-            value={form.bank}
-            onChange={(e) => handleChange("broadbandOperators", e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none"
-          >
-            <option value="">Select operator</option>
-            {broadbandOperators.map((b, i) => (
-              <option key={i} value={b}>{b}</option>
-            ))}
-          </select>
+          <h1 className="text-xl font-bold text-blue-700 text-center">Broadband Bill Payment</h1>
+          <h2 className="text-md text-gray-600 text-center mb-8">Pay your Bill instantly and securely</h2>
         </div>
 
-        {/* fill Number */}
+        {/* Search Operator */}
         <div>
-          <label className="block text-sm font-medium text-gray-700"> Number with STD code</label>
+          <label className="block text-sm font-medium text-gray-700">Select Operator</label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowDropdown(true); // Show dropdown when the user starts typing
+            }}
+            onFocus={() => setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // Hide dropdown when focus leaves input
+            placeholder="Search operator"
+            className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none"
+          />
+
+          {/* Dropdown list for filtered broadband operators */}
+          {showDropdown && filteredOperators.length > 0 && (
+            <ul className="absolute w-full bg-white border border-gray-200 rounded-xl shadow-md z-10 mt-1 max-h-48 overflow-y-auto">
+              {filteredOperators.map((operator, index) => (
+                <li
+                  key={index}
+                  className="px-4 py-2 hover:bg-indigo-100 cursor-pointer text-sm"
+                  onClick={() => {
+                    handleChange("broadbandOperator", operator); // Update selected operator
+                    setSearchTerm(operator); // Set the search input to selected operator
+                    setShowDropdown(false); // Hide dropdown after selection
+                  }}
+                >
+                  {operator}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Fill Number */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Number with STD code</label>
           <input
             type="text"
             value={form.Number1}
             onChange={(e) => handleChange("Number1", e.target.value)}
-            placeholder="Enter  number with STD code"
+            placeholder="Enter number with STD code"
             className="w-full p-2 border border-gray-300 rounded-xl mb-2 focus:outline-none"
           />
-          
         </div>
-        {/* Amount */}
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700">Amount</label>
-          <input
-            type="number"
-            value={form.amount}
-            onChange={(e) => handleChange("amount", e.target.value)}
-            placeholder="Enter amount"
-            className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none"
-          />
-        </div> */}
 
-        {/* Submit */}
+        {/* Submit Button */}
         <button
           onClick={handleSubmit}
           className="w-full bg-[#2C2DCB] hover:bg-[#2C2DCB] text-white py-2 px-4 rounded-xl font-semibold focus:outline-none"
@@ -110,3 +131,4 @@ export default function Broadband() {
     </div>
   );
 }
+  

@@ -66,28 +66,28 @@ import personalLoan from "../assets/icons/personalloan.svg";
 
 
 export const Services = [
-  { label: "AEPS", icon: aadhaarpay, route: "/AEPSselect" },
-  { label: "CMS", icon: cms, route: "/aeps2" },
+  { label: "AEPS", icon: financeaeps1, route: "/AEPSselect" },
+  { label: "CMS", icon: cms, route: "/coming-soon" },
   { label: "M-ATM", icon: billpayment, route: "/Matm" },
-  { label: "DMT", icon: cashDeposit, route: "/DMTselect" },
-  { label: "Flight Booking", icon: flightbooking, route: "/Dmt2" },
+  { label: "DMT", icon: dBt1, route: "/DMTselect" },
+  { label: "Flight Booking", icon: flightbooking, route: "/coming-soon" },
   { label: "Recharge", icon: mobileRecharge, route: "/mobilerecharge" },
-  { label: "Aadhar Pay", icon: aadhaarpay, route: "/mobilerecharge" },
-  { label: "Cash Deposit", icon: cashDeposit, route: "/mobilerecharge" },
-  { label: "Move to Bank", icon: movetobank, route: "/mobilerecharge" },
-  { label: "Insurance", icon: motoininsurance, route: "/mobilerecharge" },
-  { label: "Loan", icon: personalLoan, route: "/mobilerecharge" },
+  { label: "Aadhar Pay", icon: aadhaarpay, route: "/aadharpay" },
+  { label: "Cash Deposit", icon: cashDeposit, route: "/coming-soon" },
+  { label: "Move to Bank", icon: movetobank, route: "/coming-soon" },
+  { label: "Insurance", icon: motoininsurance, route: "/coming-soon" },
+  { label: "Loan", icon: personalLoan, route: "/coming-soon" },
 ];
 
 export const OtherServices = [
   { label: "Credit Card", icon: creditcard, route: "/creditcard" },
-  { label: "Account Opening", icon: AccountOpening, route: "/educationfee" },
-  { label: "Earn Money", icon: earnmoney, route: "/insurancepremium" },
-  { label: "IRCTC", icon: irctc, route: "/fastagrecharge" },
-  { label: "All Motor Insurance", icon: motoininsurance, route: "/broadband" },
-  { label: "Personal Loan", icon: personalLoan, route: "/postpaid" },
-  { label: "Bill Payment", icon: billpayment, route: "/dthpayment" },
-  { label: "Loan Repayment", icon: loanreyapment, route: "/loanrepayment" },
+  { label: "Account Opening", icon: AccountOpening, route: "/coming-soon" },
+  { label: "Earn Money", icon: earnmoney, route: "/coming-soon" },
+  { label: "IRCTC", icon: irctc, route: "/coming-soon" },
+  { label: "All Motor Insurance", icon: motoininsurance, route: "/coming-soon" },
+  { label: "Personal Loan", icon: personalLoan, route: "/coming-soon" },
+  { label: "Bill Payment", icon: billpayment, route: "/Billpayment" },
+  { label: "Loan Repayment", icon: loanreyapment, route: "/coming-soon" },
 ];
 
 
@@ -100,16 +100,18 @@ export const OtherServices = [
 // ];
 
 // BBPS Services
-// export const bbpsServices = [
-//   { label: "Credit card", icon: creditcard, route: "/creditcard" },
-//   { label: "Education Fee", icon: educationfee, route: "/educationfee" },
-//   { label: "Insurance Premium", icon: Insurance_premium, route: "/insurancepremium" },
-//   { label: "FasTag", icon: fastag, route: "/fastagrecharge" },
-//   { label: "Broadband", icon: broadband, route: "/broadband" },
-//   { label: "Postpaid", icon: postpaidmobile, route: "/postpaid" },
-//   { label: "DTH", icon: dthrecharge, route: "/dthpayment" },
-//   { label: "Loan Repayment", icon: loanreyapment, route: "/loanrepayment" },
-// ];
+export const bbpsServices = [
+  { label: "Credit card", icon: creditcard, route: "/creditcard" },
+  { label: "Education Fee", icon: educationfee, route: "/educationfee" },
+  { label: "Insurance Premium", icon: Insurance_premium, route: "/insurancepremium" },
+  { label: "FasTag", icon: fastag, route: "/fastagrecharge" },
+  { label: "Broadband", icon: broadband, route: "/broadband" },
+  { label: "Postpaid", icon: postpaidmobile, route: "/postpaid" },
+  { label: "DTH", icon: dthrecharge, route: "/dthpayment" },
+  { label: "Loan Repayment", icon: loanreyapment, route: "/loanrepayment" },
+];
+
+
 // export const OtherServices = [
 //   { label: "Credit Card", icon: creditcard, route: "/creditcard" },
 //   { label: "Account Opening", icon: educationfee, route: "/educationfee" },

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const InsurancePremiumFetch = () => {
   useEffect(() => {
@@ -7,6 +8,9 @@ const InsurancePremiumFetch = () => {
   }, []);
   const navigate = useNavigate();
   const { state } = useLocation();
+
+
+ 
 
   const {
     policyNumber,
@@ -76,20 +80,27 @@ const InsurancePremiumFetch = () => {
         </div>
 
         <button
-          onClick={() =>
-            navigate("/insuranceinvoice", {
-              state: {
-                policyNumber,
-                stateName,
-                insurer,
-                policyHolderName,
-                dob,
-                receiptNumber: "INS98765432",
-                dueDate: "May 10, 2025",
-                amount: 8500,
-              },
-            })
-          }
+          // onClick={() =>
+          //   navigate("/insuranceinvoice", {
+          //     state: {
+          //       policyNumber,
+          //       stateName,
+          //       insurer,
+          //       policyHolderName,
+          //       dob,
+          //       receiptNumber: "INS98765432",
+          //       dueDate: "May 10, 2025",
+          //       amount: 8500,
+          //     },
+          //   })
+          // }
+
+          onClick={async() => {await Swal.fire({
+                                            title: "Success",
+                                            text: "Payment was Sucessfull ",
+                                            icon: "success"
+                                          });
+                                          navigate("/dashboard/home");}}
           className="mt-6 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-xl w-full max-w-sm"
         >
           Pay Now
