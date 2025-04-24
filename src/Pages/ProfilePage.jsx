@@ -49,7 +49,7 @@ function ProfilePage() {
               </div> */}
             </div>
             <div className="text-white text-center mt-2">
-              <h2 className="text-xl poppins-bold">Mohit Kumar</h2>
+              <h2 className="text-xl poppins-bold">Radha Rani</h2>
               <p className="text-lg text-white/80 poppins-medium">25256363</p>
             </div>
           </div>
@@ -59,14 +59,14 @@ function ProfilePage() {
             <div className="flex items-center p-3 bg-white rounded-xl shadow">
               <img src={aepsWalletIcon} alt="AEPS" className="w-10 h-10 mr-4" />
               <div>
-                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">AEPS Balance</p>
+                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">AEPS Wallet</p>
                 <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-white rounded-xl shadow">
               <img src={walletIcon} alt="Wallet" className="w-10 h-10 mr-4" />
               <div>
-                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">Wallet Balance</p>
+                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">Incentive Wallet</p>
                 <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
               </div>
             </div>

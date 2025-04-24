@@ -139,6 +139,23 @@ import MoveToBankReport from '../Pages/reports/MoveToBankReport'; // Assuming yo
 // import SmartCollectReport from '../Pages/reports/SmartCollectReport'; // Assuming you have this report
 import LedgerReport from '../Pages/reports/LedgerReport'; // Assuming you have this report
 
+// Importing icons
+import aadhaarpay from "../assets/icons/aadhaarpay.svg";
+import AccountOpening from "../assets/icons/AccountOpening.svg";
+import billpayment from "../assets/icons/billpayment.svg";
+import cashDeposit from "../assets/icons/cashDeposit.svg";
+import cms from "../assets/icons/cms.svg";
+import earnmoney from "../assets/icons/earmmoney.svg";
+import flightbooking from "../assets/icons/flightbooking.svg";
+import HealthInsurance from "../assets/icons/HealthInsurance.svg";
+import irctc from "../assets/icons/irctc.svg";
+import loan from "../assets/icons/loan.svg";
+import mobileRecharge from "../assets/icons/mobilerecharge.svg";
+import motoininsurance from "../assets/icons/motoinsurance.svg";
+import movetobank from "../assets/icons/movetobank.svg";
+import personalLoan from "../assets/icons/personalloan.svg";
+
+
 export const reports = [
   // Finance Services Reports
   {
@@ -146,24 +163,28 @@ export const reports = [
     description: "Track Aadhaar Enabled Payment transactions",
     route: "/reports/aeps",
     component: AEPSReport,
+    icon: aadhaarpay, // AEPS icon
   },
   {
     title: "M-ATM Transactions",
     description: "Monitor Mini ATM transaction records",
     route: "/reports/matm",
     component: MATMReport,
+    icon: billpayment, // M-ATM icon
   },
   {
     title: "Money Transfer Report (DMT)",
     description: "Review domestic money transfer details",
     route: "/reports/money-transfer",
     component: MoneyTransferreport,
+    icon: irctc, // DMT icon
   },
   {
     title: "Cash Deposit Report",
     description: "History of deposited cash to banks",
     route: "/reports/cash-deposit",
     component: CashDepositReport,
+    icon: cashDeposit, // Cash Deposit icon
   },
 
   // Recharge & Bill Payment Services Reports
@@ -172,12 +193,14 @@ export const reports = [
     description: "Check mobile recharge history (Prepaid/Postpaid)",
     route: "/reports/recharge",
     component: Rechargereport,
+    icon: mobileRecharge, // Mobile Recharge icon
   },
   {
     title: "Bill Payment Report",
     description: "History of utility bill payments (Electricity, Water, Gas, etc.)",
     route: "/reports/bill-payment",
     component: CashDepositReport, // Assuming you're using CashDepositReport for bill payments
+    icon: billpayment, // Bill Payment icon
   },
 
   // Other Financial Services Reports
@@ -186,6 +209,7 @@ export const reports = [
     description: "Monitor Move to Bank transactions",
     route: "/reports/move-to-bank",
     component: MoveToBankReport, // Assuming you have this report
+    icon: movetobank, // Move to Bank icon
   },
   // {
   //   title: "Smart Collect Report",
@@ -198,5 +222,6 @@ export const reports = [
     description: "Track ledger records and transactions",
     route: "/reports/ledger",
     component: LedgerReport, // Assuming you have this report
+    icon: irctc, // Ledger icon (placeholder, you can replace it)
   },
 ];

@@ -2,104 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { reports } from '../servicesData/reportsData';
 
-export const extrareports = [
-  // General Reports
-  {
-    title: "Daily Sale Report",
-    description: "View all daily shop transactions",
-    route: "/reports/daily-sale",
-  },
-  {
-    title: "Train Booking Report",
-    description: "View train booking and ticket history",
-    route: "/reports/train-booking",
-  },
-
-  // Finance Services Reports
-  {
-    title: "AEPS Report",
-    description: "Track Aadhaar Enabled Payment transactions",
-    route: "/reports/aeps",
-  },
-  {
-    title: "M-ATM Transactions",
-    description: "Monitor Mini ATM transaction records",
-    route: "/reports/matm",
-  },
-  {
-    title: "Money Transfer Report (DMT)",
-    description: "Review domestic money transfer details",
-    route: "/reports/money-transfer",
-  },
-  {
-    title: "Cash Deposit Report",
-    description: "History of deposited cash to banks",
-    route: "/reports/cash-deposit",
-  },
-
-  // Recharge & Utility Reports (Quick Services + BBPS)
-  {
-    title: "Mobile Recharge Report",
-    description: "Check mobile recharge history (Prepaid/Postpaid)",
-    route: "/reports/recharge",
-  },
-  {
-    title: "Electricity Bill Report",
-    description: "View electricity bill payment records",
-    route: "/reports/electricity-bill",
-  },
-  {
-    title: "Water Bill Report",
-    description: "History of water utility payments",
-    route: "/reports/water-bill",
-  },
-  {
-    title: "Gas Bill Report",
-    description: "Check your gas bill payment status",
-    route: "/reports/gas-bill",
-  },
-  {
-    title: "DTH Recharge Report",
-    description: "Track DTH service top-ups",
-    route: "/reports/dth",
-  },
-  {
-    title: "Broadband Report",
-    description: "Monitor broadband recharge or bill history",
-    route: "/reports/broadband",
-  },
-  {
-    title: "Insurance Premium Report",
-    description: "Track insurance premium payments",
-    route: "/reports/insurance-premium",
-  },
-  {
-    title: "Education Fee Report",
-    description: "Overview of education-related fee payments",
-    route: "/reports/education-fee",
-  },
-  {
-    title: "Credit Card Bill Report",
-    description: "Credit card bill payment status",
-    route: "/reports/credit-card",
-  },
-  {
-    title: "FASTag Recharge Report",
-    description: "FASTag balance & recharge history",
-    route: "/reports/fast-tag",
-  },
-  {
-    title: "Loan Repayment Report",
-    description: "Loan EMI and repayment transactions",
-    route: "/reports/loan-repayment",
-  },
-];
-
-
 function ReportPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   const navigate = useNavigate();
   const [selectedReport, setSelectedReport] = useState(null);
   const [fromDate, setFromDate] = useState('');
@@ -120,18 +27,23 @@ function ReportPage() {
   return (
     <div className="h-[90dvh] bg-white text-black px-4 py-6 overflow-y-auto relative">
       <h1 className="text-3xl font-bold text-center mb-6">Reports</h1>
-      <div className="space-y-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
         {reports.map((report, index) => (
           <div
             key={index}
-            className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-100 border border-indigo-700 rounded-xl shadow-sm transition"
+            className="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-xl border border-indigo-700 cursor-pointer hover:bg-gray-200 transition"
             onClick={() => handleOpenModal(report)}
           >
-            <div>
-              <h2 className="text-lg text-indigo-700 font-semibold">{report.title}</h2>
-              <p className="text-sm text-gray-600">{report.description}</p>
+            <div className="flex flex-col items-center">
+              {/* Display the icon */}
+              <img 
+                src={report.icon} 
+                alt={report.title} 
+                className="w-16 h-16 mb-2" // Adjust size as needed
+              />
+              <h2 className="text-md font-semibold text-center text-indigo-700">{report.title}</h2>
+              <p className="text-xs text-center text-gray-600">{report.description}</p>
             </div>
-            <div className="text-gray-400 text-xl">&rarr;</div>
           </div>
         ))}
       </div>
