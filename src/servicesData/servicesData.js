@@ -74,7 +74,7 @@ export const Services = [
   { label: "Recharge", icon: mobileRecharge, route: "/mobilerecharge" },
   { label: "Aadhar Pay", icon: aadhaarpay, route: "/aadharpay" },
   { label: "Cash Deposit", icon: cashDeposit, route: "/coming-soon" },
-  { label: "Move to Bank", icon: movetobank, route: "/coming-soon" },
+  { label: "Move to Bank", icon: movetobank, route: "/MoveToBankSelect" },
   { label: "Insurance", icon: motoininsurance, route: "/coming-soon" },
   { label: "Loan", icon: personalLoan, route: "/coming-soon" },
 ];

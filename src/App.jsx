@@ -71,6 +71,7 @@ import DMTselect from "./Finance/DMTselect";
 import ComingSoon from './Pages/ComingSoon';
 import BillPayment from "./Pages/BillPayment";
 import AadhaarPay from "./Finance/AadhaarPay";
+import MoveToBankSelect from "./Finance/MoveToBankSelect";
 
 
 
@@ -108,6 +109,7 @@ function App() {
         <Route path="/Dmt2" element={<Dmt2 />} />
         <Route path="/aadharpay" element={<AadhaarPay />} />
         <Route path="/Matm" element={<Matm />} />
+        <Route path="/MoveToBankSelect" element={<MoveToBankSelect />} />
         <Route path="/MiniAtmTransactionPage" element={<MiniAtmTransactionPage />} />
 
 
