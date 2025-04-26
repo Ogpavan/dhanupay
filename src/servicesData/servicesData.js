@@ -77,6 +77,7 @@ export const Services = [
   { label: "Move to Bank", icon: movetobank, route: "/MoveToBankSelect" },
   { label: "Insurance", icon: motoininsurance, route: "/coming-soon" },
   { label: "Loan", icon: personalLoan, route: "/coming-soon" },
+  { label: "Bill Payment", icon: billpayment, route: "/Billpayment" },
 ];
 
 export const OtherServices = [
@@ -87,7 +88,7 @@ export const OtherServices = [
   { label: "All Motor Insurance", icon: motoininsurance, route: "/coming-soon" },
   { label: "Personal Loan", icon: personalLoan, route: "/coming-soon" },
   { label: "Bill Payment", icon: billpayment, route: "/Billpayment" },
-  { label: "Loan Repayment", icon: loanreyapment, route: "/coming-soon" },
+  // { label: "Loan Repayment", icon: loanreyapment, route: "/coming-soon" },
 ];
 
 

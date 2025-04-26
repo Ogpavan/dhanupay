@@ -189,7 +189,7 @@ function Aeps2() {
                             inputMode="numeric"
                             value={aadhaar}
                             onChange={handleChange}
-                            placeholder="Enter Aadhaar Number"
+                            placeholder="Enter aadhaar number"
                             className={`w-full border border-gray-300 rounded-xl px-4 py-2 tracking-widest text-lg ${showAadhaar ? 'text-black' : 'text-transparent'} caret-black bg-transparent`}
                         />
 
@@ -213,7 +213,7 @@ function Aeps2() {
                     <label className="text-sm block mb-1">Mobile number</label>
                     <input
                         type="text"
-                        placeholder="0123456789"
+                        placeholder="Ente 10 digit mobile number"
                         className="w-full border border-gray-300 rounded-xl px-4 py-2"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
@@ -226,7 +226,7 @@ function Aeps2() {
                         <label className="text-sm block mb-1">Amount</label>
                         <input
                             type="text"
-                            placeholder="₹ 1000"
+                            placeholder="Enter amount"  
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             className="w-full border border-gray-300 rounded-xl px-4 py-2"

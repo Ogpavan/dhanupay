@@ -23,11 +23,28 @@ import {
 
   OtherServices,
 } from "../servicesData/servicesData"; // Centralized service data
+import Swal from "sweetalert2";
 const HomePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Are you sure want to logout ?',
+      // text: 'Do you want to logout?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, logout!',
+      cancelButtonText: 'No, cancel!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proceed with logout if confirmed
+        navigate('/');
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col  bg-indigo-700 font-poppins">
@@ -66,7 +83,7 @@ const HomePage = () => {
             />
             <img
               src={Logout}
-              onClick={() => navigate("/")}
+              onClick={handleLogout}
               alt="Logout"
               className="w-9 h-9"
             />

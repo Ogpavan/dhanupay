@@ -9,7 +9,8 @@ import otherIcon from "../assets/otherIcon.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
 import { useNavigate } from "react-router-dom";
-import ContactUsModal from '../utils/ContactUsModal'; // Import the modal component
+import ContactUsModal from '../utils/ContactUsModal';
+import SettingModel from '../utils/settingModel'; // Import the modal component
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -19,13 +20,17 @@ function ProfilePage() {
   
   const [transactions, setTransactions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-
+  const [issettingModalOpen, setIssettingModalOpen] = useState(false); 
   useEffect(() => {
     setTransactions(transactionsData);
   }, []);
 
   const handleOpenModal = () => setIsModalOpen(true);
+  const handleOpensettingModal = () =>{
+    setIssettingModalOpen(true);
+  } 
   const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseSettingModal = () => setIssettingModalOpen(false);
 
   return (
     <div className="bg-indigo-700 text-black pb-0 poppins-regular">
@@ -34,7 +39,7 @@ function ProfilePage() {
         <div className="flex items-center justify-between">
           <FaArrowLeft onClick={() => navigate("/dashboard/home")} className="text-xl" />
           <h1 className="text-lg poppins-semibold">Profile</h1>
-          <FaCog className="text-xl" />
+          <FaCog onClick={handleOpensettingModal} className="text-xl" />
         </div>
 
         {/* Profile Section */}
@@ -150,6 +155,7 @@ function ProfilePage() {
 
       {/* Contact Us Modal */}
       <ContactUsModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <SettingModel isOpen={issettingModalOpen} onClose={handleCloseSettingModal} />
     </div>
   );
 }

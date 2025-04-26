@@ -115,7 +115,7 @@ function Aeps1() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
-                <span className="text-sm font-medium text-gray-700">AEPS 2</span>
+                <span className="text-sm font-medium text-gray-700">AEPS 1</span>
             </div>
 
             {/* Transaction Type */}
@@ -189,7 +189,7 @@ function Aeps1() {
                             inputMode="numeric"
                             value={aadhaar}
                             onChange={handleChange}
-                            placeholder="Enter Aadhaar Number"
+                            placeholder="Enter aadhaar number"
                             className={`w-full border border-gray-300 rounded-xl px-4 py-2 tracking-widest text-lg ${showAadhaar ? 'text-black' : 'text-transparent'} caret-black bg-transparent`}
                         />
 
@@ -213,7 +213,7 @@ function Aeps1() {
                     <label className="text-sm block mb-1">Mobile number</label>
                     <input
                         type="text"
-                        placeholder="0123456789"
+                        placeholder="Enter 10 digit mobile number"
                         className="w-full border border-gray-300 rounded-xl px-4 py-2"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
@@ -226,7 +226,7 @@ function Aeps1() {
                         <label className="text-sm block mb-1">Amount</label>
                         <input
                             type="text"
-                            placeholder="₹ 1000"
+                            placeholder="Enter amount"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             className="w-full border border-gray-300 rounded-xl px-4 py-2"

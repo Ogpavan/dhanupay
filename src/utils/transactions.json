@@ -23,6 +23,31 @@
       "type": "Recharge",
       "date": "7 Days Ago",
       "amount": "-482.22"
+    },
+    {
+      "type": "Recharge",
+      "date": "1 Day Ago",
+      "amount": "-482.22"
+    },
+    {
+      "type": "Electricity Bill",
+      "date": "3 Days Ago",
+      "amount": "-482.22"
+    },
+    {
+      "type": "Gas Bill",
+      "date": "3 Days Ago",
+      "amount": "-482.22"
+    },
+    {
+      "type": "Refund",
+      "date": "5 Days Ago",
+      "amount": "+560.22"
+    },
+    {
+      "type": "Recharge",
+      "date": "7 Days Ago",
+      "amount": "-482.22"
     }
   ]
   

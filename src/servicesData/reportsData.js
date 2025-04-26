@@ -159,6 +159,20 @@ import personalLoan from "../assets/icons/personalloan.svg";
 export const reports = [
   // Finance Services Reports
   {
+    title: "Ledger Report",
+    description: "Track ledger records and transactions",
+    route: "/reports/ledger",
+    component: LedgerReport, // Assuming you have this report
+    icon: irctc, // Ledger icon (placeholder, you can replace it)
+  },
+  {
+    title: "Aadhaar Pay Report",
+    description: "Track Aadhaar transactions",
+    route: "/reports/ledger",
+    component: LedgerReport, // Assuming you have this report
+    icon: irctc, // Ledger icon (placeholder, you can replace it)
+  },
+  {
     title: "AEPS Report",
     description: "Track Aadhaar Enabled Payment transactions",
     route: "/reports/aeps",
@@ -211,17 +225,19 @@ export const reports = [
     component: MoveToBankReport, // Assuming you have this report
     icon: movetobank, // Move to Bank icon
   },
-  // {
-  //   title: "Smart Collect Report",
-  //   description: "Overview of Smart Collect transactions",
-  //   route: "/reports/smart-collect",
-  //   component: SmartCollectReport, // Assuming you have this report
-  // },
   {
-    title: "Ledger Report",
-    description: "Track ledger records and transactions",
-    route: "/reports/ledger",
-    component: LedgerReport, // Assuming you have this report
-    icon: irctc, // Ledger icon (placeholder, you can replace it)
+    title: "CMS Report",
+    description: "CMS Report",
+    route: "/comming-soon",
+    component: MoveToBankReport, // Assuming you have this report
+    icon: movetobank,
   },
+  {
+    title: "Flight Report",
+    description: "Flight Report",
+    route: "/comming-soon",
+    component: MoveToBankReport, // Assuming you have this report
+    icon: movetobank,
+  },
+ 
 ];
