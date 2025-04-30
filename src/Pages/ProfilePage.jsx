@@ -10,7 +10,7 @@ import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
 import { useNavigate } from "react-router-dom";
 import ContactUsModal from '../utils/ContactUsModal';
-import SettingModel from '../utils/settingModel'; // Import the modal component
+import SettingModel from '../utils/SettingModel'; // Import the modal component
 
 function ProfilePage() {
   const navigate = useNavigate();
