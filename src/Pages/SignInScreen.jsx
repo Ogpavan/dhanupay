@@ -10,10 +10,30 @@ const SignInScreen = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
 
+  // const btnclick = () => {
+  //   // alert(`Email/Phone: ${emailOrPhone}\nPassword: ${password}`);
+  //   navigate("/dashboard/home");
+  // };
   const btnclick = () => {
-    // alert(`Email/Phone: ${emailOrPhone}\nPassword: ${password}`);
+    // Save user login count
+    let loginCount = localStorage.getItem('userlogincount');
+    
+    if (loginCount) {
+      loginCount = parseInt(loginCount) + 1;
+    } else {
+      loginCount = 1;
+    }
+  
+    localStorage.setItem('userlogincount', loginCount);
+    localStorage.setItem('userAEPSKYCValid', "true");
+  
+    // You can also log the count to see it works
+    console.log(`User login count: ${loginCount}`);
+  
+    // Redirect to the dashboard
     navigate("/dashboard/home");
   };
+  
 
   const handleChange = (value, index) => {
     if (value.length > 1) return;

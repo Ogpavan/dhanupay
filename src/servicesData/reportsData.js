@@ -144,9 +144,12 @@ import aadhaarpay from "../assets/icons/aadhaarpay.svg";
 import AccountOpening from "../assets/icons/AccountOpening.svg";
 import billpayment from "../assets/icons/billpayment.svg";
 import cashDeposit from "../assets/icons/cashDeposit.svg";
-import cms from "../assets/icons/cms.svg";
-import earnmoney from "../assets/icons/earmmoney.svg";
 import flightbooking from "../assets/icons/flightbooking.svg";
+import earnmoney from "../assets/icons/earmmoney.svg";
+import matm from "../assets/icons/matm.svg";
+import Healthinsurance from "../assets/icons/HealthInsurance.svg";
+import ledgerReport from "../assets/icons/ledgerReport.svg";
+
 import HealthInsurance from "../assets/icons/HealthInsurance.svg";
 import irctc from "../assets/icons/irctc.svg";
 import loan from "../assets/icons/loan.svg";
@@ -154,6 +157,9 @@ import mobileRecharge from "../assets/icons/mobilerecharge.svg";
 import motoininsurance from "../assets/icons/motoinsurance.svg";
 import movetobank from "../assets/icons/movetobank.svg";
 import personalLoan from "../assets/icons/personalloan.svg";
+import financeaeps1 from "../assets/icons/fingerprint 1-1.svg";
+import cms from "../assets/icons/cms.svg";
+import dBt1 from "../assets/icons/dBt1.svg";
 
 
 export const reports = [
@@ -163,35 +169,35 @@ export const reports = [
     description: "Track ledger records and transactions",
     route: "/reports/ledger",
     component: LedgerReport, // Assuming you have this report
-    icon: irctc, // Ledger icon (placeholder, you can replace it)
+    icon: ledgerReport, // Ledger icon (placeholder, you can replace it)
   },
   {
     title: "Aadhaar Pay Report",
     description: "Track Aadhaar transactions",
     route: "/reports/ledger",
     component: LedgerReport, // Assuming you have this report
-    icon: irctc, // Ledger icon (placeholder, you can replace it)
+    icon: aadhaarpay, // Ledger icon (placeholder, you can replace it)
   },
   {
     title: "AEPS Report",
     description: "Track Aadhaar Enabled Payment transactions",
     route: "/reports/aeps",
     component: AEPSReport,
-    icon: aadhaarpay, // AEPS icon
+    icon: financeaeps1,
   },
   {
     title: "M-ATM Transactions",
     description: "Monitor Mini ATM transaction records",
     route: "/reports/matm",
     component: MATMReport,
-    icon: billpayment, // M-ATM icon
+    icon: matm, // M-ATM icon
   },
   {
     title: "Money Transfer Report (DMT)",
     description: "Review domestic money transfer details",
     route: "/reports/money-transfer",
     component: MoneyTransferreport,
-    icon: irctc, // DMT icon
+    icon: dBt1, // DMT icon
   },
   {
     title: "Cash Deposit Report",
@@ -230,14 +236,14 @@ export const reports = [
     description: "CMS Report",
     route: "/comming-soon",
     component: MoveToBankReport, // Assuming you have this report
-    icon: movetobank,
+    icon: cms,
   },
   {
     title: "Flight Report",
     description: "Flight Report",
     route: "/comming-soon",
     component: MoveToBankReport, // Assuming you have this report
-    icon: movetobank,
+    icon: flightbooking,
   },
  
 ];

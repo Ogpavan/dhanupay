@@ -37,6 +37,9 @@ import mobileRecharge from "../assets/icons/mobilerecharge.svg";
 import motoininsurance from "../assets/icons/motoinsurance.svg";
 import movetobank from "../assets/icons/movetobank.svg";
 import personalLoan from "../assets/icons/personalloan.svg";
+import matm from "../assets/icons/matm.svg";
+import Healthinsurance from "../assets/icons/HealthInsurance.svg";
+import Lifeinsurance from "../assets/icons/Lifeinsurance.svg";
 
 // Finance Services
 // export const financeServices = [
@@ -68,15 +71,15 @@ import personalLoan from "../assets/icons/personalloan.svg";
 export const Services = [
   { label: "AEPS", icon: financeaeps1, route: "/AEPSselect" },
   { label: "CMS", icon: cms, route: "/coming-soon" },
-  { label: "M-ATM", icon: billpayment, route: "/Matm" },
+  { label: "M-ATM", icon: matm, route: "/Matm" },
   { label: "DMT", icon: dBt1, route: "/DMTselect" },
   { label: "Flight Booking", icon: flightbooking, route: "/coming-soon" },
   { label: "Recharge", icon: mobileRecharge, route: "/mobilerecharge" },
   { label: "Aadhar Pay", icon: aadhaarpay, route: "/aadharpay" },
   { label: "Cash Deposit", icon: cashDeposit, route: "/coming-soon" },
   { label: "Move to Bank", icon: movetobank, route: "/MoveToBankSelect" },
-  { label: "Insurance", icon: motoininsurance, route: "/coming-soon" },
-  { label: "Loan", icon: personalLoan, route: "/coming-soon" },
+  { label: "Life Insurance", icon: Lifeinsurance, route: "/LifeInsurance" },
+  { label: "Loan", icon: personalLoan, route: "/Loan" },
   { label: "Bill Payment", icon: billpayment, route: "/Billpayment" },
 ];
 
@@ -85,9 +88,10 @@ export const OtherServices = [
   { label: "Account Opening", icon: AccountOpening, route: "/coming-soon" },
   { label: "Earn Money", icon: earnmoney, route: "/coming-soon" },
   { label: "IRCTC", icon: irctc, route: "/coming-soon" },
-  { label: "All Motor Insurance", icon: motoininsurance, route: "/coming-soon" },
-  { label: "Personal Loan", icon: personalLoan, route: "/coming-soon" },
-  { label: "Bill Payment", icon: billpayment, route: "/Billpayment" },
+  { label: "All Motor Insurance", icon: motoininsurance, route: "/MotorInsurance" },
+  { label: "Health Insurance", icon: Healthinsurance, route: "/HealthInsurance" },
+  // { label: "Personal Loan", icon: personalLoan, route: "/coming-soon" },
+  // { label: "Bill Payment", icon: billpayment, route: "/Billpayment" },
   // { label: "Loan Repayment", icon: loanreyapment, route: "/coming-soon" },
 ];
 

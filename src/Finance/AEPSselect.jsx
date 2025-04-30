@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import KYCAeps from './KYCAeps'; // Assuming you have the KYCAeps component
 
 // Mock config - replace with fetch from server in production
 const aepsConfig = {
   "AEPS 1": {
     monthlyCharge: 5,
+    Incentive: 20,
     commissions: [
       { range: "₹0 - ₹5000", rate: "2%" },
       { range: "Above ₹5000", rate: "3%" }
@@ -13,6 +15,7 @@ const aepsConfig = {
   },
   "AEPS 2": {
     monthlyCharge: 10,
+    Incentive: 20,
     commissions: [
       { range: "₹0 - ₹5000", rate: "1.5%" },
       { range: "Above ₹5000", rate: "2.5%" }
@@ -21,12 +24,25 @@ const aepsConfig = {
 };
 
 function AEPSselect() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const navigate = useNavigate();
   const [selectedAEPS, setSelectedAEPS] = useState(null);
+  const [isKYCValid, setIsKYCValid] = useState(null); // State for KYC status
+  const [showContent, setShowContent] = useState(false); // State to control page content visibility
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    // Check if the user has a valid AEPS KYC status (could be from localStorage or API)
+    const userAEPSKYCValid = localStorage.getItem('userAEPSKYCValid'); // Use appropriate check
+
+    if (userAEPSKYCValid === 'true') {
+      setIsKYCValid(true); // KYC is valid
+      setShowContent(true); // Show AEPS select content
+    } else {
+      setIsKYCValid(false); // KYC is not valid
+      setShowContent(false); // Show KYC page
+    }
+  }, []);
 
   const handleNext = () => {
     if (!selectedAEPS) {
@@ -57,8 +73,11 @@ function AEPSselect() {
 
     return (
       <div className="w-full mt-6 bg-gray-100 rounded-xl p-4 shadow-md text-gray-800">
-        <h3 className="text-lg font-semibold mb-2">
+        <h3 className="text-base font-semibold mb-2">
           Monthly Charges: <span className="text-indigo-600">₹{config.monthlyCharge}</span>
+        </h3>
+        <h3 className="text-base font-semibold mb-2">
+        Incentive: <span className="text-indigo-600">₹{config.Incentive}</span>
         </h3>
         <h4 className="font-medium mb-2">Commission Structure</h4>
         <table className="w-full border text-sm text-left">
@@ -80,6 +99,10 @@ function AEPSselect() {
       </div>
     );
   };
+
+  if (!showContent) {
+    return <KYCAeps />; // Show the KYC page if KYC is not valid
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white font-poppins">

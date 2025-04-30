@@ -6,14 +6,18 @@ import DMT1 from "../assets/icons/dBt1.svg";
 // Mock config - replace with fetch from server in production
 const DMTConfig = {
   "DMT 1": {
-    monthlyCharge: 5,
+    monthlyLimit: 25000,
+    AvailableLimit: 25000,
+    Incentive: 1000,
     commissions: [
       { range: "₹0 - ₹5000", rate: "2%" },
       { range: "Above ₹5000", rate: "3%" }
     ]
   },
   "DMT 2": {
-    monthlyCharge: 10,
+    monthlyLimit: 50000,
+    AvailableLimit: 50000,
+    Incentive: 2000,
     commissions: [
       { range: "₹0 - ₹5000", rate: "1.5%" },
       { range: "Above ₹5000", rate: "2.5%" }
@@ -58,8 +62,14 @@ function DMTselect() {
 
     return (
       <div className="w-full mt-6 bg-gray-100 rounded-xl p-4 shadow-md text-gray-800">
-        <h3 className="text-lg font-semibold mb-2">
-          Monthly Charges: <span className="text-indigo-600">₹{config.monthlyCharge}</span>
+        <h3 className="text-base font-semibold mb-2">
+          Monthly Limit: <span className="text-indigo-600">₹{config.monthlyLimit}</span>
+        </h3>
+        <h3 className="text-base font-semibold mb-2">
+          Available Limit: <span className="text-indigo-600">₹{config.AvailableLimit}</span>
+        </h3>
+        <h3 className="text-base font-semibold mb-2">
+          Incentive: <span className="text-indigo-600">₹{config.Incentive}</span>
         </h3>
         <h4 className="font-medium mb-2">Commission Structure</h4>
         <table className="w-full border text-sm text-left">

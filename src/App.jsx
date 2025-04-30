@@ -36,6 +36,7 @@ import ElectricityInvoice from "./QuickServices/electricitybill/ElectricityInvoi
 import ElectricityBillFetch from "./QuickServices/electricitybill/ElectricityBillFetch";
 import ElectricityBill from "./QuickServices/electricitybill/ElectricityBill";
 import MobileRecharge from "./QuickServices/MobileRecharge/MobileRecharge";
+import EAgreementPopup from "./Pages/EAgreementPopup";
 
 
 
@@ -72,6 +73,11 @@ import ComingSoon from './Pages/ComingSoon';
 import BillPayment from "./Pages/BillPayment";
 import AadhaarPay from "./Finance/AadhaarPay";
 import MoveToBankSelect from "./Finance/MoveToBankSelect";
+import LifeInsurance from "./Pages/services pages/LifeInsurance";
+import AllMotorInsurance from "./Pages/services pages/AllMotorInsurance";
+import HealthInsurance from "./Pages/services pages/HealthInsurance";
+import Loan from "./Pages/services pages/Loan";
+
 
 
 
@@ -86,6 +92,12 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/coming-soon" element={<ComingSoon />} />
+        <Route path="/HealthInsurance" element={<HealthInsurance />} />
+        <Route path="/MotorInsurance" element={<AllMotorInsurance />} />
+        <Route path="/LifeInsurance" element={<LifeInsurance />} />
+        <Route path="/Loan" element={<Loan />} />
+        <Route path="/EAgreement" element={<EAgreementPopup />} />
+
         <Route path="/Billpayment" element={<BillPayment />}/>
         <Route path="/basic-details" element={<BasicDetails />} />
         <Route path="/business-details" element={<BusinessDetails />} />
@@ -186,3 +198,4 @@ function App() {
 }
 
 export default App;
+
