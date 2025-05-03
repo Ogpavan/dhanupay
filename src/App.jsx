@@ -275,7 +275,7 @@ import AllMotorInsurance from "./Pages/services pages/AllMotorInsurance";
 import HealthInsurance from "./Pages/services pages/HealthInsurance";
 import Loan from "./Pages/services pages/Loan";
 import OtpPage from "./Pages/OtpPage";
-import SetMpinScreen from "./Pages/setMpinScreen";
+import SetMpinScreen from "./Pages/SetMpinScreen";
 import { reports } from './servicesData/reportsData';
 
 // 🔐 Import PrivateRoute
