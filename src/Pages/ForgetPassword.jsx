@@ -249,25 +249,23 @@ const ForgetPassword = () => {
       Swal.fire("Error", "Please enter your User ID", "error");
       return;
     }
-
-
-
     try {
-     
-     
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/users/ForgetMPIN`,
-        { UserId: UserID },
-        
+        `${import.meta.env.VITE_API_BASE_URL}/users/ForgetPassword`,
+        { Username: UserID },
+
       );
       console.log(response.data);
-      if(response.data.success){
+      localStorage.setItem("otpId", response.data.otpid);
+      localStorage.setItem("userid", response.data.userid);
+      localStorage.setItem("token", response.data.token);
+      if (response.data.success) {
         Swal.fire("OTP Sent", response.data.message || response.data.Message || "OTP sent to your registered number", "success");
         setOtpSent(true);
-        
+
       }
 
-     
+
     } catch (error) {
       Swal.fire("Error", error.response?.data?.message || error.response?.data?.Message || "Failed to send OTP", "error");
       navigate("/login");
@@ -275,47 +273,108 @@ const ForgetPassword = () => {
   };
 
   const handleVerifyOtp = async () => {
+    const token = localStorage.getItem("token");
+    const otpId = localStorage.getItem("otpId");
+    const userid = localStorage.getItem("userid");
     if (!enteredOtp) {
       Swal.fire("Error", "Please enter the OTP", "error");
       return;
     }
-
     try {
-      const response = await axios.post("/api/verify-otp", {
-        userId: UserID,
-        otp: enteredOtp,
-      });
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTPValidator`;
+      const response = await axios.post(apiUrl, {
+        UserId: userid,
+        LoginId: otpId,
+        OTP: enteredOtp,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
 
-      if (response.data.success) {
+
+      );
+
+      const res = response.data;
+      console.log(res);
+      if (res.success) {
+        // Show message in SweetAlert
+        await Swal.fire({
+          title: 'OTP verified',
+          text: res.message,
+          icon: 'success',
+          confirmButtonText: 'Continue'
+        });
         setOtpVerified(true);
-        Swal.fire("Verified!", "OTP verified successfully", "success");
+        // navigate("/dashboard/home");
       } else {
-        Swal.fire("Error", response.data.message || "Invalid OTP", "error");
+        await Swal.fire({
+          title: 'Login Failed',
+          text: res.message || res.Message || 'Please check credentials or network.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        // navigate("/login");
       }
     } catch (error) {
-      Swal.fire("Error", error.response?.data?.message || "OTP verification failed", "error");
+      console.error('otp API Error:', error);
+      Swal.fire({
+        title: 'Login Failed',
+        text: error?.response?.data?.Message || 'Please check credentials or network.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
   };
 
-  const handleChangePassword = async () => {
+
+  const handleResetPassword = async () => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userid");
+    const loginId = localStorage.getItem("otpId"); // if "LoginId" is returned earlier and stored
+
+    if (!Newpassword || !ConfirmNewpassword) {
+      Swal.fire("Error", "Please enter both password fields", "error");
+      return;
+    }
+
     if (Newpassword !== ConfirmNewpassword) {
       Swal.fire("Error", "Passwords do not match", "error");
       return;
     }
 
     try {
-      const response = await axios.post("/api/reset-password", {
-        userId: UserID,
-        newPassword: Newpassword,
-      });
-
-      Swal.fire("Success", response.data.message || "Password reset successfully", "success").then(() => {
-        navigate("/");
-      });
+      console.log("userId, loginId, Newpassword");
+      console.log(userId, loginId, Newpassword);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/users/set-password`,
+        {
+          UserId: userId,
+          LoginId: loginId,
+          Password: Newpassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      if (response.data.success) {
+        Swal.fire("Success", response.data.message || "Password set successfully", "success").then(() => {
+          localStorage.clear();
+          navigate("/");
+        });
+      } else {
+        Swal.fire("Error", response.data.message || "Reset failed", "error");
+      }
     } catch (error) {
-      Swal.fire("Error", error.response?.data?.message || "Failed to reset password", "error");
+      Swal.fire("Error", error.response?.data?.message || error.response?.data?.Message || "Failed to set password", "error");
     }
   };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-indigo-700 font-poppins">
@@ -489,7 +548,7 @@ const ForgetPassword = () => {
 
           {/* Submit */}
           <button
-            onClick={handleChangePassword}
+            onClick={handleResetPassword}
             disabled={!otpVerified}
             className="w-full py-3 bg-indigo-700 text-white rounded-xl text-lg font-medium hover:bg-indigo-800 transition"
           >
