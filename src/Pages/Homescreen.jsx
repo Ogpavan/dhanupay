@@ -3,10 +3,23 @@ import logo from "../assets/logo.png"; // Make sure this path is correct
 import { useNavigate } from "react-router-dom";
 
 const Homescreen = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const navigate = useNavigate();
+  useEffect(() => {
+  
+      let Token = localStorage.getItem('Token');
+       let IsMPINSet = localStorage.getItem('IsMPINSet');
+      if(!Token && !IsMPINSet){
+          navigate('/');
+      }else{
+        navigate('/MPinScreen');
+
+      }
+     
+  }, []);
+  
   return (
     <div className="h-[100vh] flex flex-col items-center justify-between bg-white sm:hidden">
       {/* Top container with logo */}

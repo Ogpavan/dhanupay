@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BannerCarousel from "@/components/BannerCrausal"; // You may rename the component file to "BannerCarousel" if it's a typo
 
@@ -10,13 +10,6 @@ import locationIcon from "../assets/icons/location.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
 
-// Service Data
-// import {
-//   financeServices,
-//   quickServices,
-//   bbpsServices,
-// } from "../servicesData/servicesData"; // Centralized service data
-
 
 import {
   Services,
@@ -27,21 +20,25 @@ import Swal from "sweetalert2";
 const HomePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
+    let UserName = localStorage.getItem('UserName')||"UserName";
+    setUserName(UserName);
   }, []);
   const navigate = useNavigate();
+  const [UserName, setUserName] = useState('');
 
   const handleLogout = () => {
     Swal.fire({
-      title: 'Are you sure want to logout ?',
-      // text: 'Do you want to logout?',
+      title: 'Are you sure want to Close the App ?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Yes, logout!',
+      confirmButtonText: 'Yes, Close It!',
       cancelButtonText: 'No, cancel!',
+
     }).then((result) => {
       if (result.isConfirmed) {
         // Proceed with logout if confirmed
-        navigate('/');
+        // localStorage.clear();
+        navigate('/MPinScreen');
       }
     });
   };
@@ -60,7 +57,7 @@ const HomePage = () => {
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <div className="text-md font-semibold">Radha rani</div>
+              <div className="text-md font-semibold">{UserName}</div>
               <div className="text-xs">2525368</div>
               <div className="text-sm flex items-center">
                 {/* <img src={locationIcon} alt="Location" className="w-3.5 h-3.5" /> */}

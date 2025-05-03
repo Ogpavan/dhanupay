@@ -1,38 +1,95 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from 'axios';
+import Swal from "sweetalert2";
+
 
 const SignInScreen = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const navigate = useNavigate();
+  // const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
 
+ 
   // const btnclick = () => {
-  //   // alert(`Email/Phone: ${emailOrPhone}\nPassword: ${password}`);
+  //   // Save user login count
+  //   let loginCount = localStorage.getItem('userlogincount');
+  //   if (loginCount) {
+  //     loginCount = parseInt(loginCount) + 1;
+  //   } else {
+  //     loginCount = 1;
+  //   }
+  //   localStorage.setItem('userlogincount', loginCount);
+  //   localStorage.setItem('userAEPSKYCValid', "false");
+  //   // You can also log the count to see it works
+  //   console.log(`User login count: ${loginCount}`);
+  //   // Redirect to the dashboard
   //   navigate("/dashboard/home");
   // };
-  const btnclick = () => {
-    // Save user login count
+
+
+// Inside your component
+
+
+const btnclick = async () => {
+  try {
+    // Update login count
     let loginCount = localStorage.getItem('userlogincount');
-    
-    if (loginCount) {
-      loginCount = parseInt(loginCount) + 1;
-    } else {
-      loginCount = 1;
-    }
-  
+    loginCount = loginCount ? parseInt(loginCount) + 1 : 1;
     localStorage.setItem('userlogincount', loginCount);
     localStorage.setItem('userAEPSKYCValid', "false");
-  
-    // You can also log the count to see it works
-    console.log(`User login count: ${loginCount}`);
-  
-    // Redirect to the dashboard
-    navigate("/dashboard/home");
-  };
+
+    // API Call
+    const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
+
+    const response = await axios.post(apiUrl, {
+      Username: emailOrPhone,
+      Password: password,
+      IP: "11.00.123",
+      OS: "Android",
+      Browser: "Chrome",
+      Device: "Realme"
+    });
+
+    const res = response.data;
+    console.log(res);
+
+    // Show message in SweetAlert
+    await Swal.fire({
+      title: 'OTP Sent',
+      text: res.Message,
+      icon: 'success',
+      confirmButtonText: 'Continue'
+    });
+
+    // Store token and userID
+    localStorage.setItem('Token', res.Token);
+    localStorage.setItem('UserId', res.UserId);
+    localStorage.setItem('loginid', res.loginid);
+    localStorage.setItem('UserName', res.UserName);
+ localStorage.setItem('IsMPINSet', res.IsMPINSet);
+
+    if(res.IsMPINSet == "0") {
+      navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });
+    }else{
+      navigate('/otp', { state: { Message: res.Message || res.message } });
+    }
+
+  } catch (error) {
+    console.error('Login API Error:', error);
+    Swal.fire({
+      title: 'Login Failed',
+      text: error?.response?.data?.Message ||error?.response?.data?.message|| 'Please check credentials or network.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+};
+
   
 
   const handleChange = (value, index) => {

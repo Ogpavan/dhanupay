@@ -11,26 +11,62 @@ import walletIcon from "../assets/icons/normalwallet.svg";
 import { useNavigate } from "react-router-dom";
 import ContactUsModal from '../utils/ContactUsModal';
 import SettingModel from '../utils/SettingModel'; // Import the modal component
+import Swal from 'sweetalert2';
+import PrivacyAndPolicyModal from '@/utils/PrivacyAndPolicyModal';
+import SubmitComplaintModal from '@/utils/SubmitComplaintModal';
+// import { c } from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
+
+
+
 
 function ProfilePage() {
   const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
+    let UserName = localStorage.getItem('UserName') || "UserName";
+    setUserName(UserName);
   }, []);
-  
+
   const [transactions, setTransactions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-  const [issettingModalOpen, setIssettingModalOpen] = useState(false); 
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false); // State to control contact modal visibility
+  const [IsPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false); // State to control contact modal visibility
+  const [issettingModalOpen, setIssettingModalOpen] = useState(false);
+  const [UserName, setUserName] = useState('');
   useEffect(() => {
     setTransactions(transactionsData);
   }, []);
 
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Are you sure want to logout ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, logout!',
+      cancelButtonText: 'No, cancel!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        navigate('/');
+      }
+    });
+  };
+
+
   const handleOpenModal = () => setIsModalOpen(true);
-  const handleOpensettingModal = () =>{
+  const handleOpensettingModal = () => {
     setIssettingModalOpen(true);
-  } 
+  }
+  const handleOpenPrivacyModal = () => setIsPrivacyModalOpen(true);
+
+  const handleOpenComplaintModal = () => setIsComplaintModalOpen(true);
+
   const handleCloseModal = () => setIsModalOpen(false);
   const handleCloseSettingModal = () => setIssettingModalOpen(false);
+
+  const handleCloseComplaintModal = () => setIsComplaintModalOpen(false);
+  const handleClosePrivacyModal = () => setIsPrivacyModalOpen(false);
 
   return (
     <div className="bg-indigo-700 text-black pb-0 poppins-regular">
@@ -54,7 +90,7 @@ function ProfilePage() {
               />
             </div>
             <div className="text-white text-center mt-2">
-              <h2 className="text-xl poppins-bold">Radha Rani</h2>
+              <h2 className="text-xl poppins-bold">{UserName}</h2>
               <p className="text-lg text-white/80 poppins-medium">25256363</p>
             </div>
           </div>
@@ -134,20 +170,20 @@ function ProfilePage() {
 
         {/* Bottom Links */}
         <div className="mt-6 space-y-4 text-sm poppins-regular">
-          <div className="flex justify-between items-center">
+          <div onClick={handleOpenComplaintModal} className="flex justify-between items-center">
             <p className="font-medium">Submit Complaints</p>
             <FaArrowLeft className="rotate-180" />
           </div>
-          <div className="flex justify-between items-center">
+          <div onClick={handleOpenPrivacyModal} className="flex justify-between items-center">
             <p className="font-medium">Privacy & Policy</p>
             <FaArrowLeft className="rotate-180" />
           </div>
-          <div  onClick={handleOpenModal} className="flex justify-between items-center">
+          <div onClick={handleOpenModal} className="flex justify-between items-center">
             <p className="font-medium">Contact Us</p>
             <FaArrowLeft className="rotate-180" />
           </div>
-          <div className="flex justify-between items-center">
-            <p className="font-medium text-red-600">Log Out</p>
+          <div onClick={handleLogout} className="flex justify-between items-center">
+            <p className="font-medium text-red-600">Remove Account From this Device</p>
             <FaArrowLeft className="rotate-180 text-red-600" />
           </div>
         </div>
@@ -156,6 +192,8 @@ function ProfilePage() {
       {/* Contact Us Modal */}
       <ContactUsModal isOpen={isModalOpen} onClose={handleCloseModal} />
       <SettingModel isOpen={issettingModalOpen} onClose={handleCloseSettingModal} />
+      <SubmitComplaintModal isOpen={isComplaintModalOpen} onClose={handleCloseComplaintModal} />
+      <PrivacyAndPolicyModal isOpen={IsPrivacyModalOpen} onClose={handleClosePrivacyModal} />
     </div>
   );
 }

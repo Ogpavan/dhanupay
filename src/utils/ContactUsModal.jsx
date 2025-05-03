@@ -5,7 +5,7 @@ function ContactUsModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full">
+      <div className="bg-white p-6 rounded-xl shadow-lg max-w-md min-h-[90vh] w-full">
         <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
         <div className="space-y-4">
           <p><strong>Mobile:</strong> +1 234 567 890</p>

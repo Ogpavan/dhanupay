@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const ResetMpinScreen = () => {
-  const location = useLocation();
-  const otpId = location.state?.OTPId;
+const SetMpinScreen = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const navigate = useNavigate();
+  const location = useLocation();
+  const message = location.state?.Message || "OTP send to registrered mobile number";
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [mpin, setMpin] = useState(["", "", "", ""]);
   const [confirmMpin, setConfirmMpin] = useState(["", "", "", ""]);
@@ -54,145 +54,157 @@ const ResetMpinScreen = () => {
     confirmMpin.every((val) => val !== "");
 
   // const handleSubmit = () => {
+
   //   // alert("OTP: " + otp.join("") + "\nM-PIN: " + mpin.join(""));
   //   onClick=navigate("/login") ;
   // };
-
-
   const handleSubmit = async () => {
-      const mpinValue = mpin.join("");
-      const confirmMpinValue = confirmMpin.join("");
-      const otpValue = otp.join("");
-    
-      if (mpinValue !== confirmMpinValue) {
+    const mpinValue = mpin.join("");
+    const confirmMpinValue = confirmMpin.join("");
+    const otpValue = otp.join("");
+  
+    if (mpinValue !== confirmMpinValue) {
+      await Swal.fire({
+        title: "M–PIN Mismatch",
+        text: "The entered M–PIN and Confirm M–PIN do not match.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem("Token");
+      const UserId = localStorage.getItem("UserId");
+      const LoginId = localStorage.getItem("loginid");
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  
+      // Step 1: Validate OTP
+      const validateOtpResponse = await axios.post(
+        `${baseUrl}/users/OTPValidator`,
+        {
+          UserId,
+          LoginId,
+          OTP: otpValue,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!validateOtpResponse.data.success) {
         await Swal.fire({
-          title: "M–PIN Mismatch",
-          text: "The entered M–PIN and Confirm M–PIN do not match.",
+          title: "OTP Verification Failed",
+          text: validateOtpResponse.data.message || "Invalid OTP",
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: "Retry",
         });
         return;
       }
-    
-      try {
-        const token = localStorage.getItem("Token");
-        const UserId = localStorage.getItem("UserId");
-        const LoginId = localStorage.getItem("loginid");
-        const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    
-        // Step 1: Validate OTP
-        const validateOtpResponse = await axios.post(
-          `${baseUrl}/users/OTPValidator`,
-          {
-            UserId,
-            LoginId:otpId,
-            OTP: otpValue,
+  
+      // Step 2: Set M–PIN
+      const setMpinResponse = await axios.post(
+        `${baseUrl}/users/set-mpin`,
+        {
+          UserId,
+          MPin: mpinValue,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(validateOtpResponse);
-    
-        if (!validateOtpResponse.data.success) {
-          await Swal.fire({
-            title: "OTP Verification Failed",
-            text: validateOtpResponse.data.message || "Invalid OTP",
-            icon: "error",
-            confirmButtonText: "Retry",
-          });
-          return;
         }
-    
-        // Step 2: Set M–PIN
-        const setMpinResponse = await axios.post(
-          `${baseUrl}/users/set-mpin`,
-          {
-            UserId,
-            MPin: mpinValue,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(setMpinResponse);
-    
-        if (setMpinResponse.data.success) {
-          await Swal.fire({
-            title: "Success",
-            text: "M–PIN set successfully.",
-            icon: "success",
-            confirmButtonText: "Login",
-          });
-          navigate("/login");
-        } else {
-          await Swal.fire({
-            title: "Failed",
-            text: setMpinResponse.data.message || "Failed to set M–PIN.",
-            icon: "error",
-            confirmButtonText: "Retry",
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
+      );
+  
+      if (setMpinResponse.data.success) {
         await Swal.fire({
-          title: "Error",
-          text:
-            error?.response?.data?.message ||
-            error?.response?.data?.Message ||
-            "Something went wrong. Please try again.",
+          title: "Success",
+          text: "M–PIN set successfully.",
+          icon: "success",
+          confirmButtonText: "Login",
+        });
+        navigate("/login");
+      } else {
+        await Swal.fire({
+          title: "Failed",
+          text: setMpinResponse.data.message || "Failed to set M–PIN.",
           icon: "error",
-          confirmButtonText: "OK",
+          confirmButtonText: "Retry",
         });
       }
-    };
-    const ResendOTP = async () => {
-      try {
-          let Token = localStorage.getItem('Token');
-          let UserId = localStorage.getItem('UserId');
-          let loginid = localStorage.getItem('loginid');
-          const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
-          const response = await axios.post(apiUrl, {
-              UserId: UserId,
-              LoginId: loginid,
-          }, {
-              headers: {
-                  Authorization: `Bearer ${Token}`,
-                  'Content-Type': 'application/json'
-              }
-          } );
-          const res = response.data;
-          console.log(res);
-          if (res.success) {
-              await Swal.fire({
-                  title: 'OTP RESENDED',
-                  text: res.message,
-                  icon: 'success',
-                  confirmButtonText: 'Continue'
-              });
-          } else {
-              await Swal.fire({
-                  title: 'Login Failed',
-                  text: res.message ||res.Message || 'Please check credentials or network.',
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-              });
-          }} catch (error) {
-          console.error('otp API Error:', error);
-          Swal.fire({
-              title: 'Login Failed',
-              text: error?.response?.data?.Message || 'Please check credentials or network.',
-              icon: 'error',
-              confirmButtonText: 'OK'
-          });
-      }
+    } catch (error) {
+      console.error("Error:", error);
+      await Swal.fire({
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          error?.response?.data?.Message ||
+          "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   };
+  
+  
+  
+
+  const ResendOTP = async () => {
+    try {
+
+        let Token = localStorage.getItem('Token');
+        let UserId = localStorage.getItem('UserId');
+        let loginid = localStorage.getItem('loginid');
+        const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
+        const response = await axios.post(apiUrl, {
+            UserId: UserId,
+            LoginId: loginid,
+        }, {
+            headers: {
+                Authorization: `Bearer ${Token}`,
+                'Content-Type': 'application/json'
+            }
+        }
+
+
+        );
+
+        const res = response.data;
+        console.log(res);
+        if (res.success) {
+            // Show message in SweetAlert
+            await Swal.fire({
+                title: 'OTP RESENDED',
+                text: res.message,
+                icon: 'success',
+                confirmButtonText: 'Continue'
+            });
+        } else {
+            await Swal.fire({
+                title: 'Login Failed',
+                text: res.message ||res.Message || 'Please check credentials or network.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            // navigate("/login");
+        }
+
+
+
+    } catch (error) {
+        console.error('otp API Error:', error);
+        Swal.fire({
+            title: 'Login Failed',
+            text: error?.response?.data?.Message || 'Please check credentials or network.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+};
 
   return (
     <div className="h-screen  bg-white font-[Poppins]  flex flex-col">
@@ -200,7 +212,7 @@ const ResetMpinScreen = () => {
       <div className="bg-indigo-700 h-[15vh] px-4 pt-6  pb-4 text-white relative z-0">
         <div className="flex items-center space-x-2 text-sm font-medium poppins-medium">
           <span onClick={() => navigate(-1)}  className="text-xl">&#8592;</span>
-          <span>Reset M–PIN</span>
+          <span>Set M–PIN</span>
         </div>
       </div>
 
@@ -233,7 +245,7 @@ const ResetMpinScreen = () => {
 
         {/* Text */}
         <p className="text-center text-sm text-gray-600 mb-2 poppins-regular">
-          OTP sent to Your Registered Mobile Number
+          {message}
         </p>
         
 
@@ -266,7 +278,6 @@ const ResetMpinScreen = () => {
             {renderInputs(confirmMpin, setConfirmMpin, "confirm")}
           </div>
         </div>
-
         <p onClick={ResendOTP} className="text-center text-sm text-indigo-700 font-medium underline mb-4 cursor-pointer poppins-medium">
           Resend OTP
         </p>
@@ -288,4 +299,4 @@ const ResetMpinScreen = () => {
   );
 };
 
-export default ResetMpinScreen;
+export default SetMpinScreen;

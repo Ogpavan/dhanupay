@@ -1,18 +1,135 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const MPinScreen = () => {
+  const [UserName, setUserName] = useState("UserName");
   useEffect(() => {
     window.scrollTo(0, 0);
+    let UserName = localStorage.getItem('UserName') || "UserName";
+    setUserName(UserName);
   }, []);
   const navigate = useNavigate();
   const [pin, setPin] = useState(["", "", "", ""]);
-  const userName = "John Doe"; // Replace this with dynamic username if needed
 
-  const btnclick = () => {
-    onClick=navigate("/dashboard/home");
-    // alert(pin.join(""));
+
+
+
+  const handleForgotMPin = async () => {
+    try {
+      const token = localStorage.getItem("Token");
+      const UserId = localStorage.getItem("UserId");
+
+
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.post(
+        `${baseUrl}/users/ForgetMPIN`,
+        {
+          UserId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const res = response.data;
+      console.log(res);
+
+      if (res.success) {
+        // Show success message (optional)
+        await Swal.fire({
+          title: "OTP Sent",
+          text: res.message || "An OTP has been sent to your registered number.",
+          icon: "success",
+          confirmButtonText: "Continue",
+        });
+
+        // Navigate to the forget-m-pin route
+        navigate("/forget-m-pin", {
+          state: {
+            OTPId: res.OTPId // Replace with dynamic value if needed
+          },
+        });
+      } else {
+        await Swal.fire({
+          title: "Failed",
+          text: res.message || "Something went wrong.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Forgot M–PIN API Error:", error);
+      await Swal.fire({
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          "Network or server error. Please try again.",
+        icon: "error",
+      });
+    }
   };
+
+
+
+  const btnclick = async () => {
+    const pinValue = pin.join("");
+    try {
+      const token = localStorage.getItem("Token");
+      const UserId = localStorage.getItem("UserId");
+      // const LoginId = localStorage.getItem("loginid");
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+
+      // navigate("/dashboard/home");
+      const mpinvalidateResponse = await axios.post(
+        `${baseUrl}/users/validate_mpin`,
+        {
+          UserId,
+          MPin: pinValue,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(mpinvalidateResponse.data);
+
+      if (mpinvalidateResponse.data.success) {
+        await Swal.fire({
+          title: "Success",
+          text: "M–PIN Verify successfully.",
+          icon: "success",
+          confirmButtonText: "Login",
+        });
+        navigate("/dashboard/home");
+      } else {
+        await Swal.fire({
+          title: "Failed",
+          text: mpinvalidateResponse.data.message || "Failed to Verify M–PIN.",
+          icon: "error",
+          confirmButtonText: "Retry",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      await Swal.fire({
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          error?.response?.data?.Message ||
+          "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
 
   const handleChange = (value, index) => {
     if (value.length > 1) return;
@@ -35,7 +152,7 @@ const MPinScreen = () => {
         {/* Welcome + Username now inside white container */}
         <div className="text-center">
           <div className="text-4xl font-bold text-indigo-700 poppins-bold">Welcome Back</div>
-          <div className="text-lg mt-1 text-indigo-700 poppins-medium">{userName}</div>
+          <div className="text-lg mt-1 text-indigo-700 poppins-medium">{UserName}</div>
         </div>
 
         {/* Lock Icon */}
@@ -48,7 +165,7 @@ const MPinScreen = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
-              onClick={() => navigate(-1)} 
+              onClick={() => navigate(-1)}
             >
               <path
                 strokeLinecap="round"
@@ -83,10 +200,13 @@ const MPinScreen = () => {
           ))}
         </div>
 
-        <div className="mt-6 text-sm text-center   poppins-light">
-          <Link to="/forget-m-pin"  className="text-indigo-700 font-semibold hover:underline poppins-medium">
-          forgot M-PIN ?
-            </Link>
+        <div className="mt-6 text-sm text-center poppins-light">
+          <button
+            onClick={handleForgotMPin}
+            className="text-indigo-700 font-semibold hover:underline poppins-medium"
+          >
+            Forgot M–PIN?
+          </button>
         </div>
 
         {/* Submit Button */}
@@ -94,11 +214,10 @@ const MPinScreen = () => {
           <button
             onClick={btnclick}
             disabled={pin.some((val) => val === "")}
-            className={`w-full py-3 rounded-xl text-white font-semibold transition ${
-              pin.every((val) => val !== "")
+            className={`w-full py-3 rounded-xl text-white font-semibold transition ${pin.every((val) => val !== "")
                 ? "bg-indigo-600 hover:bg-indigo-700"
                 : "bg-indigo-600 cursor-not-allowed"
-            }`}
+              }`}
           >
             Submit
           </button>
