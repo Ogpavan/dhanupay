@@ -76,7 +76,14 @@ function ProfilePage() {
   
         if (logoutResponse.data.success) {
           localStorage.clear();
+          await Swal.fire({
+            title: "success",
+            text: "Logout successful.",
+            icon: "success",
+            confirmButtonText: "Home",
+          });
           navigate('/');
+
         } else {
           await Swal.fire({
             title: "Failed",
