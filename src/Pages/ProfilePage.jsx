@@ -14,6 +14,7 @@ import SettingModel from '../utils/SettingModel'; // Import the modal component
 import Swal from 'sweetalert2';
 import PrivacyAndPolicyModal from '@/utils/PrivacyAndPolicyModal';
 import SubmitComplaintModal from '@/utils/SubmitComplaintModal';
+import axios from 'axios';
 // import { c } from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
 
 
@@ -37,21 +38,68 @@ function ProfilePage() {
     setTransactions(transactionsData);
   }, []);
 
+  const token = localStorage.getItem("Token");
+  const UserId = localStorage.getItem("UserId");
 
-  const handleLogout = () => {
-    Swal.fire({
-      title: 'Are you sure want to logout ?',
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("Token");
+    const UserId = localStorage.getItem("UserId");
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  
+    console.log("Token:", token);
+    console.log("UserId:", UserId);                      
+    console.log("baseUrl:", baseUrl);
+    const result = await Swal.fire({
+      title: 'Are you sure you want to logout?',
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Yes, logout!',
       cancelButtonText: 'No, cancel!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear();
-        navigate('/');
-      }
     });
+  
+    if (result.isConfirmed) {
+      try {
+        const logoutResponse = await axios.post(
+          `${baseUrl}/users/Logout`,
+          { 
+            UserId: UserId 
+
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (logoutResponse.data.success) {
+          localStorage.clear();
+          navigate('/');
+        } else {
+          await Swal.fire({
+            title: "Failed",
+            text: logoutResponse.data.message || "Logout failed.",
+            icon: "error",
+            confirmButtonText: "Retry",
+          });
+        }
+      } catch (error) {
+        console.error("Logout Error:", error);
+        await Swal.fire({
+          title: "Error",
+          text:
+            error?.response?.data?.message ||
+            error?.response?.data?.Message ||
+            "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
   };
+  
 
 
   const handleOpenModal = () => setIsModalOpen(true);
