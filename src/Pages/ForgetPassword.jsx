@@ -240,6 +240,7 @@ const ForgetPassword = () => {
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
@@ -424,12 +425,21 @@ const ForgetPassword = () => {
           <div className="relative">
             <input
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="Enter OTP"
               value={enteredOtp}
-              onChange={(e) => setEnteredOtp(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d{0,4}$/.test(value)) {
+                  setEnteredOtp(value); // allows only up to 4 digits
+                }
+              }}
+              
               className="w-full px-4 py-3 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               disabled={!otpSent || otpVerified}
             />
+
             {!otpVerified ? (
               <button
                 onClick={handleVerifyOtp}
@@ -453,6 +463,7 @@ const ForgetPassword = () => {
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               disabled={!otpVerified}
+              maxLength={20}
             />
             <button
               type="button"
@@ -504,6 +515,7 @@ const ForgetPassword = () => {
               onChange={(e) => setConfirmNewpassword(e.target.value)}
               className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
               disabled={!otpVerified}
+              maxLength={20}
             />
             <button
               type="button"

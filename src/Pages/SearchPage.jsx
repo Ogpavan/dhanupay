@@ -8,6 +8,7 @@ const SearchPage = () => {
   }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
+
   const navigate = useNavigate();
 
   // Filter services based on search term

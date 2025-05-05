@@ -13,41 +13,78 @@ const SetMpinScreen = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [mpin, setMpin] = useState(["", "", "", ""]);
   const [confirmMpin, setConfirmMpin] = useState(["", "", "", ""]);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [showMpin, setShowMpin] = useState(false); // Toggle MPIN visibility
+  const [showConfirmMpin, setShowConfirmMpin] = useState(false); // Toggle Confirm MPIN visibility
+  const [timer, setTimer] = useState(30); // Timer state for resend OTP
+  const [isResendDisabled, setIsResendDisabled] = useState(false); // Disable Resend OTP button
+  const [intervalId, setIntervalId] = useState(null); // For clearing interval later
+
+
+
+  useEffect(() => {
+      // Start the countdown when the component mounts
+      setIsResendDisabled(true);
+      setTimer(30); // Set initial timer value to 30
+      const countdownInterval = setInterval(() => {
+        setTimer((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(countdownInterval); // Stop the countdown when timer reaches 0
+            setIsResendDisabled(false); // Enable the "Resend OTP" button
+          }
+          return prevTime - 1; // Decrement the timer every second
+        });
+      }, 1000);
+      setIntervalId(countdownInterval); // Store the interval ID for cleanup
+    
+      // Cleanup interval when the component is unmounted
+      return () => clearInterval(countdownInterval);
+    }, []); // Empty dependency array to run only once on mount
 
   const handleChange = (e, index, setter, values, namePrefix) => {
     const value = e.target.value;
     if (value.length > 1) return;
-  
+
     const newVal = [...values];
     newVal[index] = value;
     setter(newVal);
-  
+
     if (value !== "") {
       const nextInput = document.getElementById(`${namePrefix}-${index + 1}`);
       if (nextInput) nextInput.focus();
     }
   };
-  
+
   const handleKeyDown = (e, index, namePrefix) => {
     if (e.key === "Backspace" && e.target.value === "") {
       const prevInput = document.getElementById(`${namePrefix}-${index - 1}`);
       if (prevInput) prevInput.focus();
     }
   };
-  
-  const renderInputs = (values, setter, namePrefix) =>
+
+  const renderInputs = (values, setter, namePrefix, showInput) =>
     values.map((digit, index) => (
       <input
-        key={`${namePrefix}-${index}`}
         id={`${namePrefix}-${index}`}
-        type="password"
+        key={`${namePrefix}-${index}`}
+        type={showInput ? "text" : "password"} // Toggle input type for show/hide
+        inputMode="numeric"
+        pattern="[0-9]*"
         maxLength="1"
         className="w-12 h-12 text-center text-2xl border-2 border-indigo-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
         value={digit}
-        onChange={(e) => handleChange(e, index, setter, values, namePrefix)}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (/^\d?$/.test(value)) { // allow only single digit or empty
+            handleChange(e, index, setter, values, namePrefix);
+          }
+        }}
         onKeyDown={(e) => handleKeyDown(e, index, namePrefix)}
       />
     ));
+
+
+
   const isFormValid =
     otp.every((val) => val !== "") &&
     mpin.every((val) => val !== "") &&
@@ -59,10 +96,11 @@ const SetMpinScreen = () => {
   //   onClick=navigate("/login") ;
   // };
   const handleSubmit = async () => {
+    setBtnLoading(true);
     const mpinValue = mpin.join("");
     const confirmMpinValue = confirmMpin.join("");
     const otpValue = otp.join("");
-  
+
     if (mpinValue !== confirmMpinValue) {
       await Swal.fire({
         title: "M–PIN Mismatch",
@@ -70,15 +108,17 @@ const SetMpinScreen = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
+      setBtnLoading(false);
       return;
+
     }
-  
+
     try {
       const token = localStorage.getItem("Token");
       const UserId = localStorage.getItem("UserId");
       const LoginId = localStorage.getItem("loginid");
       const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  
+
       // Step 1: Validate OTP
       const validateOtpResponse = await axios.post(
         `${baseUrl}/users/OTPValidator`,
@@ -94,7 +134,7 @@ const SetMpinScreen = () => {
           },
         }
       );
-  
+
       if (!validateOtpResponse.data.success) {
         await Swal.fire({
           title: "OTP Verification Failed",
@@ -102,14 +142,17 @@ const SetMpinScreen = () => {
           icon: "error",
           confirmButtonText: "Retry",
         });
+        setBtnLoading(false);
         return;
       }
-  
+
       // Step 2: Set M–PIN
+      console.log("")
       const setMpinResponse = await axios.post(
         `${baseUrl}/users/set-mpin`,
         {
-          UserId,
+          UserId : UserId,
+          LoginId: LoginId,
           MPin: mpinValue,
         },
         {
@@ -119,7 +162,7 @@ const SetMpinScreen = () => {
           },
         }
       );
-  
+
       if (setMpinResponse.data.success) {
         await Swal.fire({
           title: "Success",
@@ -148,77 +191,138 @@ const SetMpinScreen = () => {
         confirmButtonText: "OK",
       });
     }
+    finally {
+      setBtnLoading(false); // Reset button state
+    }
   };
-  
-  
-  
+
+
+
+
+  // const ResendOTP = async () => {
+  //   try {
+
+  //     let Token = localStorage.getItem('Token');
+  //     let UserId = localStorage.getItem('UserId');
+  //     let loginid = localStorage.getItem('loginid');
+  //     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
+  //     const response = await axios.post(apiUrl, {
+  //       UserId: UserId,
+  //       LoginId: loginid,
+  //     }, {
+  //       headers: {
+  //         Authorization: `Bearer ${Token}`,
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+
+
+  //     );
+
+  //     const res = response.data;
+  //     console.log(res);
+  //     if (res.success) {
+  //       // Show message in SweetAlert
+  //       await Swal.fire({
+  //         title: 'OTP RESENDED',
+  //         text: res.message,
+  //         icon: 'success',
+  //         confirmButtonText: 'Continue'
+  //       });
+  //     } else {
+  //       await Swal.fire({
+  //         title: 'Login Failed',
+  //         text: res.message || res.Message || 'Please check credentials or network.',
+  //         icon: 'error',
+  //         confirmButtonText: 'OK'
+  //       });
+  //       // navigate("/login");
+  //     }
+
+
+
+  //   } catch (error) {
+  //     console.error('otp API Error:', error);
+  //     Swal.fire({
+  //       title: 'Login Failed',
+  //       text: error?.response?.data?.Message || 'Please check credentials or network.',
+  //       icon: 'error',
+  //       confirmButtonText: 'OK'
+  //     });
+  //   }
+  // };
+
 
   const ResendOTP = async () => {
-    try {
-
-        let Token = localStorage.getItem('Token');
-        let UserId = localStorage.getItem('UserId');
-        let loginid = localStorage.getItem('loginid');
+      if (isResendDisabled) return;
+      setIsResendDisabled(true);
+      setTimer(30);
+      const countdownInterval = setInterval(() => {
+        setTimer((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(countdownInterval);
+            setIsResendDisabled(false);
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+      setIntervalId(countdownInterval);
+      setBtnLoading(true);
+      try {
+        const Token = localStorage.getItem('Token');
+        const UserId = localStorage.getItem('UserId');
+        const loginid = localStorage.getItem('loginid');
         const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
         const response = await axios.post(apiUrl, {
-            UserId: UserId,
-            LoginId: loginid,
+          UserId: UserId,
+          LoginId: loginid,
         }, {
-            headers: {
-                Authorization: `Bearer ${Token}`,
-                'Content-Type': 'application/json'
-            }
-        }
-
-
-        );
-
-        const res = response.data;
-        console.log(res);
-        if (res.success) {
-            // Show message in SweetAlert
-            await Swal.fire({
-                title: 'OTP RESENDED',
-                text: res.message,
-                icon: 'success',
-                confirmButtonText: 'Continue'
-            });
+          headers: {
+            Authorization: `Bearer ${Token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.data.success) {
+          
+          await Swal.fire({
+            title: 'OTP RESENDED',
+            text: response.data.message,
+            icon: 'success',
+            confirmButtonText: 'Continue'
+          });
         } else {
-            await Swal.fire({
-                title: 'Login Failed',
-                text: res.message ||res.Message || 'Please check credentials or network.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            // navigate("/login");
-        }
-
-
-
-    } catch (error) {
-        console.error('otp API Error:', error);
-        Swal.fire({
-            title: 'Login Failed',
-            text: error?.response?.data?.Message || 'Please check credentials or network.',
+          await Swal.fire({
+            title: 'Failed',
+            text: response.data.message || 'Please check credentials or network.',
             icon: 'error',
             confirmButtonText: 'OK'
+          });
+        }
+      } catch (error) {
+        console.error('OTP API Error:', error);
+        await Swal.fire({
+          title: 'Error',
+          text: error?.response?.data?.Message || 'Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK'
         });
-    }
-};
-
+      } finally {
+        setBtnLoading(false);
+      }
+    };
   return (
     <div className="h-screen  bg-white font-[Poppins]  flex flex-col">
       {/* Blue Header (flat) */}
       <div className="bg-indigo-700 h-[15vh] px-4 pt-6  pb-4 text-white relative z-0">
         <div className="flex items-center space-x-2 text-sm font-medium poppins-medium">
-          <span onClick={() => navigate(-1)}  className="text-xl">&#8592;</span>
+          <span onClick={() => navigate(-1)} className="text-xl">&#8592;</span>
           <span>Set M–PIN</span>
         </div>
       </div>
 
       {/* White Rounded Container Overlapping */}
       <div className="-mt-6 bg-white rounded-t-3xl px-4 pt-6 pb-10 w-full  z-10 relative">
-      {/* Lock Icon */}
+        {/* Lock Icon */}
         <div className="flex justify-center mb-6">
           <div className="bg-purple-100 p-6 rounded-full shadow-md relative">
             <svg
@@ -247,7 +351,7 @@ const SetMpinScreen = () => {
         <p className="text-center text-sm text-gray-600 mb-2 poppins-regular">
           {message}
         </p>
-        
+
 
         {/* OTP Input */}
         <div className="mb-4">
@@ -255,7 +359,7 @@ const SetMpinScreen = () => {
             Enter OTP
           </h3>
           <div className="flex justify-center gap-3">
-            {renderInputs(otp, setOtp, "otp")}
+            {renderInputs(otp, setOtp, "otp", true)} {/* OTP is always visible */}
           </div>
         </div>
 
@@ -265,34 +369,51 @@ const SetMpinScreen = () => {
             Set M–PIN
           </h3>
           <div className="flex justify-center gap-3">
-            {renderInputs(mpin, setMpin, "mpin")}
+            {renderInputs(mpin, setMpin, "mpin", showMpin)} {/* MPIN with toggle */}
           </div>
+          <button
+            onClick={() => setShowMpin(!showMpin)}
+            className="text-indigo-600  font-medium text-sm mb-4 mt-2 mx-auto  mr-20 block"
+          >
+            {showMpin ? "Hide MPIN" : "Show MPIN"}
+          </button>
         </div>
 
-        {/* Confirm M–PIN */}
         <div className="mb-6">
           <h3 className="text-center text-lg font-semibold text-gray-700 poppins-semibold mb-2">
             Confirm M–PIN
           </h3>
           <div className="flex justify-center gap-3">
-            {renderInputs(confirmMpin, setConfirmMpin, "confirm")}
+            {renderInputs(confirmMpin, setConfirmMpin, "confirm", showConfirmMpin)} {/* Confirm MPIN with toggle */}
           </div>
+          <button
+            onClick={() => setShowConfirmMpin(!showConfirmMpin)}
+            className="text-indigo-600  font-medium text-sm mb-4 mt-2 mx-auto  mr-20 block"
+          >
+            {showConfirmMpin ? "Hide Confirm MPIN" : "Show Confirm MPIN"}
+          </button>
         </div>
-        <p onClick={ResendOTP} className="text-center text-sm text-indigo-700 font-medium underline mb-4 cursor-pointer poppins-medium">
-          Resend OTP
-        </p>
+
+        <div className="flex justify-center mb-4 ">
+          <p                                                            
+            onClick={ResendOTP}
+            className="text-sm text-indigo-700 font-medium underline cursor-pointer poppins-medium"
+          >
+            {isResendDisabled ? `Resend OTP in ${timer}s` : "Resend OTP"}
+          </p>
+        </div>  
 
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          disabled={!isFormValid}
-          className={`w-full py-3 rounded-xl text-white text-center font-semibold transition poppins-semibold ${
-            isFormValid
+
+          disabled={!isFormValid || btnLoading}
+          className={`w-full py-3 rounded-xl text-white text-center font-semibold transition poppins-semibold ${isFormValid
               ? "bg-indigo-600 hover:bg-indigo-700"
               : "bg-indigo-400 cursor-not-allowed"
-          }`}
+            }`}
         >
-          Set M–PIN
+          {btnLoading ? 'please wait...' : 'Set M–PIN'}
         </button>
       </div>
     </div>

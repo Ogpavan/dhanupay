@@ -13,6 +13,33 @@ const OtpPage = () => {
     const navigate = useNavigate();
     const [otp, setOtp] = useState(["", "", "", ""]);
     const [mpin, setMpin] = useState(["", "", "", ""]);
+    const [btnLoading, setBtnLoading] = useState(false);
+    const [showMpin, setShowMpin] = useState(false); // Toggle MPIN visibility
+    const [timer, setTimer] = useState(30); // Timer state for resend OTP
+    const [isResendDisabled, setIsResendDisabled] = useState(false); // Disable Resend OTP button
+    const [intervalId, setIntervalId] = useState(null); // For clearing interval later
+
+
+
+    useEffect(() => {
+        // Start the countdown when the component mounts
+        setIsResendDisabled(true);
+        setTimer(30); // Set initial timer value to 30
+        const countdownInterval = setInterval(() => {
+            setTimer((prevTime) => {
+                if (prevTime <= 1) {
+                    clearInterval(countdownInterval); // Stop the countdown when timer reaches 0
+                    setIsResendDisabled(false); // Enable the "Resend OTP" button
+                }
+                return prevTime - 1; // Decrement the timer every second
+            });
+        }, 1000);
+        setIntervalId(countdownInterval); // Store the interval ID for cleanup
+
+        // Cleanup interval when the component is unmounted
+        return () => clearInterval(countdownInterval);
+    }, []); // Empty dependency array to run only once on mount
+
 
     const handleChange = (e, index, setter, values, namePrefix) => {
         const value = e.target.value;
@@ -35,16 +62,23 @@ const OtpPage = () => {
         }
     };
 
-    const renderInputs = (values, setter, namePrefix) =>
+    const renderInputs = (values, setter, namePrefix, showInput) =>
         values.map((digit, index) => (
             <input
-                key={`${namePrefix}-${index}`}
                 id={`${namePrefix}-${index}`}
-                type="password"
+                key={`${namePrefix}-${index}`}
+                type={showInput ? "text" : "password"} // Toggle input type for show/hide
+                inputMode="numeric"
+                pattern="[0-9]*"
                 maxLength="1"
                 className="w-12 h-12 text-center text-2xl border-2 border-indigo-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 value={digit}
-                onChange={(e) => handleChange(e, index, setter, values, namePrefix)}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d?$/.test(value)) { // allow only single digit or empty
+                        handleChange(e, index, setter, values, namePrefix);
+                    }
+                }}
                 onKeyDown={(e) => handleKeyDown(e, index, namePrefix)}
             />
         ));
@@ -53,6 +87,7 @@ const OtpPage = () => {
         mpin.every((val) => val !== "");
 
     const handleSubmit = async () => {
+        setBtnLoading(true);
         const otpValue = otp.join("");
         const mpinValue = mpin.join("");
         console.log("OTP: " + otpValue);
@@ -66,7 +101,7 @@ const OtpPage = () => {
             const response = await axios.post(apiUrl, {
                 UserId: UserId,
                 LoginId: loginid,
-                OTP: otpValue,  
+                OTP: otpValue,
                 MPin: mpinValue
             }, {
                 headers: {
@@ -92,7 +127,7 @@ const OtpPage = () => {
             } else {
                 await Swal.fire({
                     title: 'Login Failed',
-                    text: res.message ||res.Message || 'Please check credentials or network.',
+                    text: res.message || res.Message || 'Please check credentials or network.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
@@ -109,16 +144,90 @@ const OtpPage = () => {
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
+        } finally {
+            setBtnLoading(false); // Reset button state
         }
     };
 
 
-    const ResendOTP = async () => {
-        try {
 
-            let Token = localStorage.getItem('Token');
-            let UserId = localStorage.getItem('UserId');
-            let loginid = localStorage.getItem('loginid');
+    // const ResendOTP = async () => {
+    //     setBtnLoading(true);
+    //     try {
+
+    //         let Token = localStorage.getItem('Token');
+    //         let UserId = localStorage.getItem('UserId');
+    //         let loginid = localStorage.getItem('loginid');
+    //         const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
+    //         const response = await axios.post(apiUrl, {
+    //             UserId: UserId,
+    //             LoginId: loginid,
+    //         }, {
+    //             headers: {
+    //                 Authorization: `Bearer ${Token}`,
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         }
+
+
+    //         );
+
+    //         const res = response.data;
+    //         console.log(res);
+    //         if (res.success) {
+    //             // Show message in SweetAlert
+    //             await Swal.fire({
+    //                 title: 'OTP RESENDED',
+    //                 text: res.message,
+    //                 icon: 'success',
+    //                 confirmButtonText: 'Continue'
+    //             });
+    //         } else {
+    //             await Swal.fire({
+    //                 title: 'Login Failed',
+    //                 text: res.message ||res.Message || 'Please check credentials or network.',
+    //                 icon: 'error',
+    //                 confirmButtonText: 'OK'
+    //             });
+    //             // navigate("/login");
+    //         }
+
+
+
+    //     } catch (error) {
+    //         console.error('otp API Error:', error);
+    //         Swal.fire({
+    //             title: 'Login Failed',
+    //             text: error?.response?.data?.Message || 'Please check credentials or network.',
+    //             icon: 'error',
+    //             confirmButtonText: 'OK'
+    //         });
+    //     }finally {
+    //         setBtnLoading(false); // Reset button state
+    //       }
+    //     };
+
+
+
+    const ResendOTP = async () => {
+        if (isResendDisabled) return;
+        setIsResendDisabled(true);
+        setTimer(30);
+        const countdownInterval = setInterval(() => {
+            setTimer((prevTime) => {
+                if (prevTime <= 1) {
+                    clearInterval(countdownInterval);
+                    setIsResendDisabled(false);
+                }
+                return prevTime - 1;
+            });
+        }, 1000);
+        setIntervalId(countdownInterval);
+        setBtnLoading(true);
+        try {
+            const Token = localStorage.getItem('Token');
+            const UserId = localStorage.getItem('UserId');
+            const loginid = localStorage.getItem('loginid');
             const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
             const response = await axios.post(apiUrl, {
                 UserId: UserId,
@@ -128,43 +237,99 @@ const OtpPage = () => {
                     Authorization: `Bearer ${Token}`,
                     'Content-Type': 'application/json'
                 }
-            }
+            });
+            if (response.data.success) {
 
-
-            );
-
-            const res = response.data;
-            console.log(res);
-            if (res.success) {
-                // Show message in SweetAlert
                 await Swal.fire({
                     title: 'OTP RESENDED',
-                    text: res.message,
+                    text: response.data.message,
                     icon: 'success',
                     confirmButtonText: 'Continue'
                 });
             } else {
                 await Swal.fire({
-                    title: 'Login Failed',
-                    text: res.message ||res.Message || 'Please check credentials or network.',
+                    title: 'Failed',
+                    text: response.data.message || 'Please check credentials or network.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
-                // navigate("/login");
             }
-
-
-
         } catch (error) {
-            console.error('otp API Error:', error);
-            Swal.fire({
-                title: 'Login Failed',
-                text: error?.response?.data?.Message || 'Please check credentials or network.',
+            console.error('OTP API Error:', error);
+            await Swal.fire({
+                title: 'Error',
+                text: error?.response?.data?.Message || 'Please try again.',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
+        } finally {
+            setBtnLoading(false);
         }
     };
+
+
+
+    const handleForgotMPin = async () => {
+
+        try {
+            const token = localStorage.getItem("Token");
+            const UserId = localStorage.getItem("UserId");
+
+
+            const baseUrl = import.meta.env.VITE_API_BASE_URL;
+            const response = await axios.post(
+                `${baseUrl}/users/ForgetMPIN`,
+                {
+                    UserId,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const res = response.data;
+            console.log(res);
+
+            if (res.success) {
+                // Show success message (optional)
+                localStorage.setItem('loginid', res.OTPId);
+                console.log("otp or loginid at forgetmpin page", res.OTPId); // Save OTPId instead of res.loginid
+                await Swal.fire({
+                    title: "OTP Sent",
+                    text: res.message || "An OTP has been sent to your registered number.",
+                    icon: "success",
+                    confirmButtonText: "Continue",
+                });
+
+                // Navigate to the forget-m-pin route
+                navigate("/forget-m-pin", {
+
+                });
+            } else {
+                await Swal.fire({
+                    title: "Failed",
+                    text: res.message || "Something went wrong.",
+                    icon: "error",
+                });
+            }
+        } catch (error) {
+            console.error("Forgot M–PIN API Error:", error);
+            await Swal.fire({
+                title: "Error",
+                text:
+                    error?.response?.data?.message ||
+                    "Network or server error. Please try again.",
+                icon: "error",
+            });
+        }
+    };
+
+
+
+
     return (
         <div className="h-screen  bg-white font-[Poppins]  flex flex-col">
             {/* Blue Header (flat) */}
@@ -214,34 +379,53 @@ const OtpPage = () => {
                         Enter OTP
                     </h3>
                     <div className="flex justify-center gap-3">
-                        {renderInputs(otp, setOtp, "otp")}
+                        {renderInputs(otp, setOtp, "otp", true)} {/* OTP is always visible */}
                     </div>
                 </div>
-
                 {/* Set M–PIN */}
                 <div className="mb-4">
                     <h3 className="text-center text-lg font-semibold text-gray-700 poppins-semibold mb-2">
                         Enter M–PIN
                     </h3>
                     <div className="flex justify-center gap-3">
-                        {renderInputs(mpin, setMpin, "mpin")}
+                        {renderInputs(mpin, setMpin, "mpin", showMpin)} {/* MPIN with toggle */}
                     </div>
+                    <button
+                        onClick={() => setShowMpin(!showMpin)}
+                        className="text-indigo-600  font-medium text-sm mb-4 mt-2 mx-auto  mr-20 block"
+                    >
+                        {showMpin ? "Hide MPIN" : "Show MPIN"}
+                    </button>
                 </div>
 
-                <p onClick={ResendOTP} className="text-center text-sm text-indigo-700 font-medium underline mb-4 cursor-pointer poppins-medium">
-                    Resend OTP
-                </p>
+                <div className="flex justify-center mb-4 ">
+                    <p
+                        onClick={ResendOTP}
+                        className="text-sm text-indigo-700 font-medium underline cursor-pointer poppins-medium"
+                    >
+                        {isResendDisabled ? `Resend OTP in ${timer}s` : "Resend OTP"}
+                    </p>
+                </div>
+
+                <div className="mt-6 mb-4 text-sm text-center poppins-light">
+                    <button
+                        onClick={handleForgotMPin}
+                        className="text-gray-700 font-semibold hover:underline poppins-medium"
+                    >
+                        Forgot M–PIN?
+                    </button>
+                </div>
 
                 {/* Submit Button */}
                 <button
                     onClick={handleSubmit}
-                    disabled={!isFormValid}
+                    disabled={!isFormValid || btnLoading}
                     className={`w-full py-3 rounded-xl text-white text-center font-semibold transition poppins-semibold ${isFormValid
                         ? "bg-indigo-600 hover:bg-indigo-700"
                         : "bg-indigo-400 cursor-not-allowed"
                         }`}
                 >
-                    verify
+                    {btnLoading ? 'please wait...' : 'Verify'}
                 </button>
             </div>
         </div>

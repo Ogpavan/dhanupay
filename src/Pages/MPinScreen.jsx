@@ -12,11 +12,15 @@ const MPinScreen = () => {
   }, []);
   const navigate = useNavigate();
   const [pin, setPin] = useState(["", "", "", ""]);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+
 
 
 
 
   const handleForgotMPin = async () => {
+
     try {
       const token = localStorage.getItem("Token");
       const UserId = localStorage.getItem("UserId");
@@ -42,7 +46,7 @@ const MPinScreen = () => {
       if (res.success) {
         // Show success message (optional)
         localStorage.setItem('loginid', res.OTPId);
-        console.log("otp or loginid at forgetmpin page",res.OTPId); // Save OTPId instead of res.loginid
+        console.log("otp or loginid at forgetmpin page", res.OTPId); // Save OTPId instead of res.loginid
         await Swal.fire({
           title: "OTP Sent",
           text: res.message || "An OTP has been sent to your registered number.",
@@ -52,7 +56,7 @@ const MPinScreen = () => {
 
         // Navigate to the forget-m-pin route
         navigate("/forget-m-pin", {
-          
+
         });
       } else {
         await Swal.fire({
@@ -76,6 +80,7 @@ const MPinScreen = () => {
 
 
   const btnclick = async () => {
+    setBtnLoading(true);
     const pinValue = pin.join("");
     try {
       const token = localStorage.getItem("Token");
@@ -127,6 +132,9 @@ const MPinScreen = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
+    }
+    finally {
+      setBtnLoading(false); // Reset button state
     }
   };
 
@@ -191,13 +199,42 @@ const MPinScreen = () => {
             <input
               key={index}
               id={`pin-${index}`}
-              type="password"
+              type={showPin ? "text" : "password"}
+              inputMode="numeric"
+              pattern="[0-9]*"
               maxLength="1"
               className="w-12 h-12 text-center text-3xl border-2 border-indigo-500 rounded-xl text-black focus:outline-none focus:ring-4 focus:ring-indigo-300"
               value={digit}
-              onChange={(e) => handleChange(e.target.value, index)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (!/^\d?$/.test(value)) return; // Allow only digits
+                const newPin = [...pin];
+                newPin[index] = value;
+                setPin(newPin);
+
+                // Auto focus next input
+                if (value && index < 3) {
+                  const nextInput = document.getElementById(`pin-${index + 1}`);
+                  if (nextInput) nextInput.focus();
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Backspace" && !pin[index] && index > 0) {
+                  const prevInput = document.getElementById(`pin-${index - 1}`);
+                  if (prevInput) prevInput.focus();
+                }
+              }}
             />
           ))}
+        </div>
+
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => setShowPin(!showPin)}
+            className="text-indigo-600  font-medium text-sm mb-4 mt-2 mx-auto  mr-24 block hover:underline"
+          >
+            {showPin ? "Hide M–PIN" : "Show M–PIN"}
+          </button>
         </div>
 
         <div className="mt-6 text-sm text-center poppins-light">
@@ -213,13 +250,13 @@ const MPinScreen = () => {
         <div className="mt-8 flex justify-center px-4">
           <button
             onClick={btnclick}
-            disabled={pin.some((val) => val === "")}
+            disabled={pin.some((val) => val === "") || btnLoading}
             className={`w-full py-3 rounded-xl text-white font-semibold transition ${pin.every((val) => val !== "")
-                ? "bg-indigo-600 hover:bg-indigo-700"
-                : "bg-indigo-600 cursor-not-allowed"
+              ? "bg-indigo-600 hover:bg-indigo-700"
+              : "bg-indigo-600 cursor-not-allowed"
               }`}
           >
-            Submit
+            {btnLoading ? 'please wait...' : 'Submit'}
           </button>
         </div>
       </div>
