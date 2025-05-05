@@ -108,11 +108,13 @@ const ResetMpinScreen = () => {
         }
     
         // Step 2: Set M–PIN
+        console.log("before set mpin",UserId,mpinValue,token);
         const setMpinResponse = await axios.post(
           `${baseUrl}/users/set-mpin`,
           {
             UserId,
             MPin: mpinValue,
+            LoginId:LoginId
           },
           {
             headers: {
