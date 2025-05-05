@@ -1,37 +1,104 @@
-import React, { useEffect } from "react";
-import logo from "../assets/logo.png"; // Make sure this path is correct
+// import React, { useEffect } from "react";
+// import logo from "../assets/logo.png"; // Make sure this path is correct
+// import { useNavigate } from "react-router-dom";
+
+// const Homescreen = () => {
+//   const navigate = useNavigate();
+//   useEffect(() => {
+//     window.scrollTo(0, 0);
+//   }, []);
+//   useEffect(() => {
+  
+//       let Token = localStorage.getItem('Token');
+//        let IsMPINSet = localStorage.getItem('IsMPINSet');
+//       if(!Token && !IsMPINSet){
+//           navigate('/');
+//       }else{
+//         navigate('/MPinScreen');
+
+//       }
+     
+//   }, []);
+  
+//   return (
+//     <div className="h-[100vh] flex flex-col items-center justify-between bg-white ">
+//       {/* Top container with logo */}
+//       <div className="w-full flex-1 flex items-center justify-center bg-[#2C2DCB] rounded-b-[40px]">
+//         <img
+//           src={logo}
+//           alt="Dhanu Pay Logo"
+//           className="w-50 h-50 object-contain"
+//         />
+//       </div>
+
+//       {/* Buttons */}
+//       <div className="w-full px-6 mt-10 mb-6">
+//         <div className="flex justify-between space-x-4 mb-2 poppins-semibold">
+//           <button onClick={() => navigate("/login")} className="flex-1 bg-[#2C2DCB] text-white py-2 rounded-full font-semibold">
+//             Sign In
+//           </button>
+//           <button onClick={() => navigate("/signup")} className="flex-1 bg-[#2C2DCB] text-white py-2 rounded-full font-semibold">
+//             Sign Up
+//           </button>
+//         </div>
+//         <p className="text-center text-xs text-gray-500">
+//           *terms and conditions apply
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Homescreen;
+
+
+
+import React, { useEffect, useState } from "react";
+import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 
 const Homescreen = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  useEffect(() => {
-  
-      let Token = localStorage.getItem('Token');
-       let IsMPINSet = localStorage.getItem('IsMPINSet');
-      if(!Token && !IsMPINSet){
-          navigate('/');
-      }else{
-        navigate('/MPinScreen');
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
-      }
-     
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo(0, 0);
+
+    // Handle resize
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
+  useEffect(() => {
+    const Token = localStorage.getItem("Token");
+    const IsMPINSet = localStorage.getItem("IsMPINSet");
+
+    if (Token && IsMPINSet) {
+      navigate("/MPinScreen");
+    }
+  }, []);
+
+  if (!isMobileView) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-100">
+        <h1 className="text-xl text-center text-red-600 px-6">
+          Please open this app on a mobile device or in mobile view.
+        </h1>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-[100vh] flex flex-col items-center justify-between bg-white sm:hidden">
-      {/* Top container with logo */}
+    <div className="h-[100vh] flex flex-col items-center justify-between bg-white">
       <div className="w-full flex-1 flex items-center justify-center bg-[#2C2DCB] rounded-b-[40px]">
-        <img
-          src={logo}
-          alt="Dhanu Pay Logo"
-          className="w-50 h-50 object-contain"
-        />
+        <img src={logo} alt="Dhanu Pay Logo" className="w-50 h-50 object-contain" />
       </div>
 
-      {/* Buttons */}
       <div className="w-full px-6 mt-10 mb-6">
         <div className="flex justify-between space-x-4 mb-2 poppins-semibold">
           <button onClick={() => navigate("/login")} className="flex-1 bg-[#2C2DCB] text-white py-2 rounded-full font-semibold">
@@ -41,9 +108,7 @@ const Homescreen = () => {
             Sign Up
           </button>
         </div>
-        <p className="text-center text-xs text-gray-500">
-          *terms and conditions apply
-        </p>
+        <p className="text-center text-xs text-gray-500">*terms and conditions apply</p>
       </div>
     </div>
   );
