@@ -14,26 +14,64 @@ const SignInScreen = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
 
- 
-  // const btnclick = () => {
-  //   // Save user login count
-  //   let loginCount = localStorage.getItem('userlogincount');
-  //   if (loginCount) {
-  //     loginCount = parseInt(loginCount) + 1;
-  //   } else {
-  //     loginCount = 1;
-  //   }
-  //   localStorage.setItem('userlogincount', loginCount);
-  //   localStorage.setItem('userAEPSKYCValid', "false");
-  //   // You can also log the count to see it works
-  //   console.log(`User login count: ${loginCount}`);
-  //   // Redirect to the dashboard
-  //   navigate("/dashboard/home");
-  // };
+// const btnclick = async () => {
+//   try {
+//     // Update login count
+//     let loginCount = localStorage.getItem('userlogincount');
+//     loginCount = loginCount ? parseInt(loginCount) + 1 : 1;
+//     localStorage.setItem('userlogincount', loginCount);
+//     localStorage.setItem('userAEPSKYCValid', "false");
 
+//     // API Call
+//     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
 
-// Inside your component
+//     const response = await axios.post(apiUrl, {
+//       Username: emailOrPhone,
+//       Password: password,
+//       IP: "11.00.123",
+//       OS: "Android",
+//       Browser: "Chrome",
+//       Device: "Realme"
+//     });
 
+//     const res = response.data;
+//     console.log(res);
+
+//     // Show message in SweetAlert
+//     await Swal.fire({
+//       title: 'OTP Sent',
+//       text: res.Message,
+//       icon: 'success',
+//       confirmButtonText: 'Continue'
+//     });
+
+//     // Store token and userID
+//     localStorage.setItem('Token', res.Token);
+//     localStorage.setItem('UserId', res.UserId);
+//     localStorage.setItem('loginid', res.loginid);
+//     localStorage.setItem('UserName', res.UserName);
+//  localStorage.setItem('IsMPINSet', res.IsMPINSet);
+
+//     if(res.IsMPINSet == "0") {
+//       navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });
+//     }else{
+//       navigate('/otp', { state: { Message: res.Message || res.message } });
+//     }
+
+//   } catch (error) {
+//     console.error('Login API Error:', error);
+//     if(error.response.status == 409){
+//       console.log(error.response.data.message);
+//       console.log("error 409 accored sucecesfully");
+//     }
+//     Swal.fire({
+//       title: 'Login Failed',
+//       text: error?.response?.data?.Message ||error?.response?.data?.message|| 'Please check credentials or network.',
+//       icon: 'error',
+//       confirmButtonText: 'OK'
+//     });
+//   }
+// };
 
 const btnclick = async () => {
   try {
@@ -58,7 +96,6 @@ const btnclick = async () => {
     const res = response.data;
     console.log(res);
 
-    // Show message in SweetAlert
     await Swal.fire({
       title: 'OTP Sent',
       text: res.Message,
@@ -66,31 +103,92 @@ const btnclick = async () => {
       confirmButtonText: 'Continue'
     });
 
-    // Store token and userID
+    // Store values
     localStorage.setItem('Token', res.Token);
     localStorage.setItem('UserId', res.UserId);
     localStorage.setItem('loginid', res.loginid);
     localStorage.setItem('UserName', res.UserName);
- localStorage.setItem('IsMPINSet', res.IsMPINSet);
+    localStorage.setItem('IsMPINSet', res.IsMPINSet);
 
-    if(res.IsMPINSet == "0") {
+    if (res.IsMPINSet === "0") {
       navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });
-    }else{
+    } else {
       navigate('/otp', { state: { Message: res.Message || res.message } });
     }
 
   } catch (error) {
     console.error('Login API Error:', error);
-    Swal.fire({
-      title: 'Login Failed',
-      text: error?.response?.data?.Message ||error?.response?.data?.message|| 'Please check credentials or network.',
-      icon: 'error',
-      confirmButtonText: 'OK'
-    });
+
+    if (error.response && error.response.status === 409) {
+      const res = error.response.data;
+
+      const result = await Swal.fire({
+        title: 'User Already Logged In',
+        text: 'This user is already logged in on another device. Do you want to continue?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, continue',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          // Retry API with Bearer token and UserId
+          const retryUrl = `${import.meta.env.VITE_API_BASE_URL}/users/ConfirmLogin`;
+
+          const retryResponse = await axios.post(
+            retryUrl,
+            { UserId: res.UserId },
+            {
+              headers: {
+                Authorization: `Bearer ${res.Token}`,
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+
+          const retryData = retryResponse.data;
+
+          await Swal.fire({
+            title: 'OTP Sent',
+            text: retryData.Message,
+            icon: 'success',
+            confirmButtonText: 'Continue'
+          });
+
+          localStorage.setItem('Token', retryData.Token);
+          localStorage.setItem('UserId', retryData.UserId);
+          localStorage.setItem('loginid', retryData.loginid);
+          localStorage.setItem('UserName', retryData.UserName);
+          localStorage.setItem('IsMPINSet', retryData.IsMPINSet);
+
+          if (retryData.IsMPINSet === "0") {
+            navigate('/SetMPinScreen', { state: { Message: retryData.Message || retryData.message } });
+          } else {
+            navigate('/otp', { state: { Message: retryData.Message || retryData.message } });
+          }
+
+        } catch (retryError) {
+          console.error('ConfirmLogin Retry Failed:', retryError);
+          Swal.fire({
+            title: 'Retry Failed',
+            text: retryError?.response?.data?.Message || retryError?.response?.data?.message || 'Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      }
+    } else {
+      Swal.fire({
+        title: 'Login Failed',
+        text: error?.response?.data?.Message || error?.response?.data?.message || 'Please check credentials or network.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
   }
 };
 
-  
 
   const handleChange = (value, index) => {
     if (value.length > 1) return;
