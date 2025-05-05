@@ -41,6 +41,8 @@ const MPinScreen = () => {
 
       if (res.success) {
         // Show success message (optional)
+        localStorage.setItem('loginid', res.OTPId);
+        console.log("otp or loginid at forgetmpin page",res.OTPId); // Save OTPId instead of res.loginid
         await Swal.fire({
           title: "OTP Sent",
           text: res.message || "An OTP has been sent to your registered number.",
@@ -50,9 +52,7 @@ const MPinScreen = () => {
 
         // Navigate to the forget-m-pin route
         navigate("/forget-m-pin", {
-          state: {
-            OTPId: res.OTPId // Replace with dynamic value if needed
-          },
+          
         });
       } else {
         await Swal.fire({

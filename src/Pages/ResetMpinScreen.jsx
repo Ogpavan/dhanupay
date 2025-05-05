@@ -4,8 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const ResetMpinScreen = () => {
-  const location = useLocation();
-  const otpId = location.state?.OTPId;
+ 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -78,6 +77,7 @@ const ResetMpinScreen = () => {
         const token = localStorage.getItem("Token");
         const UserId = localStorage.getItem("UserId");
         const LoginId = localStorage.getItem("loginid");
+        console.log("login id at resert mpin page",LoginId);
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
     
         // Step 1: Validate OTP
@@ -85,7 +85,7 @@ const ResetMpinScreen = () => {
           `${baseUrl}/users/OTPValidator`,
           {
             UserId,
-            LoginId:otpId,
+            LoginId:LoginId,
             OTP: otpValue,
           },
           {
