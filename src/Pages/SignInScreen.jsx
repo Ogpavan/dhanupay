@@ -274,7 +274,7 @@ const SignInScreen = () => {
           </button>
         </div> */}
 
-        <div className="w-full mt-4 border border-gray-300 rounded-lg px-4 py-2 focus-within:ring-2 focus-within:ring-indigo-400 bg-white poppins-regular">
+        <div className="w-full mt-4 border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-indigo-400 bg-white poppins-regular">
           <div className="flex items-center">
             <input
               type={showPassword ? "text" : "password"}
