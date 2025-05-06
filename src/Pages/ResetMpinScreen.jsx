@@ -140,7 +140,8 @@ const ResetMpinScreen = () => {
         {
           UserId,
           MPin: mpinValue,
-          LoginId: LoginId
+          LoginId: LoginId,
+          UserType:"Retailer"
         },
         {
           headers: {

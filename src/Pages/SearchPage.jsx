@@ -41,7 +41,12 @@ const SearchPage = () => {
         type="text"
         placeholder="Search"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (/^[a-zA-Z]*$/.test(value)) {
+            setSearchTerm(value);
+          }
+        }}
         className="w-full px-4 py-2 rounded-full border border-gray-300 mb-4 text-sm focus:outline-none"
       />
 

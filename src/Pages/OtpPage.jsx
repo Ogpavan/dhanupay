@@ -123,6 +123,7 @@ const OtpPage = () => {
                     icon: 'success',
                     confirmButtonText: 'Continue'
                 });
+                localStorage.setItem('loginSucess', "true");
                 navigate("/dashboard/home");
             } else {
                 await Swal.fire({
@@ -281,6 +282,7 @@ const OtpPage = () => {
                 `${baseUrl}/users/ForgetMPIN`,
                 {
                     UserId,
+                    UserType:"Retailer"
                 },
                 {
                     headers: {

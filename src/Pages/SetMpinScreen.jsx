@@ -154,6 +154,7 @@ const SetMpinScreen = () => {
           UserId : UserId,
           LoginId: LoginId,
           MPin: mpinValue,
+          UserType:"Retailer"
         },
         {
           headers: {

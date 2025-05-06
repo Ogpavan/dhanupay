@@ -253,7 +253,9 @@ const ForgetPassword = () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/users/ForgetPassword`,
-        { Username: UserID },
+        { Username: UserID ,
+          UserType:"Retailer"
+        },
 
       );
       console.log(response.data);
@@ -354,6 +356,7 @@ const ForgetPassword = () => {
           UserId: userId,
           LoginId: loginId,
           Password: Newpassword,
+          UserType:"Retailer"
         },
         {
           headers: {

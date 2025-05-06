@@ -9,72 +9,27 @@ const SignInScreen = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const fetchIp = async () => {
+      try {
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        setIp(data.ip);
+      } catch (error) {
+        console.error("Error fetching IP:", error);
+      }
+    };
+
+    fetchIp();
+  }, []);
   const navigate = useNavigate();
   // const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-
-  // const btnclick = async () => {
-  //   try {
-  //     // Update login count
-  //     let loginCount = localStorage.getItem('userlogincount');
-  //     loginCount = loginCount ? parseInt(loginCount) + 1 : 1;
-  //     localStorage.setItem('userlogincount', loginCount);
-  //     localStorage.setItem('userAEPSKYCValid', "false");
-
-  //     // API Call
-  //     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
-
-  //     const response = await axios.post(apiUrl, {
-  //       Username: emailOrPhone,
-  //       Password: password,
-  //       IP: "11.00.123",
-  //       OS: "Android",
-  //       Browser: "Chrome",
-  //       Device: "Realme"
-  //     });
-
-  //     const res = response.data;
-  //     console.log(res);
-
-  //     // Show message in SweetAlert
-  //     await Swal.fire({
-  //       title: 'OTP Sent',
-  //       text: res.Message,
-  //       icon: 'success',
-  //       confirmButtonText: 'Continue'
-  //     });
-
-  //     // Store token and userID
-  //     localStorage.setItem('Token', res.Token);
-  //     localStorage.setItem('UserId', res.UserId);
-  //     localStorage.setItem('loginid', res.loginid);
-  //     localStorage.setItem('UserName', res.UserName);
-  //  localStorage.setItem('IsMPINSet', res.IsMPINSet);
-
-  //     if(res.IsMPINSet == "0") {
-  //       navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });
-  //     }else{
-  //       navigate('/otp', { state: { Message: res.Message || res.message } });
-  //     }
-
-  //   } catch (error) {
-  //     console.error('Login API Error:', error);
-  //     if(error.response.status == 409){
-  //       console.log(error.response.data.message);
-  //       console.log("error 409 accored sucecesfully");
-  //     }
-  //     Swal.fire({
-  //       title: 'Login Failed',
-  //       text: error?.response?.data?.Message ||error?.response?.data?.message|| 'Please check credentials or network.',
-  //       icon: 'error',
-  //       confirmButtonText: 'OK'
-  //     });
-  //   }
-  // };
+  const [ip, setIp] = useState("");
 
   const btnclick = async () => {
     setBtnLoading(true);
@@ -85,17 +40,19 @@ const SignInScreen = () => {
       localStorage.setItem('userlogincount', loginCount);
       localStorage.setItem('userAEPSKYCValid', "false");
 
+      console.log(ip);
       // API Call
       const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
-      console.log("User Id", emailOrPhone);
+      console.log("Mobile number", emailOrPhone);
       console.log("Password", password);
       const response = await axios.post(apiUrl, {
         Username: emailOrPhone,
         Password: password,
-        IP: "11.00.123",
+        IP: ip,
         OS: "Android",
-        Browser: "Chrome",
-        Device: "Realme"
+        Browser: "WebView",
+        Device: "Android",
+        UserType: "Retailer"
       });
 
       const res = response.data;
@@ -114,6 +71,7 @@ const SignInScreen = () => {
       localStorage.setItem('loginid', res.loginid);
       localStorage.setItem('UserName', res.UserName);
       localStorage.setItem('IsMPINSet', res.IsMPINSet);
+      localStorage.setItem('loginSucess', "false");
 
       if (res.IsMPINSet === "0") {
         navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });
@@ -143,7 +101,11 @@ const SignInScreen = () => {
 
             const retryResponse = await axios.post(
               retryUrl,
-              { UserId: res.UserId },
+              {
+                UserId: res.UserId,
+                UserType: "Retailer"
+
+              },
               {
                 headers: {
                   Authorization: `Bearer ${res.Token}`,
@@ -270,7 +232,7 @@ const SignInScreen = () => {
         /> */}
         <input
           type="text"
-          placeholder="User ID"
+          placeholder="Registered Phone Number"
           value={emailOrPhone}
           onChange={(e) => {
             const input = e.target.value;
@@ -290,7 +252,7 @@ const SignInScreen = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full mt-4 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 poppins-regular"
         /> */}
-        <div className="w-full mt-4 border border-gray-300 rounded-lg flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-indigo-400">
+        {/* <div className="w-full mt-4 border border-gray-300 rounded-lg flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-indigo-400">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
@@ -310,7 +272,40 @@ const SignInScreen = () => {
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
               )}
           </button>
+        </div> */}
+
+        <div className="w-full mt-4 border border-gray-300 rounded-lg px-4 py-2 focus-within:ring-2 focus-within:ring-indigo-400 bg-white">
+          <div className="flex items-center">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              maxLength={25}
+              onChange={(e) => setPassword(e.target.value)}
+              className="flex-grow outline-none border-none text-sm sm:text-base bg-transparent"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="ml-2 text-gray-500 focus:outline-none"
+            >
+              {showPassword ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 sm:w-6 sm:h-6">
+                  <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+                  <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                  <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+                  <path d="m2 2 20 20" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 sm:w-6 sm:h-6">
+                  <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
 
 
 
