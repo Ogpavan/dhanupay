@@ -307,14 +307,14 @@ function App() {
           <Route path="chat" element={<Chat />} />
         </Route>
 
-        <Route path="/basic-details" element={<PrivateRoute><BasicDetails /></PrivateRoute>} />
+        {/* <Route path="/basic-details" element={<PrivateRoute><BasicDetails /></PrivateRoute>} />
         <Route path="/business-details" element={<PrivateRoute><BusinessDetails /></PrivateRoute>} />
         <Route path="/residential-details" element={<PrivateRoute><ResidentialDetails /></PrivateRoute>} />
         <Route path="/aadhaar-details" element={<PrivateRoute><AadhaarDetails /></PrivateRoute>} />
         <Route path="/pan-details" element={<PrivateRoute><PanDetails /></PrivateRoute>} />
         <Route path="/video-kyc" element={<PrivateRoute><VideoKYC /></PrivateRoute>} />
-        <Route path="/KYCSucessScreen" element={<PrivateRoute><KYCSucessScreen /></PrivateRoute>} />
-        <Route path="/MPinScreen" element={<PrivateRoute><MPinScreen /></PrivateRoute>} />
+        <Route path="/KYCSucessScreen" element={<PrivateRoute><KYCSucessScreen /></PrivateRoute>} />*/}
+         <Route path="/MPinScreen" element={<PrivateRoute><MPinScreen /></PrivateRoute>} /> 
         <Route path="/SetMPinScreen" element={<PrivateRoute><SetMpinScreen /></PrivateRoute>} />
         <Route path="/forget-m-pin" element={<PrivateRoute><ResetMpinScreen /></PrivateRoute>} />
         <Route path="/Logout" element={<PrivateRoute><MPinScreen /></PrivateRoute>} />
@@ -361,6 +361,16 @@ function App() {
         <Route path="/dthpaymentfetch" element={<PrivateRoute><DTHPaymentFetch /></PrivateRoute>} />
         <Route path="/postpaid" element={<PrivateRoute><PostpaidMobile /></PrivateRoute>} />
         <Route path="/postpaidfetch" element={<PrivateRoute><PostpaidFetch /></PrivateRoute>} />
+
+
+        <Route path="/basic-details" element={<BasicDetails />} />
+<Route path="/business-details" element={<BusinessDetails />} />
+<Route path="/residential-details" element={<ResidentialDetails />} />
+<Route path="/aadhaar-details" element={<AadhaarDetails />} />
+<Route path="/pan-details" element={<PanDetails />} />
+<Route path="/video-kyc" element={<VideoKYC />} />
+<Route path="/KYCSucessScreen" element={<KYCSucessScreen />} />
+
 
         {/* Report Routes Dynamically Rendered */}
         {reports.map((report, index) => (

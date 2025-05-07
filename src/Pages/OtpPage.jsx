@@ -151,65 +151,6 @@ const OtpPage = () => {
     };
 
 
-
-    // const ResendOTP = async () => {
-    //     setBtnLoading(true);
-    //     try {
-
-    //         let Token = localStorage.getItem('Token');
-    //         let UserId = localStorage.getItem('UserId');
-    //         let loginid = localStorage.getItem('loginid');
-    //         const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
-    //         const response = await axios.post(apiUrl, {
-    //             UserId: UserId,
-    //             LoginId: loginid,
-    //         }, {
-    //             headers: {
-    //                 Authorization: `Bearer ${Token}`,
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         }
-
-
-    //         );
-
-    //         const res = response.data;
-    //         console.log(res);
-    //         if (res.success) {
-    //             // Show message in SweetAlert
-    //             await Swal.fire({
-    //                 title: 'OTP RESENDED',
-    //                 text: res.message,
-    //                 icon: 'success',
-    //                 confirmButtonText: 'Continue'
-    //             });
-    //         } else {
-    //             await Swal.fire({
-    //                 title: 'Login Failed',
-    //                 text: res.message ||res.Message || 'Please check credentials or network.',
-    //                 icon: 'error',
-    //                 confirmButtonText: 'OK'
-    //             });
-    //             // navigate("/login");
-    //         }
-
-
-
-    //     } catch (error) {
-    //         console.error('otp API Error:', error);
-    //         Swal.fire({
-    //             title: 'Login Failed',
-    //             text: error?.response?.data?.Message || 'Please check credentials or network.',
-    //             icon: 'error',
-    //             confirmButtonText: 'OK'
-    //         });
-    //     }finally {
-    //         setBtnLoading(false); // Reset button state
-    //       }
-    //     };
-
-
-
     const ResendOTP = async () => {
         if (isResendDisabled) return;
         setIsResendDisabled(true);

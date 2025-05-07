@@ -11,7 +11,7 @@ const KYCSucessScreen = () => {
 
         // alert(`Home button clicked Scessfully`);
         
-        onClick = navigate("/");
+       navigate("/");
     };
     return (
 

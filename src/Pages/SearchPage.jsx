@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Services, OtherServices } from "../servicesData/servicesData";
 
-const SearchPage = () => {  
+const SearchPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
-
   const navigate = useNavigate();
 
-  // Filter services based on search term
   const filterServices = (services) =>
     services.filter((service) =>
       service.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -19,7 +18,6 @@ const SearchPage = () => {
 
   const filteredFinance = filterServices(Services);
   const filteredBBPS = filterServices(OtherServices);
-
   const isSearching = searchTerm.trim().length > 0;
 
   const toggleView = () => {
@@ -41,6 +39,7 @@ const SearchPage = () => {
         type="text"
         placeholder="Search"
         value={searchTerm}
+        maxLength={25}
         onChange={(e) => {
           const value = e.target.value;
           if (/^[a-zA-Z]*$/.test(value)) {
@@ -52,15 +51,17 @@ const SearchPage = () => {
 
       {/* Results */}
       <div className="space-y-4">
-        {/* Always show Finance services */}
-        <CategorySection
-          title="Finance"
-          services={filteredFinance.length > 0 ? filteredFinance : Services}
-          navigate={navigate}
-          isExpanded={true}
-        />
+        {/* Finance Services */}
+        {(!isSearching || filteredFinance.length > 0) && (
+          <CategorySection
+            title="Finance"
+            services={isSearching ? filteredFinance : Services}
+            navigate={navigate}
+            isExpanded={true}
+          />
+        )}
 
-        {/* Show other categories only if searching or expanded */}
+        {/* BBPS Services if searching or expanded */}
         {isSearching ? (
           <>
             {filteredBBPS.length > 0 && (
@@ -78,17 +79,14 @@ const SearchPage = () => {
             )}
           </>
         ) : (
-          <>
-            {/* Show BBPS only when View More is clicked */}
-            {isExpanded && (
-              <CategorySection
-                title="BBPS"
-                services={OtherServices}
-                navigate={navigate}
-                isExpanded={true}
-              />
-            )}
-          </>
+          isExpanded && (
+            <CategorySection
+              title="BBPS"
+              services={OtherServices}
+              navigate={navigate}
+              isExpanded={true}
+            />
+          )
         )}
 
         {/* View More / View Less Button */}
@@ -113,8 +111,6 @@ const CategorySection = ({ title, services, navigate, isExpanded }) => {
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-600 mb-2">{title}</h2>
-      {/* <h2 className="text-sm font-semibold text-gray-600 mb-2">Services</h2> */}
-
       <div className="space-y-2">
         {visibleServices.map((service, idx) => (
           <div

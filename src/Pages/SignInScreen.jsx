@@ -4,47 +4,50 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import Swal from "sweetalert2";
 
-
 const SignInScreen = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const fetchIp = async () => {
-      try {
-        const response = await fetch("https://api.ipify.org?format=json");
-        const data = await response.json();
-        setIp(data.ip);
-      } catch (error) {
-        console.error("Error fetching IP:", error);
-      }
-    };
-
-    fetchIp();
-  }, []);
   const navigate = useNavigate();
-  // const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [ip, setIp] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  // Validate form
+  const validateForm = () => {
+    let isValid = true;
+
+    // Phone number validation (only 10 digits allowed)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(emailOrPhone)) {
+      setPhoneError("Please enter a valid 10-digit phone number.");
+      isValid = false;
+    } else {
+      setPhoneError("");
+    }
+
+    // Password validation (minimum 6 characters)
+    if (!password || password.length < 6) {
+      setPasswordError("Password must be at least 6 characters long.");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    return isValid;
+  };
 
   const btnclick = async () => {
+    if (!validateForm()) return; // Prevent API call if form is invalid
+
     setBtnLoading(true);
     try {
-      // Update login count
-      let loginCount = localStorage.getItem('userlogincount');
-      loginCount = loginCount ? parseInt(loginCount) + 1 : 1;
-      localStorage.setItem('userlogincount', loginCount);
-      localStorage.setItem('userAEPSKYCValid', "false");
-
-      console.log(ip);
-      // API Call
       const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
-      console.log("Mobile number", emailOrPhone);
-      console.log("Password", password);
       const response = await axios.post(apiUrl, {
         Username: emailOrPhone,
         Password: password,
@@ -56,7 +59,6 @@ const SignInScreen = () => {
       });
 
       const res = response.data;
-      console.log(res);
 
       await Swal.fire({
         title: 'OTP Sent',
@@ -78,7 +80,6 @@ const SignInScreen = () => {
       } else {
         navigate('/otp', { state: { Message: res.Message || res.message } });
       }
-
     } catch (error) {
       console.error('Login API Error:', error);
 
@@ -96,15 +97,12 @@ const SignInScreen = () => {
 
         if (result.isConfirmed) {
           try {
-            // Retry API with Bearer token and UserId
             const retryUrl = `${import.meta.env.VITE_API_BASE_URL}/users/ConfirmLogin`;
-
             const retryResponse = await axios.post(
               retryUrl,
               {
                 UserId: res.UserId,
                 UserType: "Retailer"
-
               },
               {
                 headers: {
@@ -158,20 +156,6 @@ const SignInScreen = () => {
     }
   };
 
-
-
-  const handleChange = (value, index) => {
-    if (value.length > 1) return;
-    const newPin = [...pin];
-    newPin[index] = value;
-    setPin(newPin);
-
-    if (value && index < 3) {
-      const nextInput = document.getElementById(`pin-${index + 1}`);
-      if (nextInput) nextInput.focus();
-    }
-  };
-
   return (
     <div className="flex flex-col h-screen bg-indigo-700 font-poppins">
       {/* Top bar */}
@@ -200,79 +184,20 @@ const SignInScreen = () => {
           <p className="text-sm text-gray-500 mt-1 poppins-light">Hello there, sign in to continue</p>
         </div>
 
-        {/* Lock Icon + Dots */}
-        <div className="relative bg-purple-100 p-6 rounded-full shadow-md mx-auto mt-6 w-fit">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-10 w-10 text-indigo-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zM16 7a4 4 0 00-8 0v4h8V7z"
-            />
-          </svg>
-          <div className="absolute top-0 left-1 bg-green-400 w-2 h-2 rounded-full" />
-          <div className="absolute top-2 right-1 bg-red-400 w-3 h-3 rounded-full" />
-          <div className="absolute bottom-2 right-2 bg-blue-400 w-2 h-2 rounded-full" />
-          <div className="absolute bottom-3 left-2 bg-yellow-400 w-2 h-2 rounded-full" />
-        </div>
-
-        {/* Input fields */}
-        {/* <input
-          type="text"
-          placeholder="Phone Number Or Email ID"
-          value={emailOrPhone}
-          onChange={(e) => setEmailOrPhone(e.target.value)}
-          className="w-full mt-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 poppins-regular"
-        /> */}
+        {/* Input Fields */}
         <input
           type="text"
           placeholder="Registered Phone Number"
           value={emailOrPhone}
           onChange={(e) => {
             const input = e.target.value;
-            const sanitized = input.replace(/[^a-zA-Z0-9@._]/g, '').slice(0, 25);
+            const sanitized = input.replace(/[^0-9]/g, '').slice(0, 10);
             setEmailOrPhone(sanitized);
           }}
-          maxLength={25}
+          maxLength={10}
           className="w-full mt-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 poppins-regular"
         />
-
-
-        {/* <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          maxLength={25}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full mt-4 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 poppins-regular"
-        /> */}
-        {/* <div className="w-full mt-4 border border-gray-300 rounded-lg flex items-center px-4 py-2 focus-within:ring-2 focus-within:ring-indigo-400">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            maxLength={25}
-            onChange={(e) => setPassword(e.target.value)}
-            className="flex-1 outline-none border-none poppins-regular"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="text-gray-500 focus:outline-none"
-          >
-            {showPassword ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-off-icon lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-              )}
-          </button>
-        </div> */}
+        {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
 
         <div className="w-full mt-4 border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-indigo-400 bg-white poppins-regular">
           <div className="flex items-center">
@@ -305,9 +230,7 @@ const SignInScreen = () => {
             </button>
           </div>
         </div>
-
-
-
+        {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
 
         {/* Forgot password */}
         <div className="text-right text-sm text-gray-500 mt-2 mb-6 poppins-light">

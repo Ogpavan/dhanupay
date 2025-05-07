@@ -90,17 +90,152 @@ const SetMpinScreen = () => {
     mpin.every((val) => val !== "") &&
     confirmMpin.every((val) => val !== "");
 
-  // const handleSubmit = () => {
+  
+  // const handleSubmit = async () => {
+  //   setBtnLoading(true);
+  //   const mpinValue = mpin.join("");
+  //   const confirmMpinValue = confirmMpin.join("");
+  //   const otpValue = otp.join("");
 
-  //   // alert("OTP: " + otp.join("") + "\nM-PIN: " + mpin.join(""));
-  //   onClick=navigate("/login") ;
+  //   if (mpinValue !== confirmMpinValue) {
+  //     await Swal.fire({
+  //       title: "M–PIN Mismatch",
+  //       text: "The entered M–PIN and Confirm M–PIN do not match.",
+  //       icon: "error",
+  //       confirmButtonText: "OK",
+  //     });
+  //     setBtnLoading(false);
+  //     return;
+
+  //   }
+
+  //   try {
+  //     const token = localStorage.getItem("Token");
+  //     const UserId = localStorage.getItem("UserId");
+  //     const LoginId = localStorage.getItem("loginid");
+  //     const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  //     // Step 1: Validate OTP
+  //     const validateOtpResponse = await axios.post(
+  //       `${baseUrl}/users/OTPValidator`,
+  //       {
+  //         UserId,
+  //         LoginId,
+  //         OTP: otpValue,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (!validateOtpResponse.data.success) {
+  //       await Swal.fire({
+  //         title: "OTP Verification Failed",
+  //         text: validateOtpResponse.data.message || "Invalid OTP",
+  //         icon: "error",
+  //         confirmButtonText: "Retry",
+  //       });
+  //       setBtnLoading(false);
+  //       return;
+  //     }
+
+  //     // Step 2: Set M–PIN
+  //     console.log("")
+  //     const setMpinResponse = await axios.post(
+  //       `${baseUrl}/users/set-mpin`,
+  //       {
+  //         UserId : UserId,
+  //         LoginId: LoginId,
+  //         MPin: mpinValue,
+  //         UserType:"Retailer"
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (setMpinResponse.data.success) {
+  //       await Swal.fire({
+  //         title: "Success",
+  //         text: "M–PIN set successfully.",
+  //         icon: "success",
+  //         confirmButtonText: "Login",
+  //       });
+  //       navigate("/login");
+  //     } else {
+  //       await Swal.fire({
+  //         title: "Failed",
+  //         text: setMpinResponse.data.message || "Failed to set M–PIN.",
+  //         icon: "error",
+  //         confirmButtonText: "Retry",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     await Swal.fire({
+  //       title: "Error",
+  //       text:
+  //         error?.response?.data?.message ||
+  //         error?.response?.data?.Message ||
+  //         "Something went wrong. Please try again.",
+  //       icon: "error",
+  //       confirmButtonText: "OK",
+  //     });
+  //   }
+  //   finally {
+  //     setBtnLoading(false); // Reset button state
+  //   }
   // };
+
+
+
   const handleSubmit = async () => {
     setBtnLoading(true);
     const mpinValue = mpin.join("");
     const confirmMpinValue = confirmMpin.join("");
     const otpValue = otp.join("");
-
+  
+    // Validation for OTP
+    if (otpValue.length !== 4) {
+      await Swal.fire({
+        title: "Invalid OTP",
+        text: "Please enter a valid 4-digit OTP.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      setBtnLoading(false);
+      return;
+    }
+  
+    // Validation for M-PIN and Confirm M-PIN
+    if (mpinValue.length !== 4) {
+      await Swal.fire({
+        title: "Invalid M–PIN",
+        text: "M–PIN must be 4 digits long.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      setBtnLoading(false);
+      return;
+    }
+  
+    if (confirmMpinValue.length !== 4) {
+      await Swal.fire({
+        title: "Invalid Confirm M–PIN",
+        text: "Confirm M–PIN must be 4 digits long.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      setBtnLoading(false);
+      return;
+    }
+  
     if (mpinValue !== confirmMpinValue) {
       await Swal.fire({
         title: "M–PIN Mismatch",
@@ -110,15 +245,14 @@ const SetMpinScreen = () => {
       });
       setBtnLoading(false);
       return;
-
     }
-
+  
     try {
       const token = localStorage.getItem("Token");
       const UserId = localStorage.getItem("UserId");
       const LoginId = localStorage.getItem("loginid");
       const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
+  
       // Step 1: Validate OTP
       const validateOtpResponse = await axios.post(
         `${baseUrl}/users/OTPValidator`,
@@ -134,7 +268,7 @@ const SetMpinScreen = () => {
           },
         }
       );
-
+  
       if (!validateOtpResponse.data.success) {
         await Swal.fire({
           title: "OTP Verification Failed",
@@ -145,16 +279,15 @@ const SetMpinScreen = () => {
         setBtnLoading(false);
         return;
       }
-
+  
       // Step 2: Set M–PIN
-      console.log("")
       const setMpinResponse = await axios.post(
         `${baseUrl}/users/set-mpin`,
         {
-          UserId : UserId,
+          UserId: UserId,
           LoginId: LoginId,
           MPin: mpinValue,
-          UserType:"Retailer"
+          UserType: "Retailer",
         },
         {
           headers: {
@@ -163,7 +296,7 @@ const SetMpinScreen = () => {
           },
         }
       );
-
+  
       if (setMpinResponse.data.success) {
         await Swal.fire({
           title: "Success",
@@ -191,68 +324,11 @@ const SetMpinScreen = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
-    }
-    finally {
+    } finally {
       setBtnLoading(false); // Reset button state
     }
   };
-
-
-
-
-  // const ResendOTP = async () => {
-  //   try {
-
-  //     let Token = localStorage.getItem('Token');
-  //     let UserId = localStorage.getItem('UserId');
-  //     let loginid = localStorage.getItem('loginid');
-  //     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/OTP_Resend`;
-  //     const response = await axios.post(apiUrl, {
-  //       UserId: UserId,
-  //       LoginId: loginid,
-  //     }, {
-  //       headers: {
-  //         Authorization: `Bearer ${Token}`,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-
-
-  //     );
-
-  //     const res = response.data;
-  //     console.log(res);
-  //     if (res.success) {
-  //       // Show message in SweetAlert
-  //       await Swal.fire({
-  //         title: 'OTP RESENDED',
-  //         text: res.message,
-  //         icon: 'success',
-  //         confirmButtonText: 'Continue'
-  //       });
-  //     } else {
-  //       await Swal.fire({
-  //         title: 'Login Failed',
-  //         text: res.message || res.Message || 'Please check credentials or network.',
-  //         icon: 'error',
-  //         confirmButtonText: 'OK'
-  //       });
-  //       // navigate("/login");
-  //     }
-
-
-
-  //   } catch (error) {
-  //     console.error('otp API Error:', error);
-  //     Swal.fire({
-  //       title: 'Login Failed',
-  //       text: error?.response?.data?.Message || 'Please check credentials or network.',
-  //       icon: 'error',
-  //       confirmButtonText: 'OK'
-  //     });
-  //   }
-  // };
-
+  
 
   const ResendOTP = async () => {
       if (isResendDisabled) return;

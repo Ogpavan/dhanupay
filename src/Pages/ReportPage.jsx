@@ -12,6 +12,8 @@ function ReportPage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
 
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
   const handleOpenModal = (report) => {
     setSelectedReport(report);
     setFromDate('');
@@ -19,7 +21,14 @@ function ReportPage() {
   };
 
   const handleContinue = () => {
-    if (selectedReport && fromDate && toDate) {
+    if (!fromDate || !toDate) return;
+
+    if (fromDate > toDate) {
+      alert("From Date must be earlier than or equal to To Date.");
+      return;
+    }
+
+    if (selectedReport) {
       navigate(`${selectedReport.route}?from=${fromDate}&to=${toDate}`);
     }
   };
@@ -35,11 +44,10 @@ function ReportPage() {
             onClick={() => handleOpenModal(report)}
           >
             <div className="flex flex-col items-center">
-              {/* Display the icon */}
               <img 
                 src={report.icon} 
                 alt={report.title} 
-                className="w-16 h-16 mb-2" // Adjust size as needed
+                className="w-16 h-16 mb-2" 
               />
               <h2 className="text-md font-semibold text-center text-indigo-700">{report.title}</h2>
               <p className="text-xs text-center text-gray-600">{report.description}</p>
@@ -60,6 +68,7 @@ function ReportPage() {
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
+                max={today}
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
             </div>
@@ -69,6 +78,7 @@ function ReportPage() {
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
+                max={today}
                 className="w-full border border-gray-300 p-2 rounded-md"
               />
             </div>
