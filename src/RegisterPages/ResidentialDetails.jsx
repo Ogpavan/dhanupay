@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Stepper from "../components/Stepper";
-import { useNavigate } from "react-router-dom";
 
 const ResidentialDetails = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
   const navigate = useNavigate();
+  const location = useLocation(); // To get state from the previous route
 
   const [form, setForm] = useState({
     houseNo: "",
@@ -17,18 +15,47 @@ const ResidentialDetails = () => {
     state: "",
   });
 
+  const [basicDetails, setBasicDetails] = useState(location.state?.basicDetails || {});
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleNext = () => {
+    // Basic validation before navigating
+    const { houseNo, address, landmark, pincode, city, state } = form;
+    if (
+      !houseNo.trim() ||
+      !address.trim() ||
+      !landmark.trim() ||
+      !/^\d{6}$/.test(pincode) || // Only 6 digit pincode
+      !city ||
+      !state
+    ) {
+      alert("Please fill in all fields correctly.");
+      return;
+    }
+
     const residentialData = {
-      houseNo: form.houseNo,
-      address: form.address,
-      landmark: form.landmark,
-      pincode: form.pincode,
-      city: form.city,
-      state: form.state,
+      houseNo,
+      address,
+      landmark,
+      pincode,
+      city,
+      state,
     };
 
-    localStorage.setItem("residentialAddress", JSON.stringify(residentialData));
-    navigate("/business-details");
+    // Combine basic details and residential data
+    const combinedData = {
+      ...basicDetails,
+      ...residentialData,
+    };
+
+    // Log both the residential details and the basic details to console
+    console.log("Basic Details:", basicDetails);
+    console.log("Residential Data:", residentialData);
+    // console.log("Combined Data:", combinedData);
+    navigate("/business-details", { state: {basicDetails:basicDetails,residentialData:residentialData} });
   };
 
   return (
@@ -45,33 +72,41 @@ const ResidentialDetails = () => {
         </h1>
 
         <form className="space-y-3">
-             <input
+          <div className="flex space-x-2">
+            <input
               type="text"
               placeholder="House No."
-              className="input-field w-1/2"
+              className="input-field"
               value={form.houseNo}
+              maxLength={10}
               onChange={(e) => setForm({ ...form, houseNo: e.target.value })}
             />
+
             <input
               type="text"
               placeholder="Residential Area"
-              className="input-field w-1/2"
+              className="input-field"
               value={form.address}
+              maxLength={50}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
             />
- 
+          </div>
+
           <input
             type="text"
             placeholder="Landmark"
             className="input-field"
             value={form.landmark}
+            maxLength={50}
             onChange={(e) => setForm({ ...form, landmark: e.target.value })}
           />
 
           <input
-            type="text"
+            type="tel"
             placeholder="Pincode"
             className="input-field"
+            inputMode="numeric"
+            maxLength={6}
             value={form.pincode}
             onChange={(e) => setForm({ ...form, pincode: e.target.value })}
           />

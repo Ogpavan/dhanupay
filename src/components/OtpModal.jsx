@@ -11,16 +11,23 @@ const OtpModal = ({ isOpen, onClose, onSubmit, otp, setOtp, verifyingField }) =>
           Verify {verifyingField}
         </h2>
         <p className="text-sm text-gray-500 mb-4">
-          Enter the 6-digit OTP sent to your number
+          Enter the 4-digit OTP sent to your number
         </p>
         <input
-          type="text"
-          maxLength={6}
+          type="tel"
+          inputMode="numeric"
+          maxLength={4}
           value={otp}
-          onChange={(e) => setOtp(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            if (/^\d{0,4}$/.test(val)) {
+              setOtp(val);
+            }
+          }}
           className="input-field text-center text-lg tracking-widest"
-          placeholder="______"
+          placeholder="____"
         />
+
         <button
           onClick={onSubmit}
           className="mt-4 w-full bg-[#2C2DCB] text-white py-2 rounded-xl font-semibold"

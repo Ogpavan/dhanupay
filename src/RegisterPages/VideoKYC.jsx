@@ -1,15 +1,71 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Stepper from "../components/Stepper";
 import { FiUploadCloud } from "react-icons/fi";
 import { FaCamera } from "react-icons/fa";
 import { IoVideocam } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const VideoKYC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const navigate = useNavigate();
+
+  // Get the updated data from the last route
+  const { combinedData } = location.state || {};
+
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [shopPhoto, setShopPhoto] = useState(null);
+  const [kycVideo, setKycVideo] = useState(null);
+
+  const handleProfilePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    setProfilePhoto(file);
+  };
+
+  const handleShopPhotoUpload = (e) => {
+    const file = e.target.files[0];
+    setShopPhoto(file);
+  };
+
+  const handleKycVideoUpload = (e) => {
+    const file = e.target.files[0];
+    setKycVideo(file);
+  };
+
+  const handleSubmit = () => {
+    if (!profilePhoto || !shopPhoto || !kycVideo) {
+      Swal.fire({
+        title: "Incomplete Uploads",
+        text: "Please upload Profile Photo, Shop Photo, and KYC Video.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    // Merge current form data into the combined data
+    const finalData = {
+      ...combinedData,
+      videoKyc: {
+        profilePhoto,
+        shopPhoto,
+        kycVideo,
+      },
+    };
+
+    // Clear previous localStorage entry
+    localStorage.removeItem("registrationData");
+
+    // Store finalData in localStorage
+    localStorage.setItem("finalKycData", JSON.stringify(finalData));
+
+    // Navigate to final success screen
+    navigate("/PrevewRegistration", { state: { finalData } });
+  };
 
   return (
     <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
@@ -25,44 +81,44 @@ const VideoKYC = () => {
         </h1>
 
         <form className="space-y-6">
-            <div className="flex justify-evenly space-x-4">
-          {/* Profile Photo Upload (Circle) */}
-          <div className="flex flex-col items-center">
-            <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
-              Upload Profile Photo
-            </label>
-            <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md">
-              <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
-              <FaCamera />
+          <div className="flex justify-evenly space-x-4">
+            <div className="flex flex-col items-center">
+              <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
+                Upload Profile Photo
+              </label>
+              <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md">
+                <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
+                  <FaCamera />
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="absolute w-full h-full opacity-0 cursor-pointer"
+                  onChange={handleProfilePhotoUpload}
+                />
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                className="absolute w-full h-full opacity-0 cursor-pointer"
-              />
+            </div>
+
+            <div className="flex flex-col items-center">
+              <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
+                Upload Shop Photo
+              </label>
+              <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md">
+                <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
+                  <FaCamera />
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="absolute w-full h-full opacity-0 cursor-pointer"
+                  onChange={handleShopPhotoUpload}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Shop Photo Upload (Circle) */}
-          <div className="flex flex-col items-center">
-            <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
-              Upload Shop Photo
-            </label>
-            <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md">
-              <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
-                <FaCamera />
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                className="absolute w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
-          </div>
-          </div>
-          {/* Video Upload */}
           <div>
             <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
               Upload KYC Video (Max 30 seconds)
@@ -70,12 +126,13 @@ const VideoKYC = () => {
             <div className="relative w-full h-40 bg-gray-100 rounded-xl overflow-hidden">
               <div className="absolute w-full h-full bg-black bg-opacity-40"></div>
               <div className="absolute inset-0 flex items-center justify-center text-white text-4xl">
-              <IoVideocam />
+                <IoVideocam />
               </div>
               <input
                 type="file"
                 accept="video/*"
                 className="absolute w-full h-full opacity-0 cursor-pointer"
+                onChange={handleKycVideoUpload}
               />
             </div>
           </div>
@@ -89,7 +146,7 @@ const VideoKYC = () => {
             ← Back
           </button>
           <button
-            onClick={() => navigate("/KYCSucessScreen")}
+            onClick={handleSubmit}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
             Submit →

@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Stepper from "../components/Stepper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const BusinessDetails = () => {
+  const navigate = useNavigate();
+  const location = useLocation();  // To access passed state data
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const navigate = useNavigate();
 
+  // Get the data from the previous route (using useLocation)
+  const { basicDetails, residentialData } = location.state || {};
+
+  // Initialize form state
   const [form, setForm] = useState({
     shopName: "",
     address: "",
@@ -18,25 +24,66 @@ const BusinessDetails = () => {
     state: "",
   });
 
+  // Handle "Same as Residential Address" click
   const handleSameAsResidential = () => {
-    const savedAddress = localStorage.getItem("residentialAddress");
-    if (savedAddress) {
-      const data = JSON.parse(savedAddress);
+    if (residentialData) {
       setForm({
         ...form,
-        address: data.address || "",
-        landmark: data.landmark || "",
-        pincode: data.pincode || "",
-        city: data.city || "",
-        state: data.state || "",
+        address: residentialData.address || "",
+        landmark: residentialData.landmark || "",
+        pincode: residentialData.pincode || "",
+        city: residentialData.city || "",
+        state: residentialData.state || "",
       });
     } else {
-      // alert("No residential address found.");
       Swal.fire({
         title: "Alert",
         text: "No residential address found.",
-        icon: "warning"
+        icon: "warning",
       });
+    }
+  };
+
+  // Form validation
+  const validateForm = () => {
+    const { shopName, address, landmark, pincode, city, state } = form;
+    if (
+      !shopName.trim() ||
+      !address.trim() ||
+      !landmark.trim() ||
+      !/^\d{6}$/.test(pincode) ||
+      !city ||
+      !state
+    ) {
+      Swal.fire({
+        title: "Validation Error",
+        text: "Please complete all fields correctly.",
+        icon: "error",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  // Handle the next button click
+  const handleNext = () => {
+    if (validateForm()) {
+      // Combine the data from basic, residential, and business forms
+      const combinedData = {
+        heading: "Registration Form Data",
+        basicDetails: { ...basicDetails },
+        residentialData: { ...residentialData },
+        businessDetails: { ...form },
+      };
+
+      // Log the combined data to the console
+      console.log("Combined Data: ", combinedData);
+
+      // Store the combined data in localStorage (optional)
+      localStorage.setItem("registrationData", JSON.stringify(combinedData));
+
+      // Navigate to the next page, passing the combined data as state
+      navigate("/aadhaar-details", { state: { combinedData } });
     }
   };
 
@@ -59,6 +106,7 @@ const BusinessDetails = () => {
             placeholder="Firm or Shop Name"
             className="input-field w-full"
             value={form.shopName}
+            maxLength={50}
             onChange={(e) => setForm({ ...form, shopName: e.target.value })}
           />
           <input
@@ -66,6 +114,7 @@ const BusinessDetails = () => {
             placeholder="Firm or Shop Address"
             className="input-field w-full"
             value={form.address}
+            maxLength={100}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
           />
           <input
@@ -73,13 +122,21 @@ const BusinessDetails = () => {
             placeholder="Landmark"
             className="input-field"
             value={form.landmark}
+            maxLength={50}
             onChange={(e) => setForm({ ...form, landmark: e.target.value })}
           />
           <input
-            type="text"
+            type="tel"
             placeholder="Pincode"
             className="input-field"
+            inputMode="numeric"
+            maxLength={6}
             value={form.pincode}
+            onKeyDown={(e) => {
+              if (!/[0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
+                e.preventDefault();
+              }
+            }}
             onChange={(e) => setForm({ ...form, pincode: e.target.value })}
           />
 
@@ -113,7 +170,6 @@ const BusinessDetails = () => {
             <option>State 3</option>
           </select>
 
-          {/* Same As Button */}
           <button
             type="button"
             onClick={handleSameAsResidential}
@@ -131,10 +187,10 @@ const BusinessDetails = () => {
             ← Back
           </button>
           <button
-            onClick={() => navigate("/aadhaar-details")}
+            onClick={handleNext}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Next →
+            Next → 
           </button>
         </div>
       </div>

@@ -280,6 +280,7 @@ import { reports } from './servicesData/reportsData';
 
 // 🔐 Import PrivateRoute
 import PrivateRoute from "./components/PrivateRoute";
+import PrevewRegistration from "./Pages/PrevewRegistration";
 
 function App() {
   return (
@@ -370,6 +371,7 @@ function App() {
 <Route path="/pan-details" element={<PanDetails />} />
 <Route path="/video-kyc" element={<VideoKYC />} />
 <Route path="/KYCSucessScreen" element={<KYCSucessScreen />} />
+<Route path="/PrevewRegistration" element={<PrevewRegistration />} />
 
 
         {/* Report Routes Dynamically Rendered */}
