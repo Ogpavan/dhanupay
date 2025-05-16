@@ -16,9 +16,12 @@ const BankDetail = () => {
     branchName: "",
     bankName: "",
   });
+  const [cancelCheque, setCancelCheque] = useState(null);
+
 
   const [showAccountNumber, setShowAccountNumber] = useState(false);
   const [showConfirmAccountNumber, setShowConfirmAccountNumber] = useState(false);
+  const [btnLoading, setbtnLoading] = useState(false);
 
   const banks = [
     { BankId: 1, BankName: "State Bank of India" },
@@ -27,8 +30,41 @@ const BankDetail = () => {
     // Add more banks as needed
   ];
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png", "application/pdf"];
+      const maxSizeInMB = 5;
+
+      if (!validTypes.includes(file.type)) {
+        Swal.fire({
+          title: "Invalid File Type",
+          text: "Only JPG, PNG, or PDF files are allowed.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      if (file.size / 1024 / 1024 > maxSizeInMB) {
+        Swal.fire({
+          title: "File Too Large",
+          text: `File size should be less than ${maxSizeInMB} MB.`,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      setCancelCheque(file);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+
+
 
     setFormData((prev) => ({
       ...prev,
@@ -37,6 +73,7 @@ const BankDetail = () => {
   };
 
   const handleNext = async () => {
+    setbtnLoading(true);
     const {
       accountHolderName,
       accountNumber,
@@ -59,6 +96,7 @@ const BankDetail = () => {
         icon: "warning",
         confirmButtonText: "OK",
       });
+      setbtnLoading(false);
       return;
     }
 
@@ -69,13 +107,14 @@ const BankDetail = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
+      setbtnLoading(false);
       return;
     }
 
     const payload = {
       UserID: localStorage.getItem("newUserId"),
       NewUserId: localStorage.getItem("newUserId"),
-      Stage:"BankDetails",
+      Stage: "BankDetails",
       AccountHolderName: accountHolderName,
       AccountNumber: accountNumber,
       IFSCCode: ifscCode,
@@ -96,25 +135,64 @@ const BankDetail = () => {
       );
 
       console.log("API Response:", response.data);
-      if(response.data.success){
+      if (response.data.success) {
+        // Upload cancel cheque
+        if (cancelCheque) {
+          const formData = new FormData();
+          formData.append("UserID", localStorage.getItem("newUserId"));
+          formData.append("newUserId", localStorage.getItem("newUserId"));
+          formData.append("DocumentType", "CancelCheque");
+          formData.append("DocumentNumber", "");
+          formData.append("FrontImage", cancelCheque);
+          formData.append("BackImage", "");
+          formData.append("VideoFile", ""); // If not uploading now, send empty or omit
+
+          try {
+            const uploadRes = await axios.post(
+              `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+
+            console.log("Cheque Upload Response:", uploadRes.data);
+          } catch (uploadErr) {
+            console.error("Cheque Upload Error:", uploadErr);
+            Swal.fire({
+              title: "Upload Failed",
+              text: "Bank details were saved, but cancel cheque upload failed.",
+              icon: "warning",
+              confirmButtonText: "Continue",
+            });
+            navigate("/aadhaar-details");
+            return;
+          }
+        }
+
         Swal.fire({
           title: "Success",
           text: "Bank details submitted successfully!",
           icon: "success",
           confirmButtonText: "OK",
-      })
-      navigate("/aadhaar-details");
-    
-    }else{
-      Swal.fire({
-        title: "Submission Failed",
-        text: "Something went wrong while submitting bank details.",
-        icon: "error",
-        confirmButtonText: "Retry",
-      });
-    }
+        });
+
+        navigate("/aadhaar-details");
+      }
+      else {
+        Swal.fire({
+          title: "Submission Failed",
+          text: "Something went wrong while submitting bank details.",
+          icon: "error",
+          confirmButtonText: "Retry",
+        });
+        setbtnLoading(false);
+      }
 
     } catch (error) {
+      setbtnLoading(false);
       console.error("API Error:", error);
       Swal.fire({
         title: "Submission Failed",
@@ -146,16 +224,30 @@ const BankDetail = () => {
             className="input-field w-full"
             value={formData.accountHolderName}
             onChange={handleChange}
+            onKeyDown={(e) => {
+              if (!/^[a-zA-Z\s]$/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+                e.preventDefault();
+              }
+            }}
           />
+
 
           <div className="relative">
             <input
               type={showAccountNumber ? "text" : "password"}
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="Account Number"
               name="accountNumber"
               className="input-field w-full"
               value={formData.accountNumber}
-              onChange={handleChange}
+              onChange={(e) => {
+                const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                setFormData((prev) => ({
+                  ...prev,
+                  accountNumber: numericValue,
+                }));
+              }}
             />
             <span
               className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-xl"
@@ -168,11 +260,20 @@ const BankDetail = () => {
           <div className="relative">
             <input
               type={showConfirmAccountNumber ? "text" : "password"}
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="Confirm Account Number"
               name="confirmAccountNumber"
               className="input-field w-full"
               value={formData.confirmAccountNumber}
-              onChange={handleChange}
+              onChange={(e) => {
+                // Block non-numeric input
+                const numericValue = e.target.value.replace(/\D/g, "");
+                setFormData((prev) => ({
+                  ...prev,
+                  confirmAccountNumber: numericValue,
+                }));
+              }}
             />
             <span
               className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-xl"
@@ -188,9 +289,8 @@ const BankDetail = () => {
             name="bankName"
             value={formData.bankName}
             onChange={handleChange}
-            className={`w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none ${
-              formData.bankName ? "text-gray-800" : "text-gray-400"
-            }`}
+            className={`w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none ${formData.bankName ? "text-gray-800" : "text-gray-400"
+              }`}
           >
             <option value="" disabled>
               Select Bank
@@ -209,7 +309,19 @@ const BankDetail = () => {
             className="input-field w-full"
             value={formData.branchName}
             onChange={handleChange}
+            onKeyDown={(e) => {
+              if (
+                !/^[a-zA-Z\s]$/.test(e.key) &&
+                e.key !== "Backspace" &&
+                e.key !== "Delete" &&
+                e.key !== "ArrowLeft" &&
+                e.key !== "ArrowRight"
+              ) {
+                e.preventDefault();
+              }
+            }}
           />
+
 
           <input
             type="text"
@@ -220,14 +332,33 @@ const BankDetail = () => {
             onChange={handleChange}
             maxLength={11}
           />
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Upload Cancel Cheque</label>
+            <input
+              type="file"
+              accept="image/*,.pdf"
+              onChange={handleFileChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl"
+            />
+          </div>
 
-          <button
-            type="button"
-            onClick={handleNext}
-            className="w-full py-3 bg-[#2C2DCB] text-white rounded-xl"
-          >
-            Next
-          </button>
+
+          <div className="mt-6 flex space-x-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="w-1/2 bg-gray-200 text-gray-800 text-lg py-2 rounded-xl font-semibold"
+            >
+              ← Back
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={btnLoading}
+              className="w-1/2 py-2 bg-[#2C2DCB] text-white rounded-xl"
+            >
+              {btnLoading ? 'Processing...' : 'Save & Next →'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

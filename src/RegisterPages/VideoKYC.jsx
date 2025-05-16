@@ -9,6 +9,7 @@ import axios from "axios";
 const VideoKYC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+   const [btnLoading, setbtnLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -85,6 +86,7 @@ const VideoKYC = () => {
 
   
 const handleSubmit = async () => {
+  setbtnLoading(true);
    const newUserId = localStorage.getItem("newUserId")
   if (!profilePhoto || !shopPhoto || !kycVideo) {
     Swal.fire({
@@ -93,6 +95,7 @@ const handleSubmit = async () => {
       icon: "warning",
       confirmButtonText: "OK",
     });
+    setbtnLoading(false);
     return;
   }
 
@@ -144,11 +147,13 @@ console.log("Before sendinh kyc",formData)
     // Clear local storage and navigate
     localStorage.removeItem("registrationData");
     localStorage.setItem("finalKycData", JSON.stringify({ ...combinedData })); // Optionally keep combinedData
+    setbtnLoading(false);
     localStorage.clear();
     navigate("/KYCSucessScreen");
   } catch (error) {
     console.error("API Error:", error);
     Swal.fire("Error", "Failed to submit Video KYC.", "error");
+    setbtnLoading(false);
   }
 };
   return (
@@ -233,7 +238,8 @@ console.log("Before sendinh kyc",formData)
             onClick={handleSubmit}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Submit →
+            
+            {btnLoading ? 'Processing...' : 'Submit →'}
           </button>
         </div>
       </div>

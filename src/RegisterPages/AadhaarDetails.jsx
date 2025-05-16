@@ -11,6 +11,7 @@ const AadhaarDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { combinedData } = location.state || {};
+   const [btnLoading, setbtnLoading] = useState(false);
 
   const [aadhaarNo, setAadhaarNo] = useState("");
   const [aadhaarFront, setAadhaarFront] = useState(null);
@@ -42,6 +43,7 @@ const AadhaarDetails = () => {
   };
 
   const handleNext = async () => {
+    setbtnLoading(true);
     const newUserId = localStorage.getItem("newUserId")
     if (!aadhaarNo || !aadhaarFront || !aadhaarBack) {
       Swal.fire({
@@ -50,6 +52,7 @@ const AadhaarDetails = () => {
         icon: "warning",
         confirmButtonText: "OK",
       });
+      setbtnLoading(false);
       return;
     }
 
@@ -61,6 +64,7 @@ const AadhaarDetails = () => {
 
     if (!frontFile || !backFile) {
       Swal.fire("Error", "Please upload both Aadhaar images.", "error");
+      setbtnLoading(false);
       return;
     }
 
@@ -97,9 +101,11 @@ const AadhaarDetails = () => {
       };
 
       localStorage.setItem("registrationData", JSON.stringify(updatedData));
+      setbtnLoading(false);
       navigate("/pan-details");
     } catch (error) {
       console.error("API Error:", error);
+      setbtnLoading(false);
       Swal.fire("Error", "Failed to submit Aadhaar details.", "error");
     }
   };
@@ -192,9 +198,10 @@ const AadhaarDetails = () => {
           </button>
           <button
             onClick={handleNext}
+            disabled={btnLoading}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Save & Next →
+            {btnLoading ? 'Processing...' : 'Save & Next →'}
           </button>
         </div>
       </div>

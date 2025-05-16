@@ -15,6 +15,7 @@ const PanDetails = () => {
 
   const [panNumber, setPanNumber] = useState("");
   const [panFront, setPanFront] = useState(null);
+   const [btnLoading, setbtnLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -68,6 +69,7 @@ const PanDetails = () => {
 
 
   const handleNext = async () => {
+    setbtnLoading(true);
   const newUserId = localStorage.getItem("newUserId");
 
   if (!panNumber || !panFront) {
@@ -77,6 +79,7 @@ const PanDetails = () => {
       icon: "warning",
       confirmButtonText: "OK",
     });
+    setbtnLoading(false);
     return;
   }
 
@@ -85,6 +88,7 @@ const PanDetails = () => {
 
   if (!panFile) {
     Swal.fire("Error", "Please upload your PAN front image.", "error");
+    setbtnLoading(false);
     return;
   }
 
@@ -120,10 +124,12 @@ const PanDetails = () => {
     };
 
     localStorage.setItem("registrationData", JSON.stringify(updatedData));
+    setbtnLoading(false);
     navigate("/video-kyc");
   } catch (error) {
     console.error("API Error:", error);
     Swal.fire("Error", "Failed to submit PAN details.", "error");
+    setbtnLoading(false);
   }
 };
 
@@ -197,9 +203,10 @@ const PanDetails = () => {
           </button>
           <button
             onClick={handleNext}
+            disabled={btnLoading}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Save & Next →
+           {btnLoading ? 'Processing...' : 'Save & Next →'}
           </button>
         </div>
       </div>

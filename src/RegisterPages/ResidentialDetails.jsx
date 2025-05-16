@@ -9,6 +9,7 @@ import axios from "axios";
 const ResidentialDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
+   const [btnLoading, setbtnLoading] = useState(false);
 
   const [form, setForm] = useState({
     houseNo: "",
@@ -112,8 +113,10 @@ const ResidentialDetails = () => {
 
   // Inside ResidentialDetails component
   const handleNext = async () => {
+    setbtnLoading(true);
+
     const newUserId = localStorage.getItem("newUserId")
-    if (!validate()) return;
+    if (!validate()) {setbtnLoading(false ); return} 
 
     const residentialData = { ...form };
 
@@ -137,10 +140,12 @@ const ResidentialDetails = () => {
       console.log("API Response:", response.data);
 
       Swal.fire("Success", "Residential details submitted successfully!", "success");
+      setbtnLoading(false);
       navigate("/business-details");
     } catch (error) {
       console.error("API Error:", error);
       Swal.fire("Error", error?.response?.data?.message || "Something went wrong!", "error");
+    setbtnLoading(false);
     }
   };
   const handleChange = (field, value) => {
@@ -240,9 +245,10 @@ const ResidentialDetails = () => {
           </button>
           <button
             onClick={handleNext}
+            disabled={btnLoading}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Save & Next →
+          {btnLoading ? 'Processing...' : 'Save & Next →'}
           </button>
         </div>
       </div>

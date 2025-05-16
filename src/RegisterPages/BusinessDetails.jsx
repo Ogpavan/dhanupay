@@ -30,6 +30,7 @@ const BusinessDetails = () => {
 
   const [states, setStates] = useState([]); // States list
   const [cities, setCities] = useState([]); // Cities list
+   const [btnLoading, setbtnLoading] = useState(false);
 
   // Fetch states when the component mounts
   useEffect(() => {
@@ -144,9 +145,10 @@ const BusinessDetails = () => {
 
 
   const handleNext = async () => {
+    setbtnLoading(true);
     const newUserId = localStorage.getItem("newUserId")
     const ShopAddressLine2 = [form.address, form.landmark].filter(Boolean).join(', ');
-    if (!validateForm()) return;
+    if (!validateForm()) {setbtnLoading(false); return;}
 
     const payload = {
       UserID: newUserId,
@@ -174,10 +176,12 @@ const BusinessDetails = () => {
       console.log("API Response:", response.data);
 
       Swal.fire("Success", "Business details submitted successfully!", "success");
+      setbtnLoading(false);
       navigate("/bank-detail");
     } catch (error) {
       console.error("API Error:", error);
       Swal.fire("Error", "Failed to submit business details.", "error");
+      setbtnLoading(false);
     }
   };
 
@@ -261,7 +265,7 @@ const BusinessDetails = () => {
             </option>
             {cities.length > 0 ? (
               cities.map((cityItem) => (
-                <option key={cityItem.CityId} value={cityItem.CityName}>
+                <option key={cityItem.CityId} value={cityItem.CityId}>
                   {cityItem.CityName}
                 </option>
               ))
@@ -288,9 +292,10 @@ const BusinessDetails = () => {
           </button>
           <button
             onClick={handleNext}
+            disabled={btnLoading}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Save & Next →
+            {btnLoading ? 'Processing...' : 'Save & Next →'}
           </button>
         </div>
       </div>

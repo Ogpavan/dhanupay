@@ -12,6 +12,7 @@ const BasicDetails = () => {
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [verifyingField, setVerifyingField] = useState(null);
   const [otp, setOtp] = useState("");
+  const [btnLoading, setbtnLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -50,7 +51,7 @@ const BasicDetails = () => {
       const updatedVerified = { ...verifiedFields, mobile: true };
       setVerifiedFields(updatedVerified);
       localStorage.setItem("verifiedFields", JSON.stringify(updatedVerified));
-    } 
+    }
     setShowOTPModal(false);
     setOtp("");
   };
@@ -64,7 +65,7 @@ const BasicDetails = () => {
 
   // const handleSubmit = () => {
   //   console.log("Submitting form data:", formData);
-    
+
   //   if (!formData.firstName || !formData.lastName) {
   //     return Swal.fire({
   //       icon: "error",
@@ -105,89 +106,94 @@ const BasicDetails = () => {
 
 
 
-const handleSubmit = async () => {
-  console.log("Submitting form data:", formData);
+  const handleSubmit = async () => {
+    setbtnLoading(true);
+    console.log("Submitting form data:", formData);
 
-  if (!formData.firstName || !formData.lastName) {
-    return Swal.fire({
-      icon: "error",
-      title: "Oops!",
-      text: "First Name and Last Name are required!",
-    });
-  }
-
-  if (!formData.mobile || !/^\d{10}$/.test(formData.mobile)) {
-    return Swal.fire({
-      icon: "error",
-      title: "Oops!",
-      text: "Please enter a valid Mobile Number!",
-    });
-  }
-
-  if (formData.alternateMobile && !/^\d{10}$/.test(formData.alternateMobile)) {
-    return Swal.fire({
-      icon: "error",
-      title: "Oops!",
-      text: "Please enter a valid Alternate Mobile Number!",
-    });
-  }
-
-  if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
-    return Swal.fire({
-      icon: "error",
-      title: "Oops!",
-      text: "Please enter a valid Email ID!",
-    });
-  }
-
-  // API payload
-  const payload = {
-    UserID: "2",
-    UserTypeID: 16,
-    RoleID: "19",
-    FirstName: formData.firstName,
-    LastName: formData.lastName,
-    MobileNumber: formData.mobile,
-    Email: formData.email,
-  };
-  console.log("API Payload:", payload);
-
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/register`, payload);
-    console.log("API response:", response.data);
-    if(response.data.success){
-    Swal.fire({
-      icon: "success",
-      title: "Success!",
-      text: "User registered successfully!",
-    });
-   localStorage.setItem("newUserId", response.data.newUserId);
-    navigate("/residential-details");
-  }else if(response.data.message == "User Completed All steps"){
-    Swal.fire({
-      icon: "success",
-      title: "Success!",
-      text: "User Completed All steps!",
-    })
-    
-  }else{
-      Swal.fire({
+    if (!formData.firstName || !formData.lastName) {
+      return Swal.fire({
         icon: "error",
         title: "Oops!",
-        text: response.data.message,
+        text: "First Name and Last Name are required!",
       });
-      localStorage.setItem("newUserId", response.data.userData.NewUserID);
-      navigate("/residential-details");
     }
-  } catch (error) {
-    console.error("API error:", error);
-    Swal.fire({
-      icon: "error",
-      title: "API Error",
-      text: error?.response?.data?.message || "Something went wrong!",
-    });
-  }
-};
+
+    if (!formData.mobile || !/^\d{10}$/.test(formData.mobile)) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Please enter a valid Mobile Number!",
+      });
+    }
+
+    if (formData.alternateMobile && !/^\d{10}$/.test(formData.alternateMobile)) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Please enter a valid Alternate Mobile Number!",
+      });
+    }
+
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      return Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Please enter a valid Email ID!",
+      });
+    }
+
+    // API payload
+    const payload = {
+      UserID: "2",
+      UserTypeID: 16,
+      RoleID: "19",
+      FirstName: formData.firstName,
+      LastName: formData.lastName,
+      MobileNumber: formData.mobile,
+      Email: formData.email,
+    };
+    console.log("API Payload:", payload);
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/register`, payload);
+      console.log("API response:", response.data);
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "User registered successfully!",
+        });
+        localStorage.setItem("newUserId", response.data.newUserId);
+        setbtnLoading(false);
+        navigate("/residential-details");
+      } else if (response.data.message == "User Completed All steps") {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "User Completed All steps!",
+        })
+        setbtnLoading(false);
+
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: response.data.message,
+        });
+        localStorage.setItem("newUserId", response.data.userData.NewUserID);
+        setbtnLoading(false);
+        navigate("/residential-details");
+      }
+    } catch (error) {
+      console.error("API error:", error);
+      setbtnLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "API Error",
+        text: error?.response?.data?.message || "Something went wrong!",
+      });
+    }
+  };
 
   return (
     <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
@@ -243,15 +249,18 @@ const handleSubmit = async () => {
               inputMode="numeric"
               name="mobile"
               value={formData.mobile}
-              onChange={handleInputChange}
-              disabled={verifiedFields.mobile}
-              onKeyDown={(e) => {
-                const key = e.key;
-                if (!/^[0-9]$/.test(key) && key !== "Backspace" && key !== "Tab") {
-                  e.preventDefault();
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow only digits
+                if (/^\d*$/.test(value)) {
+                  // First digit must be 6-9
+                  if (value.length === 1 && !/^[6-9]$/.test(value)) return;
+                  setFormData({ ...formData, mobile: value });
                 }
               }}
+              disabled={verifiedFields.mobile}
             />
+
             <button
               type="button"
               onClick={() => handleVerifyClick("Mobile Number")}
@@ -272,15 +281,18 @@ const handleSubmit = async () => {
               inputMode="numeric"
               name="alternateMobile"
               value={formData.alternateMobile}
-              onChange={handleInputChange}
               disabled={!verifiedFields.mobile}
-              onKeyDown={(e) => {
-                const key = e.key;
-                if (!/^[0-9]$/.test(key) && key !== "Backspace" && key !== "Tab") {
-                  e.preventDefault();
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow only digits
+                if (/^\d*$/.test(value)) {
+                  // First digit must be 6-9
+                  if (value.length === 1 && !/^[6-9]$/.test(value)) return;
+                  setFormData({ ...formData, alternateMobile: value });
                 }
               }}
             />
+
           </div>
 
           {/* Email */}
@@ -297,9 +309,10 @@ const handleSubmit = async () => {
 
         <button
           onClick={handleSubmit}
+          disabled={btnLoading}
           className="mt-6 w-full bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
         >
-          Save & Next →
+         {btnLoading ? 'Processing...' : 'Save & Next →'}
         </button>
 
         <OtpModal
