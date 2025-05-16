@@ -5,6 +5,7 @@ const stepTitles = [
   "Basic\nDetails",
   "Residential\nDetails",
   "Business\nDetails",
+  "Bank\nDetail",
   "Aadhaar\nDetails",
   "PAN\nDetails",
   "Video\nKYC",
@@ -14,6 +15,7 @@ const stepRoutes = [
   "/basic-details",
   "/residential-details",
   "/business-details",
+  "/bank-detail",
   "/aadhaar-details",
   "/pan-details",
   "/video-kyc",
@@ -32,7 +34,7 @@ const Stepper = ({ currentStep }) => {
           <div key={index} className="flex items-center w-full relative mb-6">
             {/* Step Circle */}
             <div
-              onClick={() => navigate(stepRoutes[index])}
+              // onClick={() => navigate(stepRoutes[index])}
               className={`w-8 h-8 z-10 flex items-center justify-center rounded-full text-sm font-medium cursor-pointer transition-all duration-300
                 ${isCompleted ? "bg-green-500 text-white"
                   : isCurrent ? "bg-[#2C2DCB] text-white"

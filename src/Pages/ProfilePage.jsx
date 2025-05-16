@@ -152,14 +152,26 @@ function ProfilePage() {
 
           {/* Right: Wallet Info */}
           <div className="mt-4 sm:mt-0 flex flex-col gap-2">
-            <div className="flex items-center p-3 bg-white rounded-xl shadow">
+            <div className="flex items-center p-3 bg-white rounded-xl shadow"
+            onClick={() => navigate("/wallet-details", {
+              state: {
+                walletType: 'AEPS Wallet',
+                amount: 5382.23
+              }
+            })}>
               <img src={aepsWalletIcon} alt="AEPS" className="w-10 h-10 mr-4" />
               <div>
                 <p className="text-xs sm:text-sm text-gray-600 poppins-regular">AEPS Wallet</p>
                 <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
               </div>
             </div>
-            <div className="flex items-center p-3 bg-white rounded-xl shadow">
+            <div className="flex items-center p-3 bg-white rounded-xl shadow" 
+            onClick={() => navigate("/wallet-details", {
+              state: {
+                walletType: 'Incentive Wallet',
+                amount: "5382.23"
+              }
+            })}>
               <img src={walletIcon} alt="Wallet" className="w-10 h-10 mr-4" />
               <div>
                 <p className="text-xs sm:text-sm text-gray-600 poppins-regular">Incentive Wallet</p>

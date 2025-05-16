@@ -264,9 +264,8 @@ const Homescreen = () => {
           {slides.map((_, index) => (
             <div
               key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                currentSlide === index ? "bg-white" : "bg-white/40"
-              }`}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSlide === index ? "bg-white" : "bg-white/40"
+                }`}
             ></div>
           ))}
         </div>
@@ -288,9 +287,15 @@ const Homescreen = () => {
             Sign Up
           </button>
         </div>
-        <p className="text-center text-xs text-gray-500">
+        <a
+          href="https://termly.io/html_document/website-terms-and-conditions-text-format/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-center text-xs text-gray-500"
+        >
           *terms and conditions apply
-        </p>
+        </a>
+
       </div>
     </div>
   );

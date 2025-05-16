@@ -1,43 +1,48 @@
 import React, { useEffect, useState } from "react";
 import Stepper from "../components/Stepper";
 import { useNavigate, useLocation } from "react-router-dom";
-import aadhaar_front from "../assets/aadhaar_front.png";
-import aadhaar_back from "../assets/aadhaar_back.png";
 import { FiUploadCloud } from "react-icons/fi";
-import Swal from "sweetalert2"; // Import SweetAlert
+import Swal from "sweetalert2";
+import aadhaarFrontImage from "../assets/aadhaar_front.png";
+import aadhaarBackImage from "../assets/aadhaar_back.png";
+import axios from "axios";
 
 const AadhaarDetails = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get the previous route's state data
+  const location = useLocation();
+  const { combinedData } = location.state || {};
+
+  const [aadhaarNo, setAadhaarNo] = useState("");
+  const [aadhaarFront, setAadhaarFront] = useState(null);
+  const [aadhaarBack, setAadhaarBack] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const storedData = JSON.parse(localStorage.getItem("registrationData"));
+    if (storedData && storedData.aadhaarDetails) {
+      setAadhaarNo(storedData.aadhaarDetails.aadhaarNo);
+      setAadhaarFront(storedData.aadhaarDetails.aadhaarFront);
+      setAadhaarBack(storedData.aadhaarDetails.aadhaarBack);
+    }
   }, []);
 
-  // Get combinedData passed from the previous route (BusinessDetails)
-  const { combinedData } = location.state || {};
-
-  const [aadhaarNo, setAadhaarNo] = useState(""); // Store Aadhaar Number
-  const [aadhaarFront, setAadhaarFront] = useState(null); // Store Front Image
-  const [aadhaarBack, setAadhaarBack] = useState(null); // Store Back Image
-
-  // Handle Aadhaar Number input change
   const handleAadhaarChange = (e) => {
     setAadhaarNo(e.target.value);
   };
 
-  // Handle file uploads for Aadhaar Front and Back
   const handleFileUpload = (e, type) => {
     const file = e.target.files[0];
-    if (type === "front") {
-      setAadhaarFront(file);
-    } else {
-      setAadhaarBack(file);
+    if (file) {
+      if (type === "front") {
+        setAadhaarFront(URL.createObjectURL(file));
+      } else {
+        setAadhaarBack(URL.createObjectURL(file));
+      }
     }
   };
 
-  // Handle the "Next" button click
-  const handleNext = () => {
+  const handleNext = async () => {
+    const newUserId = localStorage.getItem("newUserId")
     if (!aadhaarNo || !aadhaarFront || !aadhaarBack) {
       Swal.fire({
         title: "Incomplete Details",
@@ -45,25 +50,57 @@ const AadhaarDetails = () => {
         icon: "warning",
         confirmButtonText: "OK",
       });
-    } else {
-      // Add Aadhaar details to the combinedData
+      return;
+    }
+
+    const frontInput = document.getElementById("aadhaarFrontFile");
+    const backInput = document.getElementById("aadhaarBackFile");
+
+    const frontFile = frontInput?.files[0];
+    const backFile = backInput?.files[0];
+
+    if (!frontFile || !backFile) {
+      Swal.fire("Error", "Please upload both Aadhaar images.", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("UserId", newUserId);  // Provide fallback
+    formData.append("newUserId", newUserId);
+    formData.append("DocumentType", "Aadhaar");
+    formData.append("DocumentNumber", aadhaarNo);
+    formData.append("FrontImage", frontFile);
+    formData.append("BackImage", backFile);
+    formData.append("VideoFile", ""); // If not uploading now, send empty or omit
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("API Response:", response.data);
+      Swal.fire("Success", "Aadhaar details submitted successfully!", "success");
+
       const updatedData = {
-        ...combinedData,
         aadhaarDetails: {
           aadhaarNo,
           aadhaarFront,
           aadhaarBack,
         },
+        combinedData,
       };
 
-      // Log the updated data to the console for debugging
-      console.log("Updated Combined Data: ", updatedData);
-
-      // Store the updated combined data in localStorage
       localStorage.setItem("registrationData", JSON.stringify(updatedData));
-
-      // Navigate to the next page (Pan Details), passing the updated data as state
-      navigate("/pan-details", { state: { combinedData: updatedData } });
+      navigate("/pan-details");
+    } catch (error) {
+      console.error("API Error:", error);
+      Swal.fire("Error", "Failed to submit Aadhaar details.", "error");
     }
   };
 
@@ -74,7 +111,7 @@ const AadhaarDetails = () => {
       </div>
 
       <div className="h-[83dvh] bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
-        <Stepper currentStep={3} />
+        <Stepper currentStep={4} />
 
         <h1 className="poppins-semibold text-[#121649] text-center py-4">
           Aadhaar Details
@@ -85,12 +122,11 @@ const AadhaarDetails = () => {
             type="text"
             placeholder="Aadhaar No. (12 Digits)"
             className="input-field w-full"
-            maxLength={12} // Limit input to 12 characters
-            inputMode="numeric" // Allow numeric input
+            maxLength={12}
+            inputMode="numeric"
             value={aadhaarNo}
             onChange={handleAadhaarChange}
             onKeyDown={(e) => {
-              // Allow only numbers and control keys (Backspace, Tab)
               if (!/[0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
                 e.preventDefault();
               }
@@ -104,7 +140,7 @@ const AadhaarDetails = () => {
             </label>
             <div className="relative w-full h-40 rounded-xl overflow-hidden">
               <img
-                src={aadhaar_front}
+                src={aadhaarFront || aadhaarFrontImage}
                 alt="Upload Aadhaar Front"
                 className="absolute w-full h-full object-contain p-4"
               />
@@ -113,6 +149,7 @@ const AadhaarDetails = () => {
                 <FiUploadCloud className="text-white text-4xl" />
               </div>
               <input
+                id="aadhaarFrontFile"
                 type="file"
                 accept="image/*"
                 className="absolute w-full h-full opacity-0 cursor-pointer"
@@ -120,7 +157,6 @@ const AadhaarDetails = () => {
               />
             </div>
           </div>
-
           {/* Aadhaar Back Upload */}
           <div>
             <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
@@ -128,7 +164,7 @@ const AadhaarDetails = () => {
             </label>
             <div className="relative w-full h-40 rounded-xl overflow-hidden">
               <img
-                src={aadhaar_back}
+                src={aadhaarBack || aadhaarBackImage}
                 alt="Upload Aadhaar Back"
                 className="absolute w-full h-full object-contain p-4"
               />
@@ -137,6 +173,7 @@ const AadhaarDetails = () => {
                 <FiUploadCloud className="text-white text-4xl" />
               </div>
               <input
+                id="aadhaarBackFile"
                 type="file"
                 accept="image/*"
                 className="absolute w-full h-full opacity-0 cursor-pointer"
@@ -157,7 +194,7 @@ const AadhaarDetails = () => {
             onClick={handleNext}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-            Next → 
+            Save & Next →
           </button>
         </div>
       </div>

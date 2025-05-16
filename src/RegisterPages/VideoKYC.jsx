@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Stepper from "../components/Stepper";
-import { FiUploadCloud } from "react-icons/fi";
 import { FaCamera } from "react-icons/fa";
 import { IoVideocam } from "react-icons/io5";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const VideoKYC = () => {
   const navigate = useNavigate();
@@ -14,9 +14,7 @@ const VideoKYC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Get the updated data from the last route
   const { combinedData } = location.state || {};
-
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [shopPhoto, setShopPhoto] = useState(null);
   const [kycVideo, setKycVideo] = useState(null);
@@ -36,37 +34,123 @@ const VideoKYC = () => {
     setKycVideo(file);
   };
 
-  const handleSubmit = () => {
-    if (!profilePhoto || !shopPhoto || !kycVideo) {
-      Swal.fire({
-        title: "Incomplete Uploads",
-        text: "Please upload Profile Photo, Shop Photo, and KYC Video.",
-        icon: "warning",
-        confirmButtonText: "OK",
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  // const handleSubmit = async () => {
+  //   if (!profilePhoto || !shopPhoto || !kycVideo) {
+  //     Swal.fire({
+  //       title: "Incomplete Uploads",
+  //       text: "Please upload Profile Photo, Shop Photo, and KYC Video.",
+  //       icon: "warning",
+  //       confirmButtonText: "OK",
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     const profileBase64 = await toBase64(profilePhoto);
+  //     const shopBase64 = await toBase64(shopPhoto);
+  //     const videoBase64 = await toBase64(kycVideo);
+
+  //     const finalData = {
+  //       ...combinedData,
+  //       videoKyc: {
+  //         profilePhoto: profileBase64,
+  //         shopPhoto: shopBase64,
+  //         kycVideo: videoBase64,
+  //       },
+  //     };
+
+  //     localStorage.removeItem("registrationData");
+  //     localStorage.setItem("finalKycData", JSON.stringify(finalData));
+
+  //     // navigate("/PrevewRegistration");
+  //      navigate("/KYCSuccessScreen");
+  //   } catch (error) {
+  //     console.error("File conversion error:", error);
+  //     Swal.fire({
+  //       title: "Error",
+  //       text: "Something went wrong while processing the files.",
+  //       icon: "error",
+  //       confirmButtonText: "OK",
+  //     });
+  //   }
+  // };
+
+  
+const handleSubmit = async () => {
+   const newUserId = localStorage.getItem("newUserId")
+  if (!profilePhoto || !shopPhoto || !kycVideo) {
+    Swal.fire({
+      title: "Incomplete Uploads",
+      text: "Please upload Profile Photo, Shop Photo, and KYC Video.",
+      icon: "warning",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+
+    // Append files
+    formData.append("UserId", newUserId);  // Provide fallback
+    formData.append("newUserId", newUserId);
+    formData.append("DocumentType", "KYC");
+    formData.append("FrontImage", profilePhoto);
+formData.append("BackImage", shopPhoto);
+formData.append("VideoFile", kycVideo);
+
+
+    // Append any other combined data fields (flatten if needed)
+    if (combinedData) {
+      Object.entries(combinedData).forEach(([key, value]) => {
+        // You might need to handle nested objects properly here
+        // For simplicity, stringify nested objects
+        if (typeof value === "object") {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, value);
+        }
       });
-      return;
     }
 
-    // Merge current form data into the combined data
-    const finalData = {
-      ...combinedData,
-      videoKyc: {
-        profilePhoto,
-        shopPhoto,
-        kycVideo,
-      },
-    };
+    // Console log FormData contents (for debugging)
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0] + ": ", pair[1]);
+    // }
+console.log("Before sendinh kyc",formData)
+    // Send API request
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`, // your API endpoint
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-    // Clear previous localStorage entry
+    console.log("API Response:", response.data);
+
+    Swal.fire("Success", "Video KYC submitted successfully!", "success");
+
+    // Clear local storage and navigate
     localStorage.removeItem("registrationData");
-
-    // Store finalData in localStorage
-    localStorage.setItem("finalKycData", JSON.stringify(finalData));
-
-    // Navigate to final success screen
-    navigate("/PrevewRegistration", { state: { finalData } });
-  };
-
+    localStorage.setItem("finalKycData", JSON.stringify({ ...combinedData })); // Optionally keep combinedData
+    localStorage.clear();
+    navigate("/KYCSucessScreen");
+  } catch (error) {
+    console.error("API Error:", error);
+    Swal.fire("Error", "Failed to submit Video KYC.", "error");
+  }
+};
   return (
     <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
       <div className="h-[20vh] px-4 flex items-center">
@@ -74,7 +158,7 @@ const VideoKYC = () => {
       </div>
 
       <div className="h-[83dvh] bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
-        <Stepper currentStep={5} />
+        <Stepper currentStep={6} />
 
         <h1 className="poppins-semibold text-[#121649] text-center py-4">
           Video KYC

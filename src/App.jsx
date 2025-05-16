@@ -281,6 +281,8 @@ import { reports } from './servicesData/reportsData';
 // 🔐 Import PrivateRoute
 import PrivateRoute from "./components/PrivateRoute";
 import PrevewRegistration from "./Pages/PrevewRegistration";
+import WalletDetails from "./Pages/WalletDetails";
+import BankDetail from "./RegisterPages/BankDetail";
 
 function App() {
   return (
@@ -315,7 +317,7 @@ function App() {
         <Route path="/pan-details" element={<PrivateRoute><PanDetails /></PrivateRoute>} />
         <Route path="/video-kyc" element={<PrivateRoute><VideoKYC /></PrivateRoute>} />
         <Route path="/KYCSucessScreen" element={<PrivateRoute><KYCSucessScreen /></PrivateRoute>} />*/}
-         <Route path="/MPinScreen" element={<PrivateRoute><MPinScreen /></PrivateRoute>} /> 
+        <Route path="/MPinScreen" element={<PrivateRoute><MPinScreen /></PrivateRoute>} />
         <Route path="/SetMPinScreen" element={<PrivateRoute><SetMpinScreen /></PrivateRoute>} />
         <Route path="/forget-m-pin" element={<PrivateRoute><ResetMpinScreen /></PrivateRoute>} />
         <Route path="/Logout" element={<PrivateRoute><MPinScreen /></PrivateRoute>} />
@@ -331,6 +333,9 @@ function App() {
         <Route path="/Matm" element={<PrivateRoute><Matm /></PrivateRoute>} />
         <Route path="/MoveToBankSelect" element={<PrivateRoute><MoveToBankSelect /></PrivateRoute>} />
         <Route path="/MiniAtmTransactionPage" element={<PrivateRoute><MiniAtmTransactionPage /></PrivateRoute>} />
+        <Route path="/wallet-details" element={<PrivateRoute><WalletDetails /></PrivateRoute>} />
+
+
 
         {/* Quick Services (Protected) */}
         <Route path="/mobilerecharge" element={<PrivateRoute><MobileRecharge /></PrivateRoute>} />
@@ -344,7 +349,6 @@ function App() {
         <Route path="/waterbillfetch" element={<PrivateRoute><WaterBillFetch /></PrivateRoute>} />
         <Route path="/waterinvoice" element={<PrivateRoute><WaterInvoice /></PrivateRoute>} />
         <Route path="/Billpayment" element={<PrivateRoute><BillPayment /></PrivateRoute>} />
-
         {/* BBPS (Protected) */}
         <Route path="/creditcard" element={<PrivateRoute><CreditCardBillPayment /></PrivateRoute>} />
         <Route path="/creditcardfetch" element={<PrivateRoute><CreditCardFetch /></PrivateRoute>} />
@@ -365,13 +369,15 @@ function App() {
 
 
         <Route path="/basic-details" element={<BasicDetails />} />
-<Route path="/business-details" element={<BusinessDetails />} />
-<Route path="/residential-details" element={<ResidentialDetails />} />
-<Route path="/aadhaar-details" element={<AadhaarDetails />} />
-<Route path="/pan-details" element={<PanDetails />} />
-<Route path="/video-kyc" element={<VideoKYC />} />
-<Route path="/KYCSucessScreen" element={<KYCSucessScreen />} />
-<Route path="/PrevewRegistration" element={<PrevewRegistration />} />
+        <Route path="/business-details" element={<BusinessDetails />} />
+        <Route path="/residential-details" element={<ResidentialDetails />} />
+        <Route path="/bank-detail" element={<BankDetail />} />
+        <Route path="/aadhaar-details" element={<AadhaarDetails />} />
+        <Route path="/pan-details" element={<PanDetails />} />
+        <Route path="/video-kyc" element={<VideoKYC />} />
+        <Route path="/KYCSucessScreen" element={<KYCSucessScreen />} />
+        <Route path="/PrevewRegistration" element={<PrevewRegistration />} />
+
 
 
         {/* Report Routes Dynamically Rendered */}
