@@ -66,13 +66,14 @@ const SignInScreen = () => {
         icon: 'success',
         confirmButtonText: 'Continue'
       });
-
+      console.log("date come from api after login",res);
       // Store values
       localStorage.setItem('Token', res.Token);
       localStorage.setItem('UserId', res.UserId);
       localStorage.setItem('loginid', res.loginid);
       localStorage.setItem('UserName', res.UserName);
       localStorage.setItem('IsMPINSet', res.IsMPINSet);
+      localStorage.setItem('isesigndone', res.IsMPINSet);
       localStorage.setItem('loginSucess', "false");
 
       if (res.IsMPINSet === "0") {
@@ -120,7 +121,7 @@ const SignInScreen = () => {
               icon: 'success',
               confirmButtonText: 'Continue'
             });
-
+            console.log("date come from api after login in retry",retryData);
             localStorage.setItem('Token', retryData.Token);
             localStorage.setItem('UserId', retryData.UserId);
             localStorage.setItem('loginid', retryData.loginid);
