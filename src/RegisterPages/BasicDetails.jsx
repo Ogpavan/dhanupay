@@ -13,6 +13,7 @@ const BasicDetails = () => {
   const [verifyingField, setVerifyingField] = useState(null);
   const [otp, setOtp] = useState("");
   const [btnLoading, setbtnLoading] = useState(false);
+  const [OtpId, setOtpId] = useState("");
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -41,21 +42,147 @@ const BasicDetails = () => {
     }
   }, []);
 
-  const handleVerifyClick = (field) => {
-    setVerifyingField(field);
-    setShowOTPModal(true);
-  };
+  // const handleVerifyClick = (field) => {
+  //   console.log("Verifying field:", field);
+  //   setVerifyingField(field);
+  //   setShowOTPModal(true);
+  // };
 
-  const handleOTPSubmit = () => {
-    if (verifyingField === "Mobile Number") {
-      const updatedVerified = { ...verifiedFields, mobile: true };
-      setVerifiedFields(updatedVerified);
-      localStorage.setItem("verifiedFields", JSON.stringify(updatedVerified));
+
+
+  const handleVerifyClick = async (field) => {
+  console.log("Verifying field:", field);
+
+  // Example: extract mobile number from your form state
+  const mobileNumber = formData.mobile; // Adjust this if your state uses a different key
+
+  if (!mobileNumber) {
+    Swal.fire({
+      title: "Missing Number",
+      text: "Please enter a mobile number before verifying.",
+      icon: "warning",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      "https://gateway.dhanushop.com/api/users/VerifyMobileNumber",
+      { MobileNumber: mobileNumber },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("OTP Response:", response.data);
+
+    if (response.data.success) {
+      // Optional: Store OTP ID if needed for verification later
+      setOtpId(response.data.otpid);
+      setVerifyingField(field);
+      setShowOTPModal(true);
+
+      Swal.fire({
+        title: "OTP Sent",
+        text: response.data.message,
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } else {
+      Swal.fire({
+        title: "Failed",
+        text: response.data.message || "Failed to send OTP.",
+        icon: "error",
+        confirmButtonText: "Retry",
+      });
     }
-    setShowOTPModal(false);
-    setOtp("");
-  };
+  } catch (error) {
+    console.error("Verification API Error:", error);
+    Swal.fire({
+      title: "Error",
+      text: "An error occurred while sending the OTP.",
+      icon: "error",
+      confirmButtonText: "Retry",
+    });
+  }
+};
 
+  // const handleOTPSubmit = () => {
+  //   if (verifyingField === "Mobile Number") {
+  //     const updatedVerified = { ...verifiedFields, mobile: true };
+  //     setVerifiedFields(updatedVerified);
+  //     localStorage.setItem("verifiedFields", JSON.stringify(updatedVerified));
+  //   }
+  //   setShowOTPModal(false);
+  //   setOtp("");
+  // };
+
+
+  const handleOTPSubmit = async () => {
+  if (!otp) {
+    Swal.fire({
+      title: "Missing OTP",
+      text: "Please enter the OTP.",
+      icon: "warning",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      "https://gateway.dhanushop.com/api/users/OTPValidator",
+      {
+        UserId: 0,
+        LoginId: OtpId, // assuming this is set from the previous OTP generation step
+        OTP: otp,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("OTP Verify Response:", response.data);
+
+    if (response.data.success) {
+      if (verifyingField === "Mobile Number") {
+        const updatedVerified = { ...verifiedFields, mobile: true };
+        setVerifiedFields(updatedVerified);
+        localStorage.setItem("verifiedFields", JSON.stringify(updatedVerified));
+      }
+
+      Swal.fire({
+        title: "Success",
+        text: response.data.message,
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+
+      setShowOTPModal(false);
+      setOtp("");
+    } else {
+      Swal.fire({
+        title: "Invalid OTP",
+        text: response.data.message || "The OTP you entered is incorrect.",
+        icon: "error",
+        confirmButtonText: "Retry",
+      });
+    }
+  } catch (error) {
+    console.error("OTP Verification Error:", error);
+    Swal.fire({
+      title: "Verification Failed",
+      text: "An error occurred while verifying the OTP.",
+      icon: "error",
+      confirmButtonText: "Retry",
+    });
+  }
+};
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const updatedForm = { ...formData, [name]: value };
@@ -172,7 +299,9 @@ const BasicDetails = () => {
           title: "Success!",
           text: "User Completed All steps!",
         })
+        localStorage.clear();
         setbtnLoading(false);
+        navigate("/");
 
       } else {
         Swal.fire({
@@ -196,11 +325,11 @@ const BasicDetails = () => {
   };
 
   return (
-    <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
+    <div className="font-poppins min-h-screen bg-[#2C2DCB] sm:hidden">
       <div className="h-[20vh] px-4 flex items-center" onClick={() => navigate(-1)}>
         <span className="text-white text-xl poppins-medium">&lt; Register</span>
       </div>
-      <div className="h-[83dvh] bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6 relative">
+      <div className=" min-h-[90vh] bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6 relative">
         <Stepper currentStep={0} />
         <h1 className="poppins-semibold text-[#121649] text-center py-4">
           Basic Details

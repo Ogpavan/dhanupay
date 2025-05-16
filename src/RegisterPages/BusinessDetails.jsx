@@ -186,12 +186,12 @@ const BusinessDetails = () => {
   };
 
   return (
-    <div className="font-poppins h-[100dvh] bg-[#2C2DCB] sm:hidden">
+    <div className="font-poppins min-h-screen bg-[#2C2DCB] sm:hidden">
       <div className="h-[20vh] px-4 flex items-center">
         <span className="text-white text-xl poppins-medium">Register</span>
       </div>
 
-      <div className="h-[83dvh] bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
+      <div className=" bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
         <Stepper currentStep={2} />
 
         <h1 className="poppins-semibold text-[#121649] text-center py-4">
