@@ -5,9 +5,9 @@ const stepTitles = [
   "Basic\nDetails",
   "Residential\nDetails",
   "Business\nDetails",
-  "Bank\nDetail",
   "Aadhaar\nDetails",
   "PAN\nDetails",
+  "Bank\nDetail",
   "Video\nKYC",
 ];
 
@@ -15,9 +15,9 @@ const stepRoutes = [
   "/basic-details",
   "/residential-details",
   "/business-details",
-  "/bank-detail",
   "/aadhaar-details",
   "/pan-details",
+   "/bank-detail",
   "/video-kyc",
 ];
 

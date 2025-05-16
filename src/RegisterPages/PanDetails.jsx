@@ -3,136 +3,145 @@ import Stepper from "../components/Stepper";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FiUploadCloud } from "react-icons/fi";
 import Swal from "sweetalert2";
-
-// Import the default PAN image (replace with your actual path)
-import panImage from "../assets/PAN.png";
 import axios from "axios";
 
 const PanDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const [basicDetails, setbasicDetails] = useState(location.state?.basicDetails || {});
 
   const [panNumber, setPanNumber] = useState("");
   const [panFront, setPanFront] = useState(null);
-   const [btnLoading, setbtnLoading] = useState(false);
+  const [btnLoading, setbtnLoading] = useState(false);
+
+  // New state for PAN validation error
+  const [panError, setPanError] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Retrieve stored data from localStorage
     const storedData = JSON.parse(localStorage.getItem("registrationData"));
     if (storedData && storedData.panDetails) {
       setPanNumber(storedData.panDetails.panNumber);
-      // If an object URL is available in localStorage, use it for the image
       setPanFront(storedData.panDetails.panFront);
     }
   }, []);
 
-  const handlePanChange = (e) => {
-    const value = e.target.value.toUpperCase();
-    if (!/^[A-Z0-9]*$/.test(value)) return; // Prevent invalid characters
-    setPanNumber(value);
+  const validatePan = (value) => {
+    // PAN regex: 5 letters, 4 digits, 1 letter
+    const regex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (!value) return "PAN number is required.";
+    if (!regex.test(value)) return "Invalid PAN format. Expected: AAAAA9999A";
+    return "";
   };
 
-  // Handle PAN Front Image Upload
-  // const handlePanFrontUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     // Create object URL for the uploaded file
-  //     const objectURL = URL.createObjectURL(file);
-  //     setPanFront(objectURL);
+  const handlePanChange = (e) => {
+    const value = e.target.value.toUpperCase();
+    if (!/^[A-Z0-9]*$/.test(value)) return; // allow only alphanumeric uppercase
+    setPanNumber(value);
 
-  //     // Store the object URL in localStorage for persistence
-  //     const updatedData = JSON.parse(localStorage.getItem("registrationData")) || {};
-  //     updatedData.panDetails = { ...updatedData.panDetails, panFront: objectURL };
-  //     localStorage.setItem("registrationData", JSON.stringify(updatedData));
-  //   }
-  // };
+    // Clear error while typing
+    if (panError) setPanError("");
+  };
+
+  // Validate on blur
+  const handlePanBlur = () => {
+    const errorMsg = validatePan(panNumber);
+    setPanError(errorMsg);
+  };
+
+  const handlePanFrontUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const objectURL = URL.createObjectURL(file);
+      setPanFront(objectURL);
+      if (file.size > 2 * 1024 * 1024) { // 2MB
+        Swal.fire({
+          title: "File Too Large",
+          text: "Please upload an image smaller than 2MB.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
 
 
- const handlePanFrontUpload = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const objectURL = URL.createObjectURL(file);
-    setPanFront(objectURL); // 🔁 update preview
-
-    // Optionally: store in localStorage for persistence
-    const updatedData = JSON.parse(localStorage.getItem("registrationData")) || {};
-    updatedData.panDetails = {
-      ...updatedData.panDetails,
-      panFront: objectURL,
-    };
-    localStorage.setItem("registrationData", JSON.stringify(updatedData));
-  }
-};
-
+      const updatedData = JSON.parse(localStorage.getItem("registrationData")) || {};
+      updatedData.panDetails = {
+        ...updatedData.panDetails,
+        panFront: objectURL,
+      };
+      localStorage.setItem("registrationData", JSON.stringify(updatedData));
+    }
+  };
 
   const handleNext = async () => {
+    // Validate before submit
+    const errorMsg = validatePan(panNumber);
+    if (errorMsg) {
+      setPanError(errorMsg);
+      return;
+    }
+
+    if (!panFront) {
+      Swal.fire({
+        title: "Incomplete Details",
+        text: "Please fill in the PAN number and upload the PAN front image.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
     setbtnLoading(true);
-  const newUserId = localStorage.getItem("newUserId");
+    const newUserId = localStorage.getItem("newUserId");
 
-  if (!panNumber || !panFront) {
-    Swal.fire({
-      title: "Incomplete Details",
-      text: "Please fill in the PAN number and upload the PAN front image.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
-    setbtnLoading(false);
-    return;
-  }
+    const panInput = document.getElementById("panFrontFile");
+    const panFile = panInput?.files[0];
 
-  const panInput = document.getElementById("panFrontFile");
-  const panFile = panInput?.files[0];
+    if (!panFile) {
+      Swal.fire("Error", "Please upload your PAN front image.", "error");
+      setbtnLoading(false);
+      return;
+    }
 
-  if (!panFile) {
-    Swal.fire("Error", "Please upload your PAN front image.", "error");
-    setbtnLoading(false);
-    return;
-  }
+    const formData = new FormData();
+    formData.append("UserId", newUserId);
+    formData.append("newUserId", newUserId);
+    formData.append("DocumentType", "PAN");
+    formData.append("DocumentNumber", panNumber);
+    formData.append("FrontImage", panFile);
+    formData.append("VideoFile", ""); // optional
 
-  const formData = new FormData();
-  formData.append("UserId", newUserId);
-  formData.append("newUserId", newUserId);
-  formData.append("DocumentType", "pan");
-  formData.append("DocumentNumber", panNumber);
-  formData.append("FrontImage", panFile);
-  formData.append("VideoFile", ""); // optional if required
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      Swal.fire("Success", "PAN details submitted successfully!", "success");
+
+      const updatedData = {
+        ...location.state?.combinedData,
+        panDetails: {
+          panNumber,
+          panFront,
         },
-      }
-    );
+      };
+      localStorage.setItem("registrationData", JSON.stringify(updatedData));
 
-    console.log("API Response:", response.data);
-    Swal.fire("Success", "PAN details submitted successfully!", "success");
-
-    // Save to localStorage
-    const updatedData = {
-      ...location.state?.combinedData,
-      panDetails: {
-        panNumber,
-        panFront, // object URL just for preview, not needed for backend
-      },
-    };
-
-    localStorage.setItem("registrationData", JSON.stringify(updatedData));
-    setbtnLoading(false);
-    navigate("/video-kyc");
-  } catch (error) {
-    console.error("API Error:", error);
-    Swal.fire("Error", "Failed to submit PAN details.", "error");
-    setbtnLoading(false);
-  }
-};
-
+      setbtnLoading(false);
+      navigate("/video-kyc");
+    } catch (error) {
+      console.error("API Error:", error);
+      Swal.fire("Error", "Failed to submit PAN details.", "error");
+      setbtnLoading(false);
+    }
+  };
 
   return (
     <div className="font-poppins min-h-screen bg-[#2C2DCB] sm:hidden">
@@ -140,57 +149,63 @@ const PanDetails = () => {
         <span className="text-white text-xl poppins-medium">&lt; Register</span>
       </div>
 
-      <div className=" bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
-        <Stepper currentStep={5} />
+      <div style={{ height: "calc(100vh - 15vh)" }} className=" bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
+        <Stepper currentStep={4} />
 
         <h1 className="poppins-semibold text-[#121649] text-center py-4">
           PAN Details
         </h1>
 
-        <form className="space-y-3">
+        <form className="space-y-1">
+          <label className="block text-[#121649] font-semibold mb-1">
+            PAN No. <span className="text-red-600">*</span>
+          </label>
           <input
             type="text"
             placeholder="PAN No. (AAAAA9999A)"
-            className="input-field w-full"
+            className={`input-field w-full ${panError ? "border-red-500" : ""}`}
             maxLength={10}
             inputMode="text"
             pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
             value={panNumber}
             onChange={handlePanChange}
+            onBlur={handlePanBlur}
+            required
           />
+          {panError && (
+            <p className="text-red-600 text-sm mt-1">{panError}</p>
+          )}
 
           {/* PAN Front Upload */}
-          <div>
+          <div className="mb-4 mt-4">
             <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
-              Upload PAN Front Side
+              Upload PAN Front Side <span className="text-red-600">*</span>
             </label>
-            <div className="relative w-full h-40 rounded-xl overflow-hidden">
-              {/* Display the uploaded image if available, otherwise show a default image */}
+            <div className="w-full h-48 border-2 border-dashed border-[#2C2DCB] rounded-xl flex items-center justify-center relative overflow-hidden bg-gray-50">
               {panFront ? (
                 <img
-                  src={panFront} // This will be the object URL
-                  alt="Upload PAN Front"
-                  className="absolute w-full h-full object-contain p-4"
+                  src={panFront}
+                  alt="PAN Front Preview"
+                  className="w-full h-full object-contain rounded-xl"
                 />
               ) : (
-                <img
-                  src={panImage} // Default image when no PAN image is uploaded
-                  alt="Upload PAN Front"
-                  className="absolute w-full h-full object-contain p-4"
-                />
+                <div className="flex flex-col items-center justify-center text-[#2C2DCB]">
+                  <FiUploadCloud className="text-4xl mb-2" />
+                  <p className="text-sm font-medium">Click to Upload PAN Front</p>
+                </div>
               )}
-              <div className="absolute w-full h-full bg-black bg-opacity-40"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-white text-4xl">
-                <FiUploadCloud className="text-white text-4xl" />
-              </div>
               <input
                 type="file"
                 id="panFrontFile"
                 accept="image/*"
-                className="absolute w-full h-full opacity-0 cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 onChange={handlePanFrontUpload}
+                required
               />
             </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Accepted format: JPG, PNG | Max size: 2MB
+            </p>
           </div>
         </form>
 
@@ -206,7 +221,7 @@ const PanDetails = () => {
             disabled={btnLoading}
             className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
           >
-           {btnLoading ? 'Processing...' : 'Save & Next →'}
+            {btnLoading ? "Processing..." : "Save & Next →"}
           </button>
         </div>
       </div>

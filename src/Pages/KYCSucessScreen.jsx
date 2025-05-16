@@ -44,7 +44,7 @@ const KYCSucessScreen = () => {
 
 
                 <h1 className="text-sm text-center ">If you have any questions in the meantime, feel free to contact our support team:
-                    📞 1-800-123-253
+                    📞 +91 82998 02088
                     📧 support@dhanupay.com</h1>
                 <button
                     onClick={btnclick}

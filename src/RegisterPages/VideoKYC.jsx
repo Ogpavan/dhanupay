@@ -9,160 +9,135 @@ import axios from "axios";
 const VideoKYC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-   const [btnLoading, setbtnLoading] = useState(false);
+  const [btnLoading, setbtnLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const { combinedData } = location.state || {};
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const [shopPhoto, setShopPhoto] = useState(null);
-  const [kycVideo, setKycVideo] = useState(null);
+
+  // Store both file and preview URL
+  const [profilePhoto, setProfilePhoto] = useState({ file: null, preview: null });
+  const [shopPhoto, setShopPhoto] = useState({ file: null, preview: null });
+  const [kycVideo, setKycVideo] = useState({ file: null, preview: null });
+
+  // Validation error state
+  const [errors, setErrors] = useState({
+    profilePhoto: "",
+    shopPhoto: "",
+    kycVideo: "",
+  });
 
   const handleProfilePhotoUpload = (e) => {
     const file = e.target.files[0];
-    setProfilePhoto(file);
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setProfilePhoto({ file, preview });
+      setErrors(prev => ({ ...prev, profilePhoto: "" }));
+    }
   };
 
   const handleShopPhotoUpload = (e) => {
     const file = e.target.files[0];
-    setShopPhoto(file);
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setShopPhoto({ file, preview });
+      setErrors(prev => ({ ...prev, shopPhoto: "" }));
+    }
   };
 
   const handleKycVideoUpload = (e) => {
     const file = e.target.files[0];
-    setKycVideo(file);
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setKycVideo({ file, preview });
+      setErrors(prev => ({ ...prev, kycVideo: "" }));
+    }
   };
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
+  const handleSubmit = async () => {
+    // Reset errors
+    let valid = true;
+    let newErrors = { profilePhoto: "", shopPhoto: "", kycVideo: "" };
 
-  // const handleSubmit = async () => {
-  //   if (!profilePhoto || !shopPhoto || !kycVideo) {
-  //     Swal.fire({
-  //       title: "Incomplete Uploads",
-  //       text: "Please upload Profile Photo, Shop Photo, and KYC Video.",
-  //       icon: "warning",
-  //       confirmButtonText: "OK",
-  //     });
-  //     return;
-  //   }
-
-  //   try {
-  //     const profileBase64 = await toBase64(profilePhoto);
-  //     const shopBase64 = await toBase64(shopPhoto);
-  //     const videoBase64 = await toBase64(kycVideo);
-
-  //     const finalData = {
-  //       ...combinedData,
-  //       videoKyc: {
-  //         profilePhoto: profileBase64,
-  //         shopPhoto: shopBase64,
-  //         kycVideo: videoBase64,
-  //       },
-  //     };
-
-  //     localStorage.removeItem("registrationData");
-  //     localStorage.setItem("finalKycData", JSON.stringify(finalData));
-
-  //     // navigate("/PrevewRegistration");
-  //      navigate("/KYCSuccessScreen");
-  //   } catch (error) {
-  //     console.error("File conversion error:", error);
-  //     Swal.fire({
-  //       title: "Error",
-  //       text: "Something went wrong while processing the files.",
-  //       icon: "error",
-  //       confirmButtonText: "OK",
-  //     });
-  //   }
-  // };
-
-  
-const handleSubmit = async () => {
-  setbtnLoading(true);
-   const newUserId = localStorage.getItem("newUserId")
-  if (!profilePhoto || !shopPhoto || !kycVideo) {
-    Swal.fire({
-      title: "Incomplete Uploads",
-      text: "Please upload Profile Photo, Shop Photo, and KYC Video.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
-    setbtnLoading(false);
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-
-    // Append files
-    formData.append("UserId", newUserId);  // Provide fallback
-    formData.append("newUserId", newUserId);
-    formData.append("DocumentType", "KYC");
-    formData.append("FrontImage", profilePhoto);
-formData.append("BackImage", shopPhoto);
-formData.append("VideoFile", kycVideo);
-
-
-    // Append any other combined data fields (flatten if needed)
-    if (combinedData) {
-      Object.entries(combinedData).forEach(([key, value]) => {
-        // You might need to handle nested objects properly here
-        // For simplicity, stringify nested objects
-        if (typeof value === "object") {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          formData.append(key, value);
-        }
-      });
+    if (!profilePhoto.file) {
+      newErrors.profilePhoto = "Profile Photo is required.";
+      valid = false;
+    }
+    if (!shopPhoto.file) {
+      newErrors.shopPhoto = "Shop Photo is required.";
+      valid = false;
+    }
+    if (!kycVideo.file) {
+      newErrors.kycVideo = "KYC Video is required.";
+      valid = false;
     }
 
-    // Console log FormData contents (for debugging)
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0] + ": ", pair[1]);
-    // }
-console.log("Before sendinh kyc",formData)
-    // Send API request
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`, // your API endpoint
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    setErrors(newErrors);
+
+    if (!valid) {
+      Swal.fire({
+        title: "Incomplete Uploads",
+        text: "Please upload all required files.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    setbtnLoading(true);
+    const newUserId = localStorage.getItem("newUserId");
+
+    try {
+      const formData = new FormData();
+
+      formData.append("UserId", newUserId);
+      formData.append("newUserId", newUserId);
+      formData.append("DocumentType", "KYC");
+      formData.append("FrontImage", profilePhoto.file);
+      formData.append("BackImage", shopPhoto.file);
+      formData.append("VideoFile", kycVideo.file);
+
+      if (combinedData) {
+        Object.entries(combinedData).forEach(([key, value]) => {
+          if (typeof value === "object") {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
+        });
       }
-    );
 
-    console.log("API Response:", response.data);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/users/uploadDocuments`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-    Swal.fire("Success", "Video KYC submitted successfully!", "success");
+      Swal.fire("Success", "Video KYC submitted successfully!", "success");
 
-    // Clear local storage and navigate
-    localStorage.removeItem("registrationData");
-    localStorage.setItem("finalKycData", JSON.stringify({ ...combinedData })); // Optionally keep combinedData
-    setbtnLoading(false);
-    localStorage.clear();
-    navigate("/KYCSucessScreen");
-  } catch (error) {
-    console.error("API Error:", error);
-    Swal.fire("Error", "Failed to submit Video KYC.", "error");
-    setbtnLoading(false);
-  }
-};
+      localStorage.removeItem("registrationData");
+      localStorage.setItem("finalKycData", JSON.stringify({ ...combinedData }));
+      setbtnLoading(false);
+      localStorage.clear();
+      navigate("/KYCSucessScreen");
+    } catch (error) {
+      console.error("API Error:", error);
+      Swal.fire("Error", "Failed to submit Video KYC.", "error");
+      setbtnLoading(false);
+    }
+  };
+
   return (
     <div className="font-poppins min-h-screen bg-[#2C2DCB] sm:hidden">
       <div className="h-[20vh] px-4 flex items-center">
         <span className="text-white text-xl poppins-medium">&lt; Register</span>
       </div>
 
-      <div className=" bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
+      <div style={{ height: "calc(100vh - 15vh)" }} className="bg-white rounded-t-3xl px-4 py-6 shadow-md -mt-6">
         <Stepper currentStep={6} />
 
         <h1 className="poppins-semibold text-[#121649] text-center py-4">
@@ -173,13 +148,23 @@ console.log("Before sendinh kyc",formData)
           <div className="flex justify-evenly space-x-4">
             <div className="flex flex-col items-center">
               <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
-                Upload Profile Photo
+                Upload Profile Photo <span className="text-red-600">*</span>
               </label>
-              <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md">
-                <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
-                <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
-                  <FaCamera />
-                </div>
+              <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md cursor-pointer">
+                {profilePhoto.preview ? (
+                  <img
+                    src={profilePhoto.preview}
+                    alt="Profile Preview"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <>
+                    <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
+                    <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
+                      <FaCamera />
+                    </div>
+                  </>
+                )}
                 <input
                   type="file"
                   accept="image/*"
@@ -187,17 +172,30 @@ console.log("Before sendinh kyc",formData)
                   onChange={handleProfilePhotoUpload}
                 />
               </div>
+              {errors.profilePhoto && (
+                <p className="text-red-600 text-xs mt-1">{errors.profilePhoto}</p>
+              )}
             </div>
 
             <div className="flex flex-col items-center">
               <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
-                Upload Shop Photo
+                Upload Shop Photo <span className="text-red-600">*</span>
               </label>
-              <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md">
-                <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
-                <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
-                  <FaCamera />
-                </div>
+              <div className="relative w-32 aspect-square bg-gray-100 rounded-full overflow-hidden shadow-md cursor-pointer">
+                {shopPhoto.preview ? (
+                  <img
+                    src={shopPhoto.preview}
+                    alt="Shop Preview"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <>
+                    <div className="absolute w-full h-full bg-black bg-opacity-40 rounded-full"></div>
+                    <div className="absolute inset-0 flex items-center justify-center text-white text-3xl">
+                      <FaCamera />
+                    </div>
+                  </>
+                )}
                 <input
                   type="file"
                   accept="image/*"
@@ -205,18 +203,31 @@ console.log("Before sendinh kyc",formData)
                   onChange={handleShopPhotoUpload}
                 />
               </div>
+              {errors.shopPhoto && (
+                <p className="text-red-600 text-xs mt-1">{errors.shopPhoto}</p>
+              )}
             </div>
           </div>
 
           <div>
             <label className="block text-[#2C2DCB] text-sm font-semibold mb-2">
-              Upload KYC Video (Max 30 seconds)
+              Upload KYC Video (Max 30 seconds) <span className="text-red-600">*</span>
             </label>
-            <div className="relative w-full h-40 bg-gray-100 rounded-xl overflow-hidden">
-              <div className="absolute w-full h-full bg-black bg-opacity-40"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-white text-4xl">
-                <IoVideocam />
-              </div>
+            <div className="relative w-full h-40 bg-gray-100 rounded-xl overflow-hidden cursor-pointer">
+              {kycVideo.preview ? (
+                <video
+                  src={kycVideo.preview}
+                  controls
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <>
+                  <div className="absolute w-full h-full bg-black bg-opacity-40"></div>
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-4xl">
+                    <IoVideocam />
+                  </div>
+                </>
+              )}
               <input
                 type="file"
                 accept="video/*"
@@ -224,6 +235,9 @@ console.log("Before sendinh kyc",formData)
                 onChange={handleKycVideoUpload}
               />
             </div>
+            {errors.kycVideo && (
+              <p className="text-red-600 text-xs mt-1">{errors.kycVideo}</p>
+            )}
           </div>
         </form>
 
@@ -236,10 +250,10 @@ console.log("Before sendinh kyc",formData)
           </button>
           <button
             onClick={handleSubmit}
-            className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold"
+            disabled={btnLoading}
+            className="w-1/2 bg-[#2C2DCB] text-white text-lg py-2 rounded-xl font-semibold disabled:opacity-50"
           >
-            
-            {btnLoading ? 'Processing...' : 'Submit →'}
+            {btnLoading ? "Processing..." : "Submit →"}
           </button>
         </div>
       </div>
