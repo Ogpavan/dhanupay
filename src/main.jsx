@@ -5,9 +5,9 @@ import App from './App.jsx'
 import { WalletProvider } from './context/WalletContext'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <WalletProvider>
     <App />
     </WalletProvider>
-  </StrictMode>,
+// </StrictMode>, 
 )

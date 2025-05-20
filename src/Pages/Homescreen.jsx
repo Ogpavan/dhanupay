@@ -185,14 +185,14 @@ const Homescreen = () => {
 
     const Token = localStorage.getItem("Token");
     const IsMPINSet = localStorage.getItem("IsMPINSet");
-    const loginSucess = localStorage.getItem("loginSucess");
+    const loginSuccess = localStorage.getItem("loginSuccess");
 
     if (!isMounted) return;
 
-    if (loginSucess === "false") {
+    if (loginSuccess === "false") {
       localStorage.clear();
       navigate("/login");
-    } else if (Token && IsMPINSet && loginSucess === "true") {
+    } else if (Token && IsMPINSet && loginSuccess === "true") {
       navigate("/MPinScreen");
     }
 

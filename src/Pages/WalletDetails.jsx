@@ -1,11 +1,14 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useWallet } from '../../src/context/WalletContext';
 
 function WalletDetails() {
     const location = useLocation();
     const navigate = useNavigate();
     const { walletType, amount } = location.state || {};
+    const { wallets, loading, fetchWallets } = useWallet();
 
     const isIncentiveWallet = walletType === "Incentive Wallet";
     const isAEPSWallet = walletType === "AEPS Wallet";
@@ -32,12 +35,15 @@ function WalletDetails() {
         { id: 7, date: "2025-05-07", amount: 350, type: "Credit", desc: "Cashback" },
         { id: 8, date: "2025-05-08", amount: 200, type: "Debit", desc: "Purchase" },
         { id: 9, date: "2025-05-09", amount: 300, type: "Credit", desc: "Interest" },
-   
-   
-   
+
+
+
     ];
 
     const displayedTransactions = showAll ? allTransactions : allTransactions.slice(0, 8);
+
+    const token = localStorage.getItem('Token'); 
+    const userId = localStorage.getItem('UserId');
 
     useEffect(() => {
         if (view === "moveToBank") {
@@ -51,28 +57,132 @@ function WalletDetails() {
         }
     }, [view]);
 
-    const handleTransfer = (e) => {
-        e.preventDefault();
-        const amt = parseFloat(transferAmount);
-        if (!selectedAccount || !amt) {
-            Swal.fire("Missing Info", "Please select an account and enter amount.", "warning");
-            return;
-        }
-        if (amt > parseFloat(amount)) {
-            Swal.fire("Amount Exceeded", "You cannot transfer more than your wallet balance.", "error");
-            return;
-        }
-        Swal.fire({
-            icon: "success",
-            title: "Transfer Submitted",
-            text: "Your request has been submitted and is pending admin approval.",
-            confirmButtonColor: "#6366F1",
-        });
-        console.log("Transfer Data:", { selectedAccount, amount: transferAmount });
 
-        setSelectedAccount("");
-        setTransferAmount("");
+    useEffect(() => {
+        
+
+        fetchWallets(userId, token);
+        console.log("wallets",wallets);
+    }, []);
+
+const handleswapMoney = async (e) => {
+    e.preventDefault();
+
+    const amt = parseFloat(transferAmount);
+
+    // Find wallet info
+    const fromWallet = wallets.find(w => w.WalletType === "Primary");
+    const toWallet = wallets.find(w => w.WalletType === "Incentive");
+
+    if (!fromWallet || !toWallet) {
+        Swal.fire("Wallet Error", "Selected wallets not found.", "error");
+        return;
+    }
+
+    // Check balance
+    if (amt > parseFloat(fromWallet.Balance)) {
+        Swal.fire("Amount Exceeded", "You cannot transfer more than your wallet balance.", "error");
+        return;
+    }
+
+    const apiUrl = "https://gateway.dhanushop.com/api/WalletMaster/SwapWallet";
+    const payload = {
+        UserId: userId,
+        FromWalletId: fromWallet.WalletId,
+        ToWalletId: toWallet.WalletId,
+        Source: "Retailer",
+        CreatedBy: userId,
+        Amount: transferAmount
     };
+
+    try {
+        const response = await axios.post(apiUrl, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        const { success, message } = response.data;
+
+        if (success) {
+            Swal.fire({
+                icon: "success",
+                title: "Transfer Submitted",
+                text: "Payment Sucessfully Transfered",
+                confirmButtonColor: "#6366F1",
+            });
+            console.log("Transfer Data:", payload);
+            setSelectedAccount("");
+            setTransferAmount("");
+            navigate(-1);
+        } else {
+            Swal.fire("Transfer Failed", message || "An error occurred during the transfer.", "error");
+        }
+    } catch (error) {
+        console.error("API Error:", error);
+        Swal.fire("Error", "Something went wrong while processing your request.", "error");
+    }
+};
+
+
+    const handleTransfer = async (e) => {
+    e.preventDefault();
+
+    const amt = parseFloat(transferAmount);
+
+    if (!selectedAccount || !amt) {
+        Swal.fire("Missing Info", "Please select an account and enter amount.", "warning");
+        return;
+    }
+
+    if (amt > parseFloat(amount)) {
+        Swal.fire("Amount Exceeded", "You cannot transfer more than your wallet balance.", "error");
+        return;
+    }
+
+    const apiUrl = "https://gateway.dhanushop.com/api/WalletMaster/WalletPayoutWithdrawl";
+
+    const payload = {
+        UserId: userId,                            // dynamically from state/context
+        ServiceName: "IDFC Payout API",           // hardcoded as per requirement
+        WalletType: 'Primary',              // e.g. "Primary" or "Incentive"
+        WithdrawalAmount: transferAmount,
+        CreatedBy: userId                          // same as UserId, if applicable
+    };
+
+    console.log("Transfer Payload:", payload);
+
+    try {
+        const response = await axios.post(apiUrl, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        const res = response.data;
+
+        if (res.success) {
+            Swal.fire({
+                icon: "success",
+                title: "Transfer Submitted",
+                text: "Money Transfered Successfully",
+                confirmButtonColor: "#6366F1",
+            });
+            console.log("Transfer Data:", payload);
+            setSelectedAccount("");
+            setTransferAmount("");
+            navigate(-1);       
+        } else {
+            Swal.fire("Transfer Failed", res.message || "An error occurred during the transfer.", "error");
+        }
+    } catch (error) {
+        console.error("API Error:", error);
+        Swal.fire("Error", "Something went wrong while processing your request.", "error");
+    }
+};
+
 
     const handleLoadWallet = (e) => {
         e.preventDefault();
@@ -105,7 +215,7 @@ function WalletDetails() {
                 <div className="px-4 mt-10 flex flex-col">
                     <div className="p-6 text-center">
                         <p className="text-white text-lg">Wallet Balance</p>
-                        <p className="text-4xl text-white font-bold mt-1">₹{amount || "0.00"}</p>
+                        <p className="text-4xl text-white font-bold mt-1">₹{amount || "--"}</p>
                     </div>
 
                     {isIncentiveWallet && (
@@ -117,12 +227,22 @@ function WalletDetails() {
                         </button>
                     )}
                     {isAEPSWallet && (
-                        <button
-                            onClick={() => setView("moveToBank")}
-                            className="mt-6 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-6 rounded-xl"
-                        >
-                            Move to Bank
-                        </button>
+                        <div className="flex flex-col">
+                            <button
+                                onClick={() => setView("moveToBank")}
+                                className="mt-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-6 rounded-xl"
+                            >
+                                Move to Bank
+                            </button>
+                            <button
+                                onClick={() => setView("moveToOtherWallet")}
+                                className="mt-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-6 rounded-xl"
+                            >
+                                move to Incentive Wallet
+                            </button>
+                        </div>
+
+
                     )}
                 </div>
             </div>
@@ -143,10 +263,10 @@ function WalletDetails() {
                                         value={loadAmount}
                                         onChange={(e) => setLoadAmount(e.target.value)}
                                         placeholder="Enter amount"
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="mt-1 block w-full rounded-xl py-2 px-2 border-gray-300 shadow-sm"
                                     />
                                 </div>
-                                <div>
+                                {/* <div>
                                     <label className="block text-sm font-medium text-gray-700">Full Name</label>
                                     <input
                                         type="text"
@@ -155,8 +275,8 @@ function WalletDetails() {
                                         placeholder="Your Name"
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                     />
-                                </div>
-                                <div>
+                                </div> */}
+                                {/* <div>
                                     <label className="block text-sm font-medium text-gray-700">Email</label>
                                     <input
                                         type="email"
@@ -165,8 +285,8 @@ function WalletDetails() {
                                         placeholder="you@example.com"
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                     />
-                                </div>
-                                <div>
+                                </div> */}
+                                {/* <div>
                                     <label className="block text-sm font-medium text-gray-700">Phone</label>
                                     <input
                                         type="tel"
@@ -176,14 +296,43 @@ function WalletDetails() {
                                         maxLength={10}
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                     />
-                                </div>
-                                <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold">
+                                </div> */}
+                                <button type="submit" className="w-full rounded-xl bg-green-600 hover:bg-green-700 text-white py-2 font-semibold">
                                     Proceed to Pay
+                                </button>
+                            </form> 
+                        </div>
+                    </div>
+                )}
+
+                {/* Move to moveToOtherWallet */}
+                {view === "moveToOtherWallet" && (
+                    <div className="bg-gray-100 p-4 rounded-xl shadow relative">
+                        <button onClick={() => setView("default")} className="absolute left-4 top-4 text-lg text-indigo-600 hover:underline">←</button>
+                        <div className="pt-10 max-w-md mx-auto">
+                            <h2 className="text-xl font-semibold text-gray-800 text-center mb-4">Move to Incentive wallet</h2>
+                            <form onSubmit={handleswapMoney} className="space-y-4">
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Amount</label>
+                                    <input
+                                        type="number"
+                                        value={transferAmount}
+                                        onChange={(e) => setTransferAmount(e.target.value)}
+                                        placeholder="Enter amount"
+                                        max={amount}
+                                        className="mt-1 block w-full rounded-md py-2 px-2 border-gray-300 shadow-sm"
+                                    />
+                                </div>
+                                <button type="submit" className="w-full bg-sky-600 hover:bg-sky-700 rounded-3xl text-white py-2  font-semibold">
+                                    Send Money to Incentive Wallet
                                 </button>
                             </form>
                         </div>
                     </div>
                 )}
+
+
 
                 {/* Move to Bank */}
                 {view === "moveToBank" && (
@@ -197,7 +346,7 @@ function WalletDetails() {
                                     <select
                                         value={selectedAccount}
                                         onChange={(e) => setSelectedAccount(e.target.value)}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                        className="mt-1 block w-full rounded-md py-2 px-2 border-gray-300 shadow-sm"
                                     >
                                         <option value="">-- Select Account --</option>
                                         {bankAccounts.map((acc) => (
@@ -213,10 +362,10 @@ function WalletDetails() {
                                         onChange={(e) => setTransferAmount(e.target.value)}
                                         placeholder="Enter amount"
                                         max={amount}
-                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                        className="mt-1 block w-full rounded-md py-2 px-2 border-gray-300 shadow-sm"
                                     />
                                 </div>
-                                <button type="submit" className="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 rounded-md font-semibold">
+                                <button type="submit" className="w-full bg-sky-600 hover:bg-sky-700 rounded-3xl text-white py-2  font-semibold">
                                     Transfer
                                 </button>
                             </form>
