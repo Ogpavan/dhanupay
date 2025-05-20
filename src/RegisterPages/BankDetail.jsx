@@ -524,7 +524,7 @@ const BankDetail = () => {
               icon: "warning",
               confirmButtonText: "Continue",
             });
-               navigate("/video-kyc");
+              //  navigate("/video-kyc");
             return;
           }
         }
@@ -536,7 +536,7 @@ const BankDetail = () => {
           confirmButtonText: "OK",
         });
 
-        navigate("/aadhaar-details");
+        navigate("/video-kyc");
       } else {
         Swal.fire({
           title: "Submission Failed",
