@@ -14,9 +14,6 @@ const Dashboard = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if userlogincount is 1 and show the agreement popup
-
-
     const token = localStorage.getItem('Token');
     const eSignStatus = localStorage.getItem('eSignStatus');
     setShowAgreement(eSignStatus.toLowerCase());
@@ -45,7 +42,7 @@ const Dashboard = () => {
           console.log("eSign Response signedUrl variable:", signedUrl);
           if (signedUrl) {
             // Redirect to the signed URL
-            window.location.href = signedUrl;
+            // window.location.href = signedUrl;
           } else {
             console.error("signedUrl not found in response:", response.data);
           }
@@ -54,8 +51,6 @@ const Dashboard = () => {
           console.error("Error calling eSign API:", error);
         });
     }
-
-
     window.scrollTo(0, 0);
   }, []);
 

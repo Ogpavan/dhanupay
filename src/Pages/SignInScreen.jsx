@@ -82,6 +82,7 @@ const SignInScreen = () => {
       localStorage.setItem('role', res.role);
       localStorage.setItem('UserTypeName', res.UserTypeName);
       localStorage.setItem('eSignStatus', res.eSignStatus);
+      localStorage.setItem('loginSuccess', "false");
 
       if (res.IsMPINSet === "0") {
         navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });

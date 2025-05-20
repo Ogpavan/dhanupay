@@ -123,7 +123,7 @@ const OtpPage = () => {
                     icon: 'success',
                     confirmButtonText: 'Continue'
                 });
-                localStorage.setItem('loginSucess', "true");
+                localStorage.setItem('loginSuccess', "true");
                 navigate("/dashboard/home");
             } else {
                 await Swal.fire({
