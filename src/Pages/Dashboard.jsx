@@ -42,7 +42,7 @@ const Dashboard = () => {
           console.log("eSign Response signedUrl variable:", signedUrl);
           if (signedUrl) {
             // Redirect to the signed URL
-            // window.location.href = signedUrl;
+            window.location.href = signedUrl;
           } else {
             console.error("signedUrl not found in response:", response.data);
           }
