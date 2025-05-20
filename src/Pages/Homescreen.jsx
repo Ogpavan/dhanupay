@@ -185,7 +185,7 @@ const Homescreen = () => {
 
     const Token = localStorage.getItem("Token");
     const IsMPINSet = localStorage.getItem("IsMPINSet");
-    const loginSucess = localStorage.getItem("loginSuccess");
+    const loginSucess = localStorage.getItem("loginSucess");
 
     if (!isMounted) return;
 
