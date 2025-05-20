@@ -45,7 +45,7 @@ const Stepper = ({ currentStep }) => {
 
             {/* Step Label */}
             <div
-              onClick={() => navigate(stepRoutes[index])}
+              // onClick={() => navigate(stepRoutes[index])}
               className="absolute top-9 left-1/4 -translate-x-1/2 w-24 text-center text-[10px] text-gray-600 cursor-pointer whitespace-pre-line leading-[13px]"
             >
               {title}
