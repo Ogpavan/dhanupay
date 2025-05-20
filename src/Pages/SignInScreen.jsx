@@ -45,17 +45,23 @@ const SignInScreen = () => {
   const btnclick = async () => {
     if (!validateForm()) return; // Prevent API call if form is invalid
 
+    console.log("Email or Phone:", emailOrPhone);
+    // console.log("ip:", ip);
+    console.log("Password:", password);
+
+
     setBtnLoading(true);
     try {
       const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/users/login`;
       const response = await axios.post(apiUrl, {
         Username: emailOrPhone,
         Password: password,
-        IP: ip,
+        // IP: ip,
+        IP: "127.25.25.25",
         OS: "Android",
         Browser: "WebView",
         Device: "Android",
-        UserType: "Retailer"
+        UserTypeId: "16",
       });
 
       const res = response.data;
@@ -66,15 +72,16 @@ const SignInScreen = () => {
         icon: 'success',
         confirmButtonText: 'Continue'
       });
-      console.log("date come from api after login",res);
+      console.log("date come from api after login", res);
       // Store values
       localStorage.setItem('Token', res.Token);
       localStorage.setItem('UserId', res.UserId);
       localStorage.setItem('loginid', res.loginid);
       localStorage.setItem('UserName', res.UserName);
       localStorage.setItem('IsMPINSet', res.IsMPINSet);
-      localStorage.setItem('isesigndone', res.IsMPINSet);
-      localStorage.setItem('loginSucess', "false");
+      localStorage.setItem('role', res.role);
+      localStorage.setItem('UserTypeName', res.UserTypeName);
+      localStorage.setItem('eSignStatus', res.eSignStatus);
 
       if (res.IsMPINSet === "0") {
         navigate('/SetMPinScreen', { state: { Message: res.Message || res.message } });
@@ -121,12 +128,24 @@ const SignInScreen = () => {
               icon: 'success',
               confirmButtonText: 'Continue'
             });
-            console.log("date come from api after login in retry",retryData);
+            console.log("date come from api after login in retry", retryData);
             localStorage.setItem('Token', retryData.Token);
             localStorage.setItem('UserId', retryData.UserId);
             localStorage.setItem('loginid', retryData.loginid);
             localStorage.setItem('UserName', retryData.UserName);
             localStorage.setItem('IsMPINSet', retryData.IsMPINSet);
+            localStorage.setItem('role', retryData.role);
+            if (retryData.eSignStatus !== undefined && retryData.eSignStatus !== null && retryData.eSignStatus.trim() !== "") {
+              localStorage.setItem('eSignStatus', retryData.eSignStatus);
+            } else {
+              Swal.fire({
+                title: 'Error',
+                text: "eSign is not Avialable",
+                icon: 'error',
+                confirmButtonText: 'OK'
+              })
+            }
+            localStorage.setItem('UserTypeName', retryData.UserTypeName);
 
             if (retryData.IsMPINSet === "0") {
               navigate('/SetMPinScreen', { state: { Message: retryData.Message || retryData.message } });

@@ -6,34 +6,69 @@ import { FaSearch } from 'react-icons/fa';
 import { BiSolidReport } from 'react-icons/bi';
 import { MdOutlineChat } from 'react-icons/md';
 import EAgreementPopup from './EAgreementPopup'; // Import your Agreement Popup
+import axios from 'axios';
 
 const Dashboard = () => {
-  const [showAgreement, setShowAgreement] = useState(false);
+  const [showAgreement, setShowAgreement] = useState("");
   const [user, setUser] = useState(null); // Simulating user state
   const location = useLocation();
 
   useEffect(() => {
     // Check if userlogincount is 1 and show the agreement popup
-    const isesigndone = localStorage.getItem('isesigndone');
-    if (isesigndone === 0) {
-      setShowAgreement(true);
+
+
+    const token = localStorage.getItem('Token');
+    const eSignStatus = localStorage.getItem('eSignStatus');
+    setShowAgreement(eSignStatus.toLowerCase());
+    const userId = localStorage.getItem('UserId');
+
+
+    if (eSignStatus.toLowerCase() === "pending") {
+      // setShowAgreement(true);
+
+      axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/esign/request`,
+        {
+          UserId: userId,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+        .then(response => {
+          console.log("eSign Response:", response.data);
+          console.log("eSign Response signedUrl:", response.data?.signedUrl);
+          const signedUrl = response.data?.signedUrl;
+          console.log("eSign Response signedUrl variable:", signedUrl);
+          if (signedUrl) {
+            // Redirect to the signed URL
+            window.location.href = signedUrl;
+          } else {
+            console.error("signedUrl not found in response:", response.data);
+          }
+        })
+        .catch(error => {
+          console.error("Error calling eSign API:", error);
+        });
     }
 
-    // Simulate fetching user data (could be from context, API, etc.)
-    setUser({ id: 'user123' });
 
     window.scrollTo(0, 0);
   }, []);
 
-  const handleAgreementAccepted = () => {
-    localStorage.setItem('isesigndone', 1); // Update login count after agreement
-    setShowAgreement(false); // Hide the agreement popup
-  };
+  // const handleAgreementAccepted = () => {
+  //   localStorage.setItem('isesigndone', " 1"); // Update login count after agreement
+  //   setShowAgreement(false); // Hide the agreement popup
+  // };
 
   return (
     <div className="flex flex-col font-poppins">
-      {showAgreement && user ? (
-        <EAgreementPopup user={user} onAgree={handleAgreementAccepted} />
+      {showAgreement==="pending" && user ? (
+        // <EAgreementPopup user={user} onAgree={handleAgreementAccepted} />
+        <h1 className='text-center text-3xl'>eSign Pending <span>redirecting to esign page ...</span></h1>
       ) : (
         <>
           {/* Main Content */}
