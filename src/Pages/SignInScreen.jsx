@@ -93,7 +93,6 @@ const SignInScreen = () => {
 
       if (error.response && error.response.status === 409) {
         const res = error.response.data;
-
         const result = await Swal.fire({
           title: 'User Already Logged In',
           text: 'This user is already logged in on another device. Do you want to continue?',
@@ -140,10 +139,12 @@ const SignInScreen = () => {
             } else {
               Swal.fire({
                 title: 'Error',
-                text: "eSign is not Avialable",
+                text: "eSign is not Avialable please contact admin ",
                 icon: 'error',
                 confirmButtonText: 'OK'
               })
+              localStorage.clear();
+              navigate('/login');
             }
             localStorage.setItem('UserTypeName', retryData.UserTypeName);
 
@@ -152,7 +153,6 @@ const SignInScreen = () => {
             } else {
               navigate('/otp', { state: { Message: retryData.Message || retryData.message } });
             }
-
           } catch (retryError) {
             console.error('ConfirmLogin Retry Failed:', retryError);
             Swal.fire({
