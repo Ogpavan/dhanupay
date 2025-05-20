@@ -143,9 +143,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import slide1 from "../assets/getStartedSlider/getStarted1.svg";
-import slide2 from "../assets/getStartedSlider/getStarted2.svg";
-import slide3 from "../assets/getStartedSlider/getStarted1.svg";
+import slide1 from "../assets/getStartedSlider/getStarted1.png";
+import slide2 from "../assets/getStartedSlider/getStarted2.png";
+import slide3 from "../assets/getStartedSlider/getStarted1.png";
 
 const slides = [
   {
