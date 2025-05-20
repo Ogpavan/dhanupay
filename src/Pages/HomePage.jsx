@@ -9,6 +9,7 @@ import Logout from "../assets/icons/Logout.svg";
 import locationIcon from "../assets/icons/location.svg";
 import aepsWalletIcon from "../assets/icons/wallet.png";
 import walletIcon from "../assets/icons/normalwallet.svg";
+import { useWallet } from '../context/WalletContext';
 
 
 import {
@@ -20,11 +21,14 @@ import Swal from "sweetalert2";
 const HomePage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
-    let UserName = localStorage.getItem('UserName')||"UserName";
+    let UserName = localStorage.getItem('UserName') || "UserName";
     setUserName(UserName);
   }, []);
   const navigate = useNavigate();
   const [UserName, setUserName] = useState('');
+  const { wallets, loading, fetchWallets } = useWallet();
+
+
 
   const handleLogout = () => {
     Swal.fire({
@@ -43,6 +47,17 @@ const HomePage = () => {
     });
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token'); // or get from auth context
+    const userId = localStorage.getItem('user_id');   // or get from login
+    if (token && userId) {
+      fetchWallets(userId, token);
+    }
+  }, []);
+
+  const primaryWallet = wallets.find(w => w.WalletType === 'Primary');
+  const incentiveWallet = wallets.find(w => w.WalletType === 'Incentive');
+
   return (
     <div className="flex flex-col  bg-indigo-700 font-poppins">
       {/* Top Bar */}
@@ -51,7 +66,7 @@ const HomePage = () => {
           {/* Profile Info */}
           <div className="flex items-center pt-3 gap-3">
             <img
-            onClick={() => navigate("/dashboard/profile")}
+              onClick={() => navigate("/dashboard/profile")}
               src="https://i.pravatar.cc/150?img=32"
               alt="profile"
               className="w-12 h-12 rounded-full"
@@ -88,7 +103,7 @@ const HomePage = () => {
         </div>
 
         {/* Wallet Balances */}
-        <div className="flex justify-between bg-white rounded-xl px-2 py-2  mt-4 text-indigo-700 text-sm font-semibold">
+        <div className="flex justify-between bg-white rounded-xl px-2 py-2 mt-4 text-indigo-700 text-sm font-semibold">
           <div className="flex-1 text-center border-r mr-2 border-indigo-300">
             <div className="flex items-center justify-start gap-2">
               <img src={aepsWalletIcon} alt="Wallet" className="w-12 h-12" />
@@ -97,7 +112,7 @@ const HomePage = () => {
                   AEPS Wallet
                 </div>
                 <div className="text-base font-bold text-left text-black">
-                  ₹ 5382.23
+                  ₹ {primaryWallet ? primaryWallet.Balance : '--'}
                 </div>
               </div>
             </div>
@@ -105,12 +120,12 @@ const HomePage = () => {
           <div className="flex-1 text-center">
             <div className="flex items-center justify-start gap-2">
               <img src={walletIcon} alt="Wallet" className="w-12 h-12" />
-              <div className="flex flex-col ml-">
+              <div className="flex flex-col">
                 <div className="text-sm font-semibold whitespace-nowrap text-left text-indigo-700">
                   Incentive Wallet
                 </div>
                 <div className="text-base font-bold text-left text-black">
-                  ₹ 5382.23
+                  ₹ {incentiveWallet ? incentiveWallet.Balance : '--'}
                 </div>
               </div>
             </div>

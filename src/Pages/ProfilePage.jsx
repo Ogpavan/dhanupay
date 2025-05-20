@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import PrivacyAndPolicyModal from '@/utils/PrivacyAndPolicyModal';
 import SubmitComplaintModal from '@/utils/SubmitComplaintModal';
 import axios from 'axios';
+import { useWallet } from '../context/WalletContext';
 // import { c } from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
 
 
@@ -37,18 +38,29 @@ function ProfilePage() {
   useEffect(() => {
     setTransactions(transactionsData);
   }, []);
-
+  const { wallets, fetchWallets } = useWallet();
   const token = localStorage.getItem("Token");
   const UserId = localStorage.getItem("UserId");
 
+
+  useEffect(() => {
+    // const token = localStorage.getItem('auth_token');
+    // const userId = localStorage.getItem('user_id');
+    if (token && UserId) {
+      fetchWallets(UserId, token);
+    }
+  }, []);
+
+  const primaryWallet = wallets.find(w => w.WalletType === 'Primary');
+  const incentiveWallet = wallets.find(w => w.WalletType === 'Incentive');
 
   const handleLogout = async () => {
     const token = localStorage.getItem("Token");
     const UserId = localStorage.getItem("UserId");
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  
+
     console.log("Token:", token);
-    console.log("UserId:", UserId);                      
+    console.log("UserId:", UserId);
     console.log("baseUrl:", baseUrl);
     const result = await Swal.fire({
       title: 'Are you sure you want to logout?',
@@ -57,13 +69,13 @@ function ProfilePage() {
       confirmButtonText: 'Yes, logout!',
       cancelButtonText: 'No, cancel!',
     });
-  
+
     if (result.isConfirmed) {
       try {
         const logoutResponse = await axios.post(
           `${baseUrl}/users/Logout`,
-          { 
-            UserId: UserId 
+          {
+            UserId: UserId
 
           },
           {
@@ -73,7 +85,7 @@ function ProfilePage() {
             },
           }
         );
-  
+
         if (logoutResponse.data.success) {
           localStorage.clear();
           await Swal.fire({
@@ -106,7 +118,7 @@ function ProfilePage() {
       }
     }
   };
-  
+
 
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -151,34 +163,47 @@ function ProfilePage() {
           </div>
 
           {/* Right: Wallet Info */}
-          <div className="mt-4 sm:mt-0 flex flex-col gap-2">
-            <div className="flex items-center p-3 bg-white rounded-xl shadow"
-            onClick={() => navigate("/wallet-details", {
-              state: {
-                walletType: 'AEPS Wallet',
-                amount: 5382.23
-              }
-            })}>
-              <img src={aepsWalletIcon} alt="AEPS" className="w-10 h-10 mr-4" />
-              <div>
-                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">AEPS Wallet</p>
-                <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
-              </div>
-            </div>
-            <div className="flex items-center p-3 bg-white rounded-xl shadow" 
-            onClick={() => navigate("/wallet-details", {
-              state: {
-                walletType: 'Incentive Wallet',
-                amount: "5382.23"
-              }
-            })}>
-              <img src={walletIcon} alt="Wallet" className="w-10 h-10 mr-4" />
-              <div>
-                <p className="text-xs sm:text-sm text-gray-600 poppins-regular">Incentive Wallet</p>
-                <p className="font-bold text-black text-lg poppins-semibold">₹ 5382.23</p>
-              </div>
-            </div>
-          </div>
+        <div className="mt-4 sm:mt-0 flex flex-col gap-2">
+      <div
+        className="flex items-center p-3 bg-white rounded-xl shadow"
+        onClick={() =>
+          navigate('/wallet-details', {
+            state: {
+              walletType: 'AEPS Wallet',
+              amount: primaryWallet ? primaryWallet.Balance : '0.00',
+            },
+          })
+        }
+      >
+        <img src={aepsWalletIcon} alt="AEPS" className="w-10 h-10 mr-4" />
+        <div>
+          <p className="text-xs sm:text-sm text-gray-600 poppins-regular">AEPS Wallet</p>
+          <p className="font-bold text-black text-lg poppins-semibold">
+            ₹ {primaryWallet ? primaryWallet.Balance : '0.00'}
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="flex items-center p-3 bg-white rounded-xl shadow"
+        onClick={() =>
+          navigate('/wallet-details', {
+            state: {
+              walletType: 'Incentive Wallet',
+              amount: incentiveWallet ? incentiveWallet.Balance : '--',
+            },
+          })
+        }
+      >
+        <img src={walletIcon} alt="Wallet" className="w-10 h-10 mr-4" />
+        <div>
+          <p className="text-xs sm:text-sm text-gray-600 poppins-regular">Incentive Wallet</p>
+          <p className="font-bold text-black text-lg poppins-semibold">
+            ₹ {incentiveWallet ? incentiveWallet.Balance : '--'}
+          </p>
+        </div>
+      </div>
+    </div>
         </div>
       </div>
 

@@ -11,6 +11,8 @@ export const WalletProvider = ({ children }) => {
 
     const fetchWallets = async (userId, token) => {
         try {
+            // console.log("token for wallet",token);
+            // console.log("userId for wallet",userId);
             setLoading(true);
             const response = await axios.post(
                 `${import.meta.env.VITE_API_BASE_URL}/WalletMaster/WalletMasterList`,
@@ -23,6 +25,7 @@ export const WalletProvider = ({ children }) => {
                 }
             );
             setWallets(response.data);
+            console.log("wallet data",response.data);
         } catch (error) {
             console.error('Failed to fetch wallet data:', error);
             setWallets([]);
