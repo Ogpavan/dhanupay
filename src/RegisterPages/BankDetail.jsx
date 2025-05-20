@@ -524,7 +524,7 @@ const BankDetail = () => {
               icon: "warning",
               confirmButtonText: "Continue",
             });
-            navigate("/aadhaar-details");
+               navigate("/video-kyc");
             return;
           }
         }

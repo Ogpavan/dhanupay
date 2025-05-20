@@ -5,23 +5,25 @@ import { GrHomeRounded } from 'react-icons/gr';
 import { FaSearch } from 'react-icons/fa';
 import { BiSolidReport } from 'react-icons/bi';
 import { MdOutlineChat } from 'react-icons/md';
-import EAgreementPopup from './EAgreementPopup'; // Import your Agreement Popup
+// import EAgreementPopup from './EAgreementPopup'; // Import your Agreement Popup
 import axios from 'axios';
+import { useWallet } from '../../src/context/WalletContext';
 
 const Dashboard = () => {
   const [showAgreement, setShowAgreement] = useState("");
   const [user, setUser] = useState(null); // Simulating user state
   const location = useLocation();
+  const { wallets, loading, fetchWallets } = useWallet();
 
   useEffect(() => {
     const token = localStorage.getItem('Token');
     const eSignStatus = localStorage.getItem('eSignStatus');
     setShowAgreement(eSignStatus.toLowerCase());
     const userId = localStorage.getItem('UserId');
-
-
     if (eSignStatus.toLowerCase() === "pending") {
       // setShowAgreement(true);
+      console.log("eSignStatus user id :", userId);
+      console.log("eSignStatustoken :", token);
 
       axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/esign/request`,
@@ -34,7 +36,7 @@ const Dashboard = () => {
             'Content-Type': 'application/json'
           }
         }
-      )  
+      )
         .then(response => {
           console.log("eSign Response:", response.data);
           console.log("eSign Response signedUrl:", response.data?.signedUrl);
@@ -54,6 +56,14 @@ const Dashboard = () => {
     window.scrollTo(0, 0);
   }, []);
 
+
+  useEffect(() => {
+    const token = localStorage.getItem('Token'); // Replace with real token (maybe from login or localStorage)
+    const userId = localStorage.getItem('UserId');            // Replace with actual user ID (maybe from user context or auth)
+
+    fetchWallets(userId, token);
+  }, []);
+
   // const handleAgreementAccepted = () => {
   //   localStorage.setItem('isesigndone', " 1"); // Update login count after agreement
   //   setShowAgreement(false); // Hide the agreement popup
@@ -61,7 +71,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col font-poppins">
-      {showAgreement==="pending" && user ? (
+      {showAgreement === "pending" && user ? (
         // <EAgreementPopup user={user} onAgree={handleAgreementAccepted} />
         <h1 className='text-center text-3xl'>eSign Pending <span>redirecting to esign page ...</span></h1>
       ) : (

@@ -16,7 +16,7 @@ const BusinessDetails = () => {
   }, []);
 
   const ResidentialData = JSON.parse(localStorage.getItem("residentialForm"));
-
+console.log("Residential Data:", ResidentialData);
   // Initialize form state with error tracking
   const [form, setForm] = useState({
     shopName: "",
@@ -90,32 +90,79 @@ const BusinessDetails = () => {
   }, [form]);
 
   // Handle "Same as Residential Address" click
-  const handleSameAsResidential = () => {
-    if (ResidentialData) {
-      setForm({
-        ...form,
-        address: ResidentialData.address || "",
-        landmark: ResidentialData.landmark || "",
-        pincode: ResidentialData.pincode || "",
-        city: ResidentialData.city || "",
-        state: ResidentialData.state || "",
-      });
-      // Clear errors for copied fields
-      setErrors({
-        ...errors,
-        address: "",
-        pincode: "",
-        city: "",
-        state: "",
-      });
-    } else {
-      Swal.fire({
-        title: "Alert",
-        text: "No residential address found.",
-        icon: "warning",
-      });
+  // const handleSameAsResidential = () => {
+  //   if (ResidentialData) {
+  //     setForm({
+  //       ...form,
+  //       address: ResidentialData.address || "",
+  //       landmark: ResidentialData.landmark || "",
+  //       pincode: ResidentialData.pincode || "",
+  //       city: ResidentialData.city || "",
+  //       state: ResidentialData.state || "",
+  //     });
+  //     // Clear errors for copied fields
+  //     setErrors({
+  //       ...errors,
+  //       address: "",
+  //       pincode: "",
+  //       city: "",
+  //       state: "",
+  //     });
+  //   } else {
+  //     Swal.fire({
+  //       title: "Alert",
+  //       text: "No residential address found.",
+  //       icon: "warning",
+  //     });
+  //   }
+  // };
+
+
+  const handleSameAsResidential = async () => {
+  if (ResidentialData) {
+    const residentialState = ResidentialData.state || "";
+    const residentialCity = ResidentialData.city || "";
+
+    // Set state first and fetch cities
+    setForm((prev) => ({
+      ...prev,
+      address: ResidentialData.address || "",
+      landmark: ResidentialData.landmark || "",
+      pincode: ResidentialData.pincode || "",
+      state: residentialState,
+      city: "", // clear city until cities are fetched
+    }));
+
+    try {
+      const citiesData = await fetchCitiesByState(residentialState);
+      setCities(citiesData);
+
+      // Once cities are loaded, update city
+      setForm((prev) => ({
+        ...prev,
+        city: residentialCity,
+      }));
+    } catch (error) {
+      console.error("Error fetching cities in handleSameAsResidential:", error);
+      Swal.fire("Error", "Failed to fetch cities for the selected state.", "error");
     }
-  };
+
+    // Clear related errors
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      address: "",
+      pincode: "",
+      city: "",
+      state: "",
+    }));
+  } else {
+    Swal.fire({
+      title: "Alert",
+      text: "No residential address found.",
+      icon: "warning",
+    });
+  }
+};
 
   // Validate individual fields
   const validateField = (name, value) => {
@@ -214,7 +261,8 @@ const BusinessDetails = () => {
 
       Swal.fire("Success", "Business details submitted successfully!", "success");
       setbtnLoading(false);
-      navigate("/bank-detail");
+     
+      navigate("/aadhaar-details");
     } catch (error) {
       console.error("API Error:", error);
       Swal.fire("Error", "Failed to submit business details.", "error");
